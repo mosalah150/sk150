@@ -11,7 +11,7 @@ export interface Article {
   description: string;
   content: string[]; // Content split by paragraphs for clean parsing
   imageSrc: string;
-  category: "Design" | "Performance" | "DevOps" | "Sports";
+  category: string;
   tags: string[];
   date: string;
   readTime: string;

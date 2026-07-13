@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
@@ -41,63 +42,123 @@ export default function Home() {
         <Container className="relative z-10 w-full">
           <div className="max-w-3xl">
             <div className="border-brand/30 bg-brand/10 text-brand mb-8 inline-flex items-center rounded-full border px-4 py-1.5 text-xs font-semibold tracking-wide uppercase backdrop-blur-sm">
-              SYSTEM PLATFORM &bull; NEXT-GEN DEVELOPER PLAYGROUND
+              STUDENT DIRECTORY &bull; CLASS OF 150
             </div>
             <h1 className="text-text text-5xl leading-[1.05] font-black tracking-tighter uppercase sm:text-6xl md:text-7xl lg:text-8xl">
-              The future is <span className="text-brand">built</span>.<br />
-              Not inherited.
+              Class of <span className="text-brand">150</span>.<br />
+              Our Story.
             </h1>
             <p className="text-text-muted mt-8 max-w-xl text-lg leading-relaxed font-normal sm:text-xl">
-              SK150 brings together the next generation of designers, developers, and software
-              craftsmen to shape the visual and digital landscapes of tomorrow.
+              Celebrating our journey, classmates, and school memories. The official digital
+              yearbook and alumni network directory for the graduating students of SK150.
             </p>
             <div className="mt-10 flex flex-wrap gap-4">
-              <Button variant="primary" size="lg">
-                Explore Platform
-              </Button>
-              <Button variant="glass" size="lg">
-                Watch Launch Film
-              </Button>
+              <Link href="/spotlight">
+                <Button variant="primary" size="lg">
+                  Browse Classmates
+                </Button>
+              </Link>
+              <Link href="/timeline">
+                <Button variant="glass" size="lg">
+                  View School Timeline
+                </Button>
+              </Link>
             </div>
           </div>
         </Container>
       </section>
 
-      {/* 2. Latest Stories Section */}
+      {/* 2. Student Spotlight Section */}
+      <section id="spotlight" className="py-24 sm:py-32">
+        <Container>
+          <SectionHeader
+            title="Student Spotlight"
+            subtitle="Highlighting class leaders, student-athletes, and active contributors of Class 150."
+          />
+          <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
+            {/* Left Col - Portrait */}
+            <div className="border-border relative aspect-[3/4] w-full overflow-hidden rounded-3xl border shadow-xl lg:col-span-5">
+              <Image
+                src="/assets/spotlight.png"
+                alt="Student developer portrait"
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 40vw"
+                loading="lazy"
+              />
+            </div>
+
+            {/* Right Col - Story */}
+            <div className="flex flex-col justify-center lg:col-span-7">
+              <span className="text-brand text-xs font-bold tracking-widest uppercase">
+                Spotlight Profile
+              </span>
+              <h3 className="text-text mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
+                Maya Henderson
+              </h3>
+              <p className="text-text-muted mt-1 text-sm font-semibold">
+                Class President & Student Council Leader
+              </p>
+
+              <blockquote className="border-brand text-text mt-8 border-l-4 pl-6 font-serif text-xl leading-relaxed italic">
+                &ldquo;Preserving our class memories was a collective effort. Creating this digital
+                yearbook and directory allows us to stay connected as classmates, sharing our
+                journeys and supporting each other long after graduation.&rdquo;
+              </blockquote>
+
+              <p className="text-text-muted mt-6 text-base leading-relaxed">
+                Maya organized over a dozen student activities, leading the yearbook project to
+                capture the milestones of our school days, from Sports Day triumphs to final
+                graduation moments.
+              </p>
+
+              <div className="mt-8">
+                <Link href="/spotlight">
+                  <Button variant="outline" size="md">
+                    Read Full Spotlight Story
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* 3. Class Memories Section */}
       <section id="stories" className="border-border border-t py-24 sm:py-32">
         <Container>
           <SectionHeader
-            title="Latest Stories"
-            subtitle="Deep dives, design paradigms, and insights from our build team."
-            ctaText="Read all articles"
-            ctaHref="#stories"
+            title="Class Memories"
+            subtitle="Stories, memories, and reflections from our school days together."
+            ctaText="Read all stories"
+            ctaHref="/stories"
           />
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             <Card
-              title="Redefining High Performance in Modern Web Applications"
-              description="How rendering constraints, layout offsets, and oklch paint cycles are changing the way we write client-side layouts."
+              title="Class of 150 Graduation Day Recap: Looking Back at Our Journey"
+              description="A summary of our graduation ceremony, the valedictorian speech, and the final walk we took together as classmates."
               date="July 10, 2026"
               readTime="5 min read"
-              badge="Design Systems"
-              href="#stories"
+              badge="Graduation"
+              href="/stories/class-of-150-graduation-day-recap"
               aspectRatio="video"
             />
             <Card
-              title="The Anatomy of Glassmorphic & Transparent Interfaces"
-              description="A technical guide to implementing hardware-accelerated CSS backdrop-filters while handling hydration mismatches safely."
+              title="SK150 Annual Sports Day: Reliving the Red Team Championship"
+              description="Revisiting the intense track matches, cheerleading routines, and how the Red Team snatched the overall championship trophy."
               date="July 08, 2026"
               readTime="8 min read"
-              badge="User Interface"
-              href="#stories"
+              badge="Sports Day"
+              href="/stories/sk150-annual-sports-day-highlights"
               aspectRatio="video"
             />
             <Card
-              title="Why We Standardized SK150 on Cloudflare Pages"
-              description="Unlocking instant worldwide deployments, Edge compute runtimes, and local compatibility checkups in under 4 seconds."
+              title="Revisiting Our Summer Music Camp: Behind the Melodies"
+              description="A look back at our three-day musical retreat in the mountains, late-night campfires, and the final summer performance."
               date="July 05, 2026"
               readTime="4 min read"
-              badge="DevOps"
-              href="#stories"
+              badge="Music Camp"
+              href="/stories/revisiting-our-summer-music-camp"
               aspectRatio="video"
             />
           </div>
@@ -339,60 +400,6 @@ export default function Home() {
                   A step-by-step setup configuring Next.js 15 routing for Cloudflare&apos;s
                   serverless nodes.
                 </p>
-              </div>
-            </div>
-          </div>
-        </Container>
-      </section>
-
-      {/* 6. Student Spotlight Section */}
-      <section id="spotlight" className="py-24 sm:py-32">
-        <Container>
-          <SectionHeader
-            title="Student Spotlight"
-            subtitle="Highlighting the achievements and visual creations of our community builders."
-          />
-          <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
-            {/* Left Col - Portrait */}
-            <div className="border-border relative aspect-[3/4] w-full overflow-hidden rounded-3xl border shadow-xl lg:col-span-5">
-              <Image
-                src="/assets/spotlight.png"
-                alt="Student developer portrait"
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 40vw"
-                loading="lazy"
-              />
-            </div>
-
-            {/* Right Col - Story */}
-            <div className="flex flex-col justify-center lg:col-span-7">
-              <span className="text-brand text-xs font-bold tracking-widest uppercase">
-                Spotlight Profile
-              </span>
-              <h3 className="text-text mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
-                Maya Henderson
-              </h3>
-              <p className="text-text-muted mt-1 text-sm font-semibold">
-                Visual Designer & Frontend Engineer at SK150
-              </p>
-
-              <blockquote className="border-brand text-text mt-8 border-l-4 pl-6 font-serif text-xl leading-relaxed italic">
-                &ldquo;Building at SK150 completely shifted my paradigm. Combining Apple&apos;s
-                visual harmony with Nike&apos;s active, bold expression let me create interfaces
-                that feel alive and responsive. The Edge runtime makes it lightning fast.&rdquo;
-              </blockquote>
-
-              <p className="text-text-muted mt-6 text-base leading-relaxed">
-                Maya has constructed over 14 production-ready landing sections, utilizing Tailwind
-                v4 variables to enforce contrast matching and custom scrollbars across macOS and
-                mobile platforms.
-              </p>
-
-              <div className="mt-8">
-                <Button variant="outline" size="md">
-                  Read Full Spotlight Story
-                </Button>
               </div>
             </div>
           </div>
