@@ -5,97 +5,78 @@ import Image from "next/image";
 import Container from "@/components/ui/Container";
 import SectionHeader from "@/components/ui/SectionHeader";
 
-// Mock Committee Members
+// Mock Committee / Parent Network Info
 const committeeMembers = [
   {
-    name: "เมษา ศิริวัฒนา (เมย์)",
-    role: "ประธานสภานักเรียน & ประธานรุ่น 150",
-    bio: "รับหน้าที่จัดตั้งคณะกรรมการสืบสานทำเนียบรุ่นดิจิทัล ประสานงานหนังสือรุ่น และกิจกรรมคืนสู่เหย้า",
+    name: "เครือข่ายผู้ปกครอง รุ่น 150",
+    role: "ผู้พัฒนา & ผู้สนับสนุนระบบหลัก",
+    bio: "ร่วมมือร่วมใจสนับสนุนงบประมาณการพัฒนา และประสานงานด้านระบบฐานข้อมูล เพื่อรวบรวมสายสัมพันธ์ระหว่างผู้ปกครอง นักเรียน และคณะครูอาจารย์",
     image: "/assets/spotlight.png",
   },
   {
-    name: "อนันต์ เตชะวงศ์ (นนท์)",
-    role: "กัปตันทีมกีฬาและประธานสปิริตรุ่น",
-    bio: "ผู้จัดตั้งกิจกรรมกีฬาเชื่อมความสัมพันธ์ รณรงค์แนะแนวเรียนต่อน้อง ม.ปลาย และดูแลระบบสุขภาพศิษย์เก่า",
-    image: "/assets/spotlight.png",
-  },
-  {
-    name: "ธีรภัทร เมธา (เจมส์)",
-    role: "คณะกรรมการฝ่ายมีเดียและเทคโนโลยี",
-    bio: "ผู้ประสานการออกแบบภาพหน้าเว็บ รวบรวมคลังวิดีโอยูทูบ และบันทึกประวัติเหตุการณ์ในทำเนียบรุ่น",
+    name: "คณะกรรมการนักเรียน สวนกุหลาบฯ รุ่น 150",
+    role: "ผู้ประสานงานและจัดเก็บบันทึกประวัติ",
+    bio: "รับหน้าที่รวบรวมประวัติ ช่องทางติดต่อ และภาพถ่ายกิจกรรม ตั้งแต่วันแรกที่ก้าวเข้าสู่รั้วชมพู-ฟ้า จนถึงวันจบการศึกษาเป็นสุภาพบุรุษสวนกุหลาบฯ",
     image: "/assets/spotlight.png",
   },
 ];
 
-// Mock FAQs
+// Mock FAQs adjusted for Suankularb Class 150
 const faqs = [
   {
-    question: "ทำเนียบรุ่นดิจิทัล SK150 นี้จัดทำขึ้นเพื่ออะไร?",
+    question: "ทำเนียบดิจิทัล SK150 นี้จัดทำขึ้นโดยใคร?",
     answer:
-      "จัดทำขึ้นเพื่อรวบรวมข้อมูลเพื่อนร่วมรุ่น 150 และบันทึกความทรงจำวันสำเร็จการศึกษา กิจกรรมกีฬาสี และค่ายอาสา เพื่อสืบสานสายสัมพันธ์และเป็นพื้นที่เชื่อมโยงช่วยเหลือกันในอนาคต",
+      "แพลตฟอร์มนี้พัฒนาและจัดทำขึ้นโดย เครือข่ายผู้ปกครองโรงเรียนสวนกุหลาบวิทยาลัย รุ่น 150 (ชื่อรุ่น: ผู้นำแห่งอนาคต Future Leaders) เพื่อเป็นของขวัญและพื้นที่รวบรวมความทรงจำ กิจกรรมประเพณี และการติดต่อสำหรับเพื่อนร่วมรุ่นทุกคน",
   },
   {
-    question: "เพื่อนร่วมรุ่นคนอื่นสามารถเข้ามาอัปเดตประวัติหรือข้อมูลการติดต่อได้อย่างไร?",
+    question: "เพื่อนร่วมรุ่นสามารถเข้ามาอัปเดตประวัติหรือข้อมูลการติดต่อได้อย่างไร?",
     answer:
-      "สามารถทำได้โดยติดต่อคณะทำงานผ่านกล่องข้อความหน้าติดต่อเรา หรือประสานงานโดยตรงกับประธานรุ่นเพื่ออัปเดตพอร์ตการติดต่อในหน้าทำเนียบศิษย์เก่า",
+      "นักเรียนรุ่น 150 ทุกคนสามารถติดต่อคณะกรรมการรุ่น หรือผู้ประสานงานทางเทคโนโลยีเพื่อขอเข้าถึงระบบหรือแก้ไขข้อมูลส่วนตัว เช่น Instagram, TikTok หรือประวัติเด่นในหน้าทำเนียบศิษย์เก่า",
   },
   {
-    question: "กิจกรรมคืนสู่เหย้าศิษย์เก่ามีกำหนดจัดขึ้นเป็นประจำทุกปีหรือไม่?",
+    question: "ที่มาของชื่อรุ่น 'ผู้นำแห่งอนาคต' (Future Leaders) คืออะไร?",
     answer:
-      "คณะทำงานรุ่นตั้งใจจัดกิจกรรมงานคืนสู่เหย้าอย่างน้อยปีละ 1 ครั้ง และมีการติววิชาแนะแนวเรียนต่อให้กับรุ่นน้องในช่วงวันสำคัญแบบไฮบริดทั้งในโรงเรียนและทางออนไลน์",
+      "เป็นชื่อรุ่นที่นักเรียนและเครือข่ายรุ่น 150 ร่วมกันคัดเลือก เพื่อสะท้อนเป้าหมายการเป็นผู้นำที่ดี มีศีลธรรม และขับเคลื่อนสังคมไทยให้ก้าวหน้า ตามเกียรติยศและปณิธานของสุภาพบุรุษชาวชมพู-ฟ้า",
   },
   {
-    question: "ปุ่มค้นหาอัจฉริยะ (⌘K) บนแถบเมนูใช้ค้นหาอะไรได้บ้าง?",
+    question: "การติดต่อสอบถามหรือแจ้งปัญหาการใช้งานเว็บไซต์ทำได้อย่างไร?",
     answer:
-      "ปุ่มค้นหาอัจฉริยะสามารถค้นหาได้แบบเรียลไทม์ทุกสิ่งบนแพลตฟอร์มนี้ เช่น ชื่อเล่นเพื่อนร่วมรุ่น หมวดหมู่กิจกรรม วันปัจฉิมนิเทศ หรือไฟล์ภาพพื้นหลังตราโรงเรียนสำหรับดาวน์โหลด",
+      "สามารถแจ้งรายละเอียดเข้ามาผ่านแบบฟอร์มการติดต่อด้านล่างของหน้านี้ หรืออีเมลโดยตรงหาทีมดูแลระบบเครือข่ายผู้ปกครอง ซึ่งจะมีเจ้าหน้าที่คอยช่วยตอบคำถามและดูแลปรับปรุงข้อมูลให้เรียลไทม์ครับ",
   },
 ];
 
 export default function AboutPage() {
-  // FAQ accordion state: maps index -> open boolean
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
   // Contact Form States
   const [formInputs, setFormInputs] = useState({ name: "", email: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Turnstile Mock Captcha States
+  // Turnstile Verification States (Simulated)
   const [isTurnstileVerified, setIsTurnstileVerified] = useState(false);
   const [isVerifyingTurnstile, setIsVerifyingTurnstile] = useState(false);
 
-  const handleTurnstileVerify = () => {
+  const simulateTurnstile = () => {
     if (isTurnstileVerified || isVerifyingTurnstile) return;
     setIsVerifyingTurnstile(true);
     setTimeout(() => {
       setIsVerifyingTurnstile(false);
       setIsTurnstileVerified(true);
-    }, 850);
+    }, 1200);
   };
 
-  const toggleFaq = (index: number) => {
-    setOpenFaqIndex((prev) => (prev === index ? null : index));
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormInputs((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formInputs.name || !formInputs.email || !formInputs.message) {
-      alert("กรุณากรอกข้อมูลให้ครบถ้วนทุกช่องครับ");
+      alert("กรุณากรอกข้อมูลให้ครบถ้วนก่อนส่งข้อความ");
       return;
     }
-
     if (!isTurnstileVerified) {
-      alert("กรุณากดปุ่มเพื่อยืนยันความปลอดภัย (Turnstile) ก่อนส่งข้อความ");
+      alert("กรุณายืนยันตัวตนผ่าน Cloudflare Turnstile ก่อนส่งข้อความ");
       return;
     }
 
     setIsSubmitting(true);
-
-    // Simulate database write lag (1000ms)
     setTimeout(() => {
       setIsSubmitting(false);
       alert(`ส่งข้อความของคุณเรียบร้อยแล้ว! ขอบคุณครับ คุณ ${formInputs.name}.`);
@@ -117,14 +98,14 @@ export default function AboutPage() {
               เกี่ยวกับ SK150
             </h1>
             <p className="text-text-muted mt-4 text-lg leading-relaxed">
-              สืบสานความทรงจำ และแบ่งปันข้อมูลข่าวสารศิษย์เก่ารุ่น 150
-              ในสไตล์เว็บทำเนียบรุ่นพรีเมียม
+              ทำเนียบดิจิทัลโรงเรียนสวนกุหลาบวิทยาลัย รุ่น 150 ผู้นำแห่งอนาคต 
+              พัฒนาโดยเครือข่ายผู้ปกครองเพื่อรวบรวมมิตรภาพและสายสัมพันธ์อันยั่งยืน
             </p>
           </div>
         </Container>
       </section>
 
-      {/* 2. Vision & Mission Magazine Spread */}
+      {/* 2. Vision & Mission magazine style */}
       <section className="py-20 sm:py-28">
         <Container>
           <div className="grid items-start gap-12 sm:gap-16 md:grid-cols-2">
@@ -137,9 +118,9 @@ export default function AboutPage() {
                 วิสัยทัศน์ของเรา
               </h2>
               <p className="text-text-muted mt-5 text-sm leading-relaxed sm:text-base">
-                พวกเราเชื่อว่ามิตรภาพและความคุ้นเคยในห้องเรียนไม่ได้สิ้นสุดลงในวันรับประกาศนียบัตร
-                เป้าหมายของเราคือการสร้างพื้นที่ดิจิทัลที่รวมเรื่องราวกิจกรรมกีฬาสี
-                และรูปถ่ายแสนประทับใจของทุกคนไว้ในที่เดียว เพื่อการเชื่อมโยงอย่างยั่งยืน
+                สืบสานสายสัมพันธ์ &ldquo;ชมพู-ฟ้า&rdquo; ของสถาบันโรงเรียนชายล้วนอันดับหนึ่งของประเทศ 
+                เชื่อมต่อเพื่อนร่วมชั้นเรียน และสนับสนุนทุกความก้าวหน้าของสุภาพบุรุษสวนกุหลาบวิทยาลัย รุ่น 150 
+                ในฐานะผู้นำแห่งอนาคตที่จะทำประโยชน์แก่สังคมไทยต่อไป
               </p>
             </div>
 
@@ -150,9 +131,8 @@ export default function AboutPage() {
               </span>
               <h2 className="text-text mt-3 text-3xl font-black tracking-tight">พันธกิจของเรา</h2>
               <p className="text-text-muted mt-5 text-sm leading-relaxed sm:text-base">
-                พวกเรามุ่งมั่นจัดเก็บประวัติข้อมูลศิษย์เก่าในลักษณะที่ปลอดภัย
-                จัดทำกิจกรรมช่วยเหลือสังคม แนะแนวน้องๆ รุ่นหลังที่ต้องการสอบเข้ามหาวิทยาลัย
-                และเป็นศูนย์กลางข่าวสารของรุ่น 150
+                เก็บบันทึกประวัติและเกียรติประวัติอันงดงามของรุ่น, ส่งเสริมความสามัคคีร่วมใจผ่านกิจกรรมคืนสู่เหย้า, 
+                สนับสนุนรุ่นน้องในการศึกษาต่อ และจัดเตรียมทรัพยากร/แนะแนวอาชีพที่ยั่งยืนโดยการประสานงานของเครือข่ายผู้ปกครอง
               </p>
             </div>
           </div>
@@ -163,8 +143,8 @@ export default function AboutPage() {
       <section className="bg-canvas-muted border-border border-y py-20">
         <Container>
           <SectionHeader
-            title="ไทม์ไลน์พัฒนาการของรุ่น"
-            subtitle="เส้นทางการเรียนรู้และจุดเปลี่ยนสำคัญของพวกเราตลอดหลายปีที่ผ่านมา"
+            title="เส้นทางแห่งเกียรติยศชมพู-ฟ้า"
+            subtitle="ช่วงเวลาสำคัญและการรวมพลังขับเคลื่อนกิจกรรมของสวนกุหลาบวิทยาลัย รุ่น 150"
           />
 
           <div className="border-border relative mx-auto ml-4 max-w-4xl space-y-12 border-l pl-10 sm:ml-8 sm:pl-12 md:ml-12">
@@ -175,15 +155,14 @@ export default function AboutPage() {
               </div>
               <div>
                 <span className="text-brand text-xs font-bold tracking-wider uppercase">
-                  2026 &bull; ปีสำเร็จการศึกษา
+                  ปีสำเร็จการศึกษา &bull; ผู้นำแห่งอนาคต
                 </span>
                 <h3 className="mt-1 text-xl font-bold tracking-tight">
-                  ปัจฉิมนิเทศและเปิดตัวทำเนียบรุ่น
+                  พิธีปัจฉิมนิเทศ สุภาพบุรุษรุ่น 150
                 </h3>
                 <p className="text-text-muted mt-2 text-xs leading-relaxed sm:text-sm">
-                  สำเร็จการศึกษาระดับมัธยมศึกษาอย่างเป็นทางการ พร้อมจัดทำหนังสือรุ่น
-                  และพัฒนาทำเนียบรุ่นดิจิทัลขึ้นสู่เซิร์ฟเวอร์เพื่อให้เพื่อนๆ
-                  ทุกคนล็อกอินเข้ามาหาเบอร์โทรติดต่อ
+                  วันแห่งเกียรติยศและการก้าวออกจากรั้วชมพู-ฟ้า พร้อมเปิดตัวทำเนียบดิจิทัลอย่างเป็นทางการ 
+                  โดยการผลักดันระบบจัดเก็บข้อมูลของเครือข่ายผู้ปกครอง เพื่อความสามัคคีระยะยาว
                 </p>
               </div>
             </div>
@@ -195,14 +174,14 @@ export default function AboutPage() {
               </div>
               <div>
                 <span className="text-text-muted text-xs font-bold tracking-wider uppercase">
-                  2024 &bull; กิจกรรมสร้างชื่อเสียง
+                  กีฬาสีประเพณี &bull; พลังชมพู-ฟ้า
                 </span>
                 <h3 className="mt-1 text-xl font-bold tracking-tight">
-                  ชนะเลิศฟุตบอลกีฬาสีประเพณี
+                  คว้าแชมป์ฟุตบอลและกรีฑาโรงเรียน
                 </h3>
                 <p className="text-text-muted mt-2 text-xs leading-relaxed sm:text-sm">
-                  กวาดรางวัลแข่งกีฬาวิ่งกรีฑาและคว้าถ้วยแชมป์ฟุตบอลโรงเรียนประจำปี
-                  สร้างความสนิทสนมกลมเกลียวและการเชียร์แบบสร้างสรรค์
+                  นักเรียนรุ่น 150 ร่วมแรงเชียร์สปิริต กวาดรางวัลแชมป์ฟุตบอลและสแตนด์เชียร์กีฬาสี
+                  แสดงความสมัครสมานสามัคคีอันเป็นเอกลักษณ์ของชาวสวนกุหลาบฯ
                 </p>
               </div>
             </div>
@@ -214,12 +193,12 @@ export default function AboutPage() {
               </div>
               <div>
                 <span className="text-text-muted text-xs font-bold tracking-wider uppercase">
-                  2023 &bull; ก้าวแรกแห่งการรวมตัว
+                  วันแรกสู่ตึกยาว &bull; ก้าวแรกสุภาพบุรุษ
                 </span>
-                <h3 className="mt-1 text-xl font-bold tracking-tight">วันปฐมนิเทศและค่ายปฐมวัย</h3>
+                <h3 className="mt-1 text-xl font-bold tracking-tight">วันปฐมนิเทศก้าวแรกสู่ตึกยาวสวนกุหลาบ</h3>
                 <p className="text-text-muted mt-2 text-xs leading-relaxed sm:text-sm">
-                  เข้าสู่โรงเรียน ค้นพบเพื่อนห้องเรียนใหม่ ค่ายละลายพฤติกรรมดนตรีและศิลปะ
-                  ที่เป็นจุดเริ่มต้นมิตรภาพอันยาวนาน
+                  ก้าวเข้าสู่รั้วโรงเรียนสวนกุหลาบวิทยาลัยอย่างเป็นทางการ ร่วมทำพิธีถวายบังคมพระบรมราชานุสาวรีย์ รัชกาลที่ 5 
+                  และรับฟังการอบรมวิชาสุภาพบุรุษสวนกุหลาบฯ
                 </p>
               </div>
             </div>
@@ -227,32 +206,31 @@ export default function AboutPage() {
         </Container>
       </section>
 
-      {/* 4. Committee Board Grid */}
-      <section className="py-20 sm:py-28">
+      {/* 4. Team Members GRID */}
+      <section className="py-24 sm:py-32">
         <Container>
           <SectionHeader
-            title="คณะกรรมการตัวแทนรุ่น"
-            subtitle="ทำความรู้จักผู้มีบทบาทประสานงานและขับเคลื่อนกิจกรรมศิษย์เก่าในปัจจุบัน"
+            title="คณะทำงานผู้สร้างสรรค์ระบบ"
+            subtitle="ทีมงานประสานงานจากเครือข่ายผู้ปกครองและตัวแทนคณะกรรมการนักเรียน สวนกุหลาบฯ รุ่น 150"
           />
 
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {committeeMembers.map((member, index) => (
+          <div className="grid gap-12 sm:grid-cols-2">
+            {committeeMembers.map((member, idx) => (
               <div
-                key={index}
-                className="bg-canvas border-border hover:border-text-muted flex flex-col items-center rounded-3xl border p-6 text-center transition-all duration-300 hover:shadow-md sm:p-8"
+                key={idx}
+                className="border-border bg-canvas-muted hover:border-text-muted flex flex-col items-center rounded-[32px] border p-8 text-center transition-all duration-300 hover:shadow-lg sm:p-12"
               >
-                <div className="border-border bg-canvas-muted relative h-24 w-24 overflow-hidden rounded-full border">
+                <div className="relative mb-6 h-28 w-28 overflow-hidden rounded-full border border-border shadow-sm">
                   <Image
                     src={member.image}
                     alt={member.name}
                     fill
                     className="object-cover"
-                    sizes="96px"
-                    loading="lazy"
+                    sizes="112px"
                   />
                 </div>
-                <h3 className="text-text mt-4 text-lg font-bold">{member.name}</h3>
-                <span className="text-brand mt-1 text-xs font-bold tracking-wider uppercase">
+                <h3 className="text-text text-xl font-black tracking-tight">{member.name}</h3>
+                <span className="text-brand mt-1.5 text-xs font-semibold uppercase">
                   {member.role}
                 </span>
                 <p className="text-text-muted mt-4 text-xs leading-relaxed sm:text-sm">
@@ -264,48 +242,52 @@ export default function AboutPage() {
         </Container>
       </section>
 
-      {/* 5. FAQs Accordion list */}
-      <section className="bg-canvas-muted border-border border-y py-20">
-        <Container>
+      {/* 5. FAQs Accordion */}
+      <section className="bg-canvas-muted border-border border-y py-24 sm:py-32">
+        <Container className="max-w-4xl">
           <SectionHeader
-            title="คำถามที่พบบ่อย"
-            subtitle="คำถามและความรู้ทางเทคนิคทั่วไปสำหรับการใช้งานและวัตถุประสงค์ของเว็บ SK150"
+            title="คำถามที่พบบ่อย (FAQs)"
+            subtitle="ข้อมูลและสิ่งที่คุณอาจต้องการทราบเพิ่มเติมเกี่ยวกับการดำเนินงานทำเนียบดิจิทัล SK150"
+            className="text-center"
           />
 
-          <div className="mx-auto max-w-3xl space-y-4 text-left">
-            {faqs.map((faq, index) => {
-              const isOpen = index === openFaqIndex;
-
+          <div className="mt-12 space-y-4">
+            {faqs.map((faq, idx) => {
+              const isOpen = openFaqIndex === idx;
               return (
                 <div
-                  key={index}
-                  className="bg-canvas border-border overflow-hidden rounded-2xl border transition-all duration-200"
+                  key={idx}
+                  className="border-border bg-canvas rounded-2xl border overflow-hidden transition-all duration-300"
                 >
                   <button
-                    onClick={() => toggleFaq(index)}
-                    className="flex w-full cursor-pointer items-center justify-between px-6 py-5 text-left text-sm font-bold focus-visible:outline-none sm:text-base"
+                    onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
+                    className="flex w-full items-center justify-between p-6 text-left focus:outline-none"
+                    aria-expanded={isOpen}
                   >
-                    <span>{faq.question}</span>
-                    <svg
-                      className={`text-text-muted h-4.5 w-4.5 transform transition-transform duration-200 ${
-                        isOpen ? "rotate-180" : ""
-                      }`}
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                    </svg>
+                    <span className="text-text font-bold text-sm sm:text-base">{faq.question}</span>
+                    <span className="text-brand ml-4 flex h-6 w-6 items-center justify-center rounded-full bg-brand/10 transition-transform duration-200">
+                      <svg
+                        className={`h-4 w-4 transform transition-transform ${
+                          isOpen ? "rotate-180" : ""
+                        }`}
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </span>
                   </button>
-
-                  {isOpen && (
-                    <div className="border-border animate-in fade-in slide-in-from-top-1 border-t px-6 pt-2 pb-6 duration-150">
-                      <p className="text-text-muted text-xs leading-relaxed sm:text-sm">
-                        {faq.answer}
-                      </p>
-                    </div>
-                  )}
+                  <div
+                    className={`transition-all duration-300 ease-in-out ${
+                      isOpen ? "max-h-[300px] border-t border-border opacity-100" : "max-h-0 opacity-0"
+                    }`}
+                  >
+                    <p className="text-text-muted p-6 text-xs leading-relaxed sm:text-sm">
+                      {faq.answer}
+                    </p>
+                  </div>
                 </div>
               );
             })}
@@ -313,137 +295,84 @@ export default function AboutPage() {
         </Container>
       </section>
 
-      {/* 6. Contact Panel Grid */}
-      <section className="py-20 sm:py-28">
-        <Container>
-          <div className="grid items-start gap-12 sm:gap-16 lg:grid-cols-12">
-            {/* Left Column: Office Contacts */}
-            <div className="text-left lg:col-span-5">
-              <span className="text-brand text-xs font-bold tracking-widest uppercase">
-                การติดต่อเรา
-              </span>
-              <h2 className="text-text mt-3 text-3xl font-black tracking-tight">
-                ติดต่อสภานักเรียน
-              </h2>
-              <p className="text-text-muted mt-4 text-sm leading-relaxed sm:text-base">
-                หากคุณมีข้อเสนอแนะในการจัดกิจกรรมรุ่น หรือต้องการขอเพิ่มประวัติข้อมูลศิษย์เก่าในระบบ
-                กรุณาส่งข้อความติดต่อฝ่ายประชาสัมพันธ์
-              </p>
+      {/* 6. Secure Contact Form */}
+      <section className="py-24 sm:py-32">
+        <Container className="max-w-2xl">
+          <div className="border-border bg-canvas-muted rounded-[32px] border p-8 sm:p-12 shadow-md">
+            <span className="text-brand text-xs font-bold tracking-widest uppercase block text-center">
+              ส่งคำขออัปเดตหรือแจ้งข้อเสนอแนะ
+            </span>
+            <h2 className="text-text mt-3 text-center text-3xl font-black tracking-tight sm:text-4xl">
+              ติดต่อแอดมินระบบ
+            </h2>
+            <p className="text-text-muted mt-4 text-center text-xs leading-relaxed sm:text-sm">
+              แบบฟอร์มการติดต่อประสานงานแอดมินสำหรับเครือข่ายผู้ปกครองและนักเรียนสวนกุหลาบวิทยาลัย รุ่น 150
+            </p>
 
-              <div className="text-text-muted mt-8 space-y-6 text-sm font-semibold">
-                <div className="flex items-center gap-3">
-                  <svg
-                    className="text-brand h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                    />
-                  </svg>
-                  <span>contact@sk150.pages.dev</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <svg
-                    className="text-brand h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                    />
-                  </svg>
-                  <span>ห้องสภานักเรียนชั้น 2 อาคารอำนวยการ</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Column: Input Message Form */}
-            <div className="bg-canvas-muted border-border rounded-3xl border p-6 sm:p-8 lg:col-span-7">
-              <form onSubmit={handleFormSubmit} className="space-y-6 text-left">
+            <div className="mt-10">
+              <form onSubmit={handleContactSubmit} className="space-y-6">
                 <div>
-                  <label
-                    htmlFor="name"
-                    className="text-text-muted mb-2 block text-xs font-bold tracking-wider uppercase"
-                  >
-                    ชื่อของคุณ
+                  <label htmlFor="contact-name" className="text-text-muted text-xs font-bold select-none">
+                    ชื่อ-นามสกุล
                   </label>
                   <input
+                    id="contact-name"
                     type="text"
-                    id="name"
-                    name="name"
-                    value={formInputs.name}
-                    onChange={handleInputChange}
-                    placeholder="กรุณากรอกชื่อ-นามสกุลของคุณ"
-                    className="bg-canvas border-border text-text placeholder-text-muted focus:border-brand w-full rounded-xl border px-4 py-3 text-sm focus:outline-none"
                     required
+                    value={formInputs.name}
+                    onChange={(e) => setFormInputs({ ...formInputs, name: e.target.value })}
+                    placeholder="ตัวอย่าง: นายสมยศ รักษ์ดี"
+                    className="border-border bg-canvas text-text mt-2 w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:border-brand transition-colors"
                   />
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="email"
-                    className="text-text-muted mb-2 block text-xs font-bold tracking-wider uppercase"
-                  >
-                    อีเมลติดต่อ
+                  <label htmlFor="contact-email" className="text-text-muted text-xs font-bold select-none">
+                    อีเมลติดต่อกลับ
                   </label>
                   <input
+                    id="contact-email"
                     type="email"
-                    id="email"
-                    name="email"
-                    value={formInputs.email}
-                    onChange={handleInputChange}
-                    placeholder="name@example.com"
-                    className="bg-canvas border-border text-text placeholder-text-muted focus:border-brand w-full rounded-xl border px-4 py-3 text-sm focus:outline-none"
                     required
+                    value={formInputs.email}
+                    onChange={(e) => setFormInputs({ ...formInputs, email: e.target.value })}
+                    placeholder="ตัวอย่าง: somyot@email.com"
+                    className="border-border bg-canvas text-text mt-2 w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:border-brand transition-colors"
                   />
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="message"
-                    className="text-text-muted mb-2 block text-xs font-bold tracking-wider uppercase"
-                  >
-                    ข้อความ / คำถามของคุณ
+                  <label htmlFor="contact-message" className="text-text-muted text-xs font-bold select-none">
+                    ข้อความหรือจุดประสงค์ที่ต้องการติดต่อ
                   </label>
                   <textarea
-                    id="message"
-                    name="message"
+                    id="contact-message"
+                    required
                     rows={4}
                     value={formInputs.message}
-                    onChange={handleInputChange}
-                    placeholder="ระบุข้อความที่คุณต้องการส่งให้เรา"
-                    className="bg-canvas border-border text-text placeholder-text-muted focus:border-brand w-full resize-none rounded-xl border px-4 py-3 text-sm focus:outline-none"
-                    required
+                    onChange={(e) => setFormInputs({ ...formInputs, message: e.target.value })}
+                    placeholder="ตัวอย่าง: ต้องการขอเพิ่มข้อมูลประวัติในหน้าทำเนียบ หรือส่งเรื่องราวกิจกรรมรุ่นประดับในหน้าบันทึกความทรงจำ..."
+                    className="border-border bg-canvas text-text mt-2 w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:border-brand transition-colors resize-none"
                   />
                 </div>
 
-                {/* Cloudflare Turnstile Mock Widget */}
-                <div className="border-border bg-canvas flex max-w-sm items-center justify-between rounded-2xl border p-4">
+                {/* Turnstile Interactive Widget */}
+                <div className="border-border bg-canvas flex flex-col items-center justify-between gap-4 rounded-2xl border p-4 sm:flex-row">
                   <div className="flex items-center gap-3">
                     <button
                       type="button"
-                      onClick={handleTurnstileVerify}
-                      disabled={isTurnstileVerified || isVerifyingTurnstile}
-                      className={`flex h-6 w-6 items-center justify-center rounded border transition-all ${
-                        isTurnstileVerified
-                          ? "bg-brand/10 border-brand text-brand"
-                          : "border-border hover:border-text-muted cursor-pointer"
+                      onClick={simulateTurnstile}
+                      className={`relative flex h-6 w-6 cursor-pointer items-center justify-center rounded-md border border-border transition-all ${
+                        isTurnstileVerified ? "bg-brand border-brand" : "bg-canvas-muted hover:bg-canvas"
                       }`}
+                      aria-label="Verify Turnstile"
                     >
                       {isVerifyingTurnstile && (
                         <div className="border-brand h-3.5 w-3.5 animate-spin rounded-full border-2 border-t-transparent" />
                       )}
                       {isTurnstileVerified && (
                         <svg
-                          className="h-4 w-4"
+                          className="h-4.5 w-4.5 text-canvas"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"

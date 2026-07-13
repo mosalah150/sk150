@@ -41,7 +41,7 @@ export default function MegaMenu({ isOpen, menuType, onClose }: MegaMenuProps) {
     },
     {
       title: "คลังภาพกิจกรรม",
-      description: "ประมวลภาพกีฬาสี กิจกรรมในชั้นเรียน และค่ายวิชาการต่างๆ ของรุ่น 150",
+      description: "ประมวลภาพกิจกรรมแปลอักษร กีฬาสีห้องเรียน และกิจกรรมในรั้วชมพู-ฟ้า ของสุภาพบุรุษสวนกุหลาบฯ รุ่น 150",
       href: "/gallery",
       icon: (
         <svg
@@ -166,7 +166,7 @@ export default function MegaMenu({ isOpen, menuType, onClose }: MegaMenuProps) {
 
   const currentItems = menuType === "platform" ? platformItems : resourceItems;
   const menuTitle =
-    menuType === "platform" ? "ภาพรวมแพลตฟอร์มรุ่น SK150" : "ศูนย์รวมคลังข้อมูลและเอกสาร";
+    menuType === "platform" ? "ภาพรวมแพลตฟอร์มสวนกุหลาบฯ รุ่น 150 (Future Leaders)" : "ศูนย์รวมคลังข้อมูลและเอกสาร";
 
   return (
     <div
@@ -208,11 +208,11 @@ export default function MegaMenu({ isOpen, menuType, onClose }: MegaMenuProps) {
               กิจกรรมที่กำลังจะเกิดขึ้น
             </span>
             <h4 className="text-text mt-3 text-xl font-bold tracking-tight">
-              งานคืนสู่เหย้า SK150
+              งานคืนสู่เหย้าชาวสวนกุหลาบฯ รุ่น 150
             </h4>
             <p className="text-text-muted mt-2 text-xs leading-relaxed sm:text-sm">
               เปิดลงทะเบียนเข้าร่วมสังสรรค์ศิษย์เก่าในวันที่ 24 กรกฎาคมนี้
-              ย้อนคืนวันวานร่วมรับประทานอาหารค่ำ
+              ย้อนคืนวันวานร่วมรับประทานอาหารค่ำและทำกิจกรรมชมพู-ฟ้า
             </p>
           </div>
           <div className="mt-8 flex items-center justify-between">

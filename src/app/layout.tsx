@@ -27,17 +27,17 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "SK150 - Production Platform",
-    template: "%s | SK150",
+    default: "SK150 ผู้นำแห่งอนาคต | โรงเรียนสวนกุหลาบวิทยาลัย รุ่น 150",
+    template: "%s | SK150 ผู้นำแห่งอนาคต",
   },
-  description: "Modern, high-performance, mobile-first website foundation template for SK150.",
+  description: "ทำเนียบรุ่นดิจิทัลสำหรับนักเรียนศิษย์เก่าโรงเรียนสวนกุหลาบวิทยาลัย รุ่น 150 (ชื่อรุ่น: ผู้นำแห่งอนาคต Future Leaders) พัฒนาโดยเครือข่ายผู้ปกครองโรงเรียนสวนกุหลาบวิทยาลัย รุ่น 150",
   metadataBase: new URL("https://sk150.pages.dev"),
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "SK150 - Production Platform",
-    description: "Modern, high-performance, mobile-first website foundation template for SK150.",
+    title: "SK150 ผู้นำแห่งอนาคต | โรงเรียนสวนกุหลาบวิทยาลัย รุ่น 150",
+    description: "ทำเนียบรุ่นดิจิทัลสำหรับนักเรียนศิษย์เก่าโรงเรียนสวนกุหลาบวิทยาลัย รุ่น 150 (ชื่อรุ่น: ผู้นำแห่งอนาคต Future Leaders) พัฒนาโดยเครือข่ายผู้ปกครองโรงเรียนสวนกุหลาบวิทยาลัย รุ่น 150",
     url: "https://sk150.pages.dev",
     siteName: "SK150",
     locale: "en_US",
@@ -45,8 +45,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "SK150 - Production Platform",
-    description: "Modern, high-performance, mobile-first website foundation template for SK150.",
+    title: "SK150 ผู้นำแห่งอนาคต | โรงเรียนสวนกุหลาบวิทยาลัย รุ่น 150",
+    description: "ทำเนียบรุ่นดิจิทัลสำหรับนักเรียนศิษย์เก่าโรงเรียนสวนกุหลาบวิทยาลัย รุ่น 150 (ชื่อรุ่น: ผู้นำแห่งอนาคต Future Leaders) พัฒนาโดยเครือข่ายผู้ปกครองโรงเรียนสวนกุหลาบวิทยาลัย รุ่น 150",
   },
   robots: {
     index: true,

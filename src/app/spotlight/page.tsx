@@ -29,10 +29,10 @@ export default function SpotlightPage() {
               ทำเนียบศิษย์เก่า
             </span>
             <h1 className="text-text mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl">
-              นักเรียนเด่นประจำรุ่น
+              สุภาพบุรุษนักเรียนเด่นประจำรุ่น
             </h1>
             <p className="text-text-muted mt-4 text-lg leading-relaxed">
-              อ่านบันทึกสัมภาษณ์เจาะลึกและประวัติเพื่อนร่วมรุ่นที่มีบทบาทสำคัญในการทำกิจกรรมรุ่น 150
+              อ่านบันทึกประวัติและบทสัมภาษณ์เจาะลึกเพื่อนนักเรียนโรงเรียนสวนกุหลาบวิทยาลัย รุ่น 150 ผู้นำแห่งอนาคต (Future Leaders)
             </p>
           </div>
 

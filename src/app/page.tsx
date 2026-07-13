@@ -377,15 +377,15 @@ export default function Home() {
             <div className="lg:col-span-7">
               <div className="border-brand/20 bg-brand/5 text-brand mb-8 inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-semibold tracking-wide uppercase backdrop-blur-sm">
                 <span className="h-1.5 w-1.5 rounded-full bg-brand animate-pulse" />
-                ทำเนียบรุ่นศิษย์เก่า &bull; รุ่น 150
+                โรงเรียนสวนกุหลาบวิทยาลัย &bull; รุ่น 150
               </div>
               <h1 className="text-text text-5xl leading-[1.05] font-black tracking-tighter uppercase sm:text-6xl md:text-7xl lg:text-8xl">
-                รุ่น <span className="bg-gradient-to-r from-brand to-brand-secondary bg-clip-text text-transparent">150</span>.<br />
-                เรื่องราวของเรา.
+                สวนกุหลาบฯ รุ่น <span className="bg-gradient-to-r from-brand to-brand-secondary bg-clip-text text-transparent">150</span>.<br />
+                ผู้นำแห่งอนาคต.
               </h1>
               <p className="text-text-muted mt-6 max-w-xl text-lg leading-relaxed font-normal sm:text-xl">
-                ร่วมระลึกถึงการเดินทาง มิตรภาพเพื่อนร่วมชั้นเรียน และความทรงจำอันล้ำค่าในรั้วโรงเรียน
-                ทำเนียบรุ่นดิจิทัลสำหรับนักเรียนรุ่น 150
+                ทำเนียบรุ่นดิจิทัลสำหรับนักเรียนศิษย์เก่าโรงเรียนสวนกุหลาบวิทยาลัย รุ่น 150
+                (ชื่อรุ่น: ผู้นำแห่งอนาคต Future Leaders) เพื่อสืบสานสายสัมพันธ์และมิตรภาพอันล้ำค่า
               </p>
               <div className="mt-10 flex flex-wrap gap-4">
                 <Link href="/spotlight">
@@ -610,7 +610,7 @@ export default function Home() {
             <div className="text-text-muted text-xs flex items-center gap-1.5">
               <span>Future Leaders</span>
               <span>&bull;</span>
-              <span>พัฒนาโดยศิษย์เก่า รุ่น 150</span>
+              <span>พัฒนาโดยเครือข่ายผู้ปกครองโรงเรียนสวนกุหลาบวิทยาลัย รุ่น 150</span>
             </div>
           </div>
         </Container>
