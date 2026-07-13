@@ -10,7 +10,7 @@ import Container from "@/components/ui/Container";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { useDynamicData } from "@/providers/DynamicDataProvider";
 
-type AdminTab = "Overview" | "Posts" | "Students" | "Events" | "Media" | "Downloads" | "Gallery" | "Menus";
+type AdminTab = "Overview" | "Posts" | "Students" | "Events" | "Media" | "Downloads" | "Gallery" | "Menus" | "Homepage";
 
 const tabLabels: Record<AdminTab, string> = {
   Overview: "ภาพรวมระบบ",
@@ -21,10 +21,11 @@ const tabLabels: Record<AdminTab, string> = {
   Downloads: "เอกสารดาวน์โหลด",
   Gallery: "คลังสื่อรูปภาพ (R2/KV)",
   Menus: "จัดการเมนูนำทาง (Header)",
+  Homepage: "ตั้งค่าหน้าแรก (Homepage)",
 };
 
 export default function AdminDashboardPage() {
-  const { posts, students, events, media, downloads, gallery, menus, refreshData } = useDynamicData();
+  const { posts, students, events, media, downloads, gallery, menus, sections, refreshData } = useDynamicData();
 
   // Auth States
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -263,6 +264,14 @@ export default function AdminDashboardPage() {
     id: "",
     label: "",
     href: "",
+    sortOrder: 1,
+  });
+
+  const [sectionForm, setSectionForm] = useState({
+    id: "",
+    title: "",
+    subtitle: "",
+    hidden: 0,
     sortOrder: 1,
   });
 
@@ -2076,6 +2085,165 @@ export default function AdminDashboardPage() {
                                   sortOrder: item.sortOrder,
                                 });
                                 addLog(`[FORM] ดึงข้อมูลเมนูเพื่อแก้ไข: ${item.label}`);
+                              }}
+                              className="text-brand text-xs font-bold border border-brand/20 px-3 py-1.5 rounded-lg"
+                            >
+                              แก้ไข
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 9. HOMEPAGE SECTIONS EDITOR (ตั้งค่าหน้าแรก) */}
+                {activeTab === "Homepage" && (
+                  <div className="border-border bg-canvas-muted space-y-8 rounded-[32px] border p-8">
+                    <SectionHeader
+                      title="ตั้งค่า & ปรับแต่งการแสดงผลหน้าแรก (Homepage Settings)"
+                      subtitle="แก้ไขชื่อเซกชัน, คำอธิบายย่อย, ลำดับการเรียงหน้า หรือ ซ่อน/แสดง (Hiding) แต่ละเซกชันในหน้าแรกของเว็บได้ทันที"
+                    />
+
+                    {/* Section Form */}
+                    <form
+                      onSubmit={async (e) => {
+                        e.preventDefault();
+                        if (!sectionForm.id || !sectionForm.title) {
+                          alert("กรุณากรอกข้อมูลให้ครบถ้วน");
+                          return;
+                        }
+
+                        const success = await handleSaveData("homepage_sections", sectionForm);
+                        if (success) {
+                          alert("บันทึกการตั้งค่าหน้าแรกสำเร็จ!");
+                          setSectionForm({
+                            id: "",
+                            title: "",
+                            subtitle: "",
+                            hidden: 0,
+                            sortOrder: 1,
+                          });
+                        }
+                      }}
+                      className="bg-canvas border-border rounded-2xl border p-6 space-y-4"
+                    >
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">ชื่อรหัสเซกชัน (ห้ามแก้ไขใหม่ - ดึงมาแก้ไขเท่านั้น)</label>
+                          <input
+                            type="text"
+                            disabled
+                            value={sectionForm.id}
+                            placeholder="เลือกแก้ไขจากตารางด้านล่าง..."
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none opacity-60"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">ลำดับการแสดงผล (เรียงจากน้อยไปมาก)</label>
+                          <input
+                            type="number"
+                            value={sectionForm.sortOrder}
+                            onChange={(e) => setSectionForm({ ...sectionForm, sortOrder: Number(e.target.value) })}
+                            placeholder="ตัวอย่าง: 1"
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">ชื่อหลักของเซกชัน (Title)</label>
+                          <input
+                            type="text"
+                            value={sectionForm.title}
+                            onChange={(e) => setSectionForm({ ...sectionForm, title: e.target.value })}
+                            placeholder="ตัวอย่าง: บันทึกความทรงจำ..."
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">คำอธิบายย่อยของเซกชัน (Subtitle)</label>
+                          <input
+                            type="text"
+                            value={sectionForm.subtitle}
+                            onChange={(e) => setSectionForm({ ...sectionForm, subtitle: e.target.value })}
+                            placeholder="ตัวอย่าง: เรื่องราว ภาพถ่าย และความประทับใจ..."
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Hiding Toggle Button */}
+                      <div className="bg-canvas-muted border border-border rounded-xl p-4 flex items-center justify-between">
+                        <div>
+                          <h4 className="text-sm font-bold">ซ่อนส่วนแสดงผลนี้ (Hiding Section Toggle)</h4>
+                          <p className="text-xs text-text-muted mt-1">ทำเครื่องหมายที่นี่หากคุณต้องการซ่อนเซกชันนี้ชั่วคราวไม่ให้แสดงบนหน้าแรกของเว็บ</p>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer select-none">
+                          <input
+                            type="checkbox"
+                            checked={sectionForm.hidden === 1}
+                            onChange={(e) => setSectionForm({ ...sectionForm, hidden: e.target.checked ? 1 : 0 })}
+                            className="sr-only peer"
+                          />
+                          <div className="w-11 h-6 bg-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand"></div>
+                        </label>
+                      </div>
+
+                      <div className="flex justify-end gap-3 pt-2">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setSectionForm({
+                              id: "",
+                              title: "",
+                              subtitle: "",
+                              hidden: 0,
+                              sortOrder: 1,
+                            })
+                          }
+                          className="text-text-muted border rounded-xl px-4 py-2 text-xs font-bold"
+                        >
+                          ล้างฟอร์ม
+                        </button>
+                        <button
+                          type="submit"
+                          className="bg-brand text-canvas rounded-xl px-6 py-2.5 text-xs font-bold"
+                        >
+                          บันทึกการตั้งค่า
+                        </button>
+                      </div>
+                    </form>
+
+                    {/* Sections list in D1 */}
+                    <div className="space-y-3">
+                      <h4 className="text-text-muted text-sm font-bold">เซกชันทั้งหมดในหน้าแรก ({sections.length})</h4>
+                      <div className="divide-y border border-border rounded-2xl bg-canvas overflow-hidden">
+                        {sections.map((item) => (
+                          <div key={item.id} className="p-4 flex items-center justify-between gap-4">
+                            <div>
+                              <div className="flex gap-2">
+                                <span className="bg-brand/10 text-brand text-[10px] font-black px-2 py-0.5 rounded">ลำดับ: {item.sortOrder}</span>
+                                <span className={`text-[10px] font-black px-2 py-0.5 rounded ${
+                                  item.hidden === 1 ? "bg-rose-500/10 text-rose-500" : "bg-emerald-500/10 text-emerald-500"
+                                }`}>
+                                  {item.hidden === 1 ? "ซ่อนอยู่ (Hidden)" : "แสดงผลปกติ (Visible)"}
+                                </span>
+                              </div>
+                              <h5 className="font-bold text-sm mt-1">{item.title} <span className="text-xs text-text-muted">({item.id})</span></h5>
+                              <p className="text-xs text-text-muted mt-0.5">{item.subtitle}</p>
+                            </div>
+                            <button
+                              onClick={() => {
+                                setSectionForm({
+                                  id: item.id,
+                                  title: item.title,
+                                  subtitle: item.subtitle,
+                                  hidden: item.hidden,
+                                  sortOrder: item.sortOrder,
+                                });
+                                addLog(`[FORM] ดึงข้อมูลเซกชันเพื่อแก้ไข: ${item.title}`);
                               }}
                               className="text-brand text-xs font-bold border border-brand/20 px-3 py-1.5 rounded-lg"
                             >

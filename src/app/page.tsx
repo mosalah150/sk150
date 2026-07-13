@@ -12,11 +12,18 @@ import { useDynamicData } from "@/providers/DynamicDataProvider";
 
 export default function Home() {
   const breadcrumbItems = [{ label: "หน้าแรก", href: "/" }, { label: "ภาพรวมโครงการ" }];
-  const { posts, events, media, students, gallery } = useDynamicData();
+  const { posts, events, media, students, gallery, sections } = useDynamicData();
+
+  // Find homepage section configs from database
+  const portalSec = sections.find((s) => s.id === "portal");
+  const spotlightSec = sections.find((s) => s.id === "spotlight");
+  const storiesSec = sections.find((s) => s.id === "stories");
+  const gallerySec = sections.find((s) => s.id === "gallery");
+  const videosSec = sections.find((s) => s.id === "videos");
+  const eventsSec = sections.find((s) => s.id === "events");
 
   // Pick top items
   const spotlightStudent = students[0] || {
-    id: "student-1",
     name: "เมษา ศิริวัฒนา (เมย์)",
     title: "ประธานรุ่น & ประธานสภานักเรียน รุ่น 150",
     imageSrc: "/assets/spotlight.png",
@@ -24,11 +31,6 @@ export default function Home() {
       "การทำทำเนียบรุ่นและหนังสือรุ่นครั้งนี้เป็นความร่วมมือร่วมใจของพวกเราทุกคน การพัฒนาหน้าเว็บนี้ทำให้เพื่อนๆ สามารถกลับมาเชื่อมต่อ ค้นหา และช่วยเหลือกันได้เสมอ ไม่ว่าหลังจากนี้พวกเราจะแยกย้ายไปทำอะไรที่ไหนในโลกก็ตาม",
     achievement:
       "เมย์ทำหน้าที่คอยประสานงานกิจกรรมรุ่นตลอดมัธยมศึกษาตอนปลาย และเป็นหัวเรือใหญ่รวบรวมรูปภาพบันทึกความทรงจำ ตั้งแต่งานกีฬาสี ค่ายทัศนศึกษา จนถึงนาทีจบการศึกษาปัจฉิมนิเทศ",
-    bioParagraphs: [],
-    instagram: "",
-    tiktok: "",
-    youtube: "",
-    metrics: [],
   };
 
   const topPosts = posts.slice(0, 3);
@@ -47,6 +49,294 @@ export default function Home() {
     if (idx === 0 || idx === 2) return "wide";
     return "portrait";
   };
+
+  // Build a list of sections sorted by their sortOrder from D1
+  const renderSections = [
+    {
+      id: "portal",
+      hidden: portalSec?.hidden ?? 0,
+      sortOrder: portalSec?.sortOrder ?? 1,
+      component: (
+        <section key="portal" className="border-border border-t border-b bg-canvas-muted/50 py-16">
+          <Container>
+            <div className="mb-8 text-center md:text-left">
+              <h2 className="text-2xl font-extrabold tracking-tight">
+                {portalSec?.title || "ค้นหาความทรงจำตามหมวดหมู่"}
+              </h2>
+              <p className="text-text-muted mt-2 text-sm">
+                {portalSec?.subtitle || "เข้าถึงภาพความทรงจำ ไดอารี่เรื่องเล่า และวิดีโอย้อนหลังได้อย่างสะดวกรวดเร็ว"}
+              </p>
+            </div>
+            <div className="grid gap-6 md:grid-cols-3">
+              {[
+                {
+                  title: "คลังภาพความทรงจำ",
+                  desc: "รวบรวมรูปภาพกิจกรรมประทับใจ วันเรียน และแกลเลอรีภาพถ่ายรุ่น",
+                  link: "/gallery",
+                  actionText: "เปิดคลังรูปถ่าย",
+                },
+                {
+                  title: "บทความ & เรื่องราวดีๆ",
+                  desc: "อ่านไดอารี่ บันทึกความทรงจำ และเรื่องราวพิเศษของพวกเรา",
+                  link: "/stories",
+                  actionText: "อ่านเรื่องราวรุ่น",
+                },
+                {
+                  title: "วิดีโอ & คลิปสั้น",
+                  desc: "เทปบันทึกกิจกรรมค่ายดนตรี กีฬาสี และคลิปความสนุกสนานย้อนหลัง",
+                  link: "/media",
+                  actionText: "ชมวิดีโอดีๆ",
+                },
+              ].map((portal, idx) => (
+                <Link
+                  key={idx}
+                  href={portal.link}
+                  className="border-border hover:border-text-muted bg-canvas group flex flex-col justify-between rounded-3xl border p-8 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+                >
+                  <div>
+                    <h3 className="text-xl font-bold tracking-tight">{portal.title}</h3>
+                    <p className="text-text-muted mt-2 text-sm leading-relaxed">{portal.desc}</p>
+                  </div>
+                  <div className="mt-8 flex items-center gap-2 text-xs font-bold tracking-wide uppercase text-brand group-hover:text-brand-secondary transition-colors">
+                    <span>{portal.actionText}</span>
+                    <svg
+                      className="h-4 w-4 transform transition-transform group-hover:translate-x-1"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </Container>
+        </section>
+      ),
+    },
+    {
+      id: "spotlight",
+      hidden: spotlightSec?.hidden ?? 0,
+      sortOrder: spotlightSec?.sortOrder ?? 2,
+      component: (
+        <section key="spotlight" className="py-24 sm:py-32">
+          <Container>
+            <div className="border-border bg-canvas-muted rounded-[32px] border p-8 sm:p-12 md:p-16">
+              <div className="grid gap-8 md:grid-cols-2 md:items-center">
+                <div>
+                  <span className="bg-brand/10 border-brand/20 text-brand rounded-full border px-3.5 py-1 text-xs font-bold tracking-wider uppercase">
+                    {spotlightSec?.title || "นักเรียนเด่นประจำรุ่น"}
+                  </span>
+                  <h2 className="text-text mt-6 text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl">
+                    {spotlightStudent.name}
+                  </h2>
+                  <p className="text-brand text-sm font-semibold mt-2">{spotlightStudent.title}</p>
+                  <p className="text-text-muted mt-6 text-base leading-relaxed">
+                    {spotlightStudent.achievement || spotlightStudent.bioParagraphs[0]}
+                  </p>
+                  <div className="mt-8">
+                    <Link href="/spotlight">
+                      <Button variant="outline" size="sm">
+                        อ่านประวัติสัมภาษณ์เพิ่มเติม
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+                <div className="relative aspect-square w-full overflow-hidden rounded-3xl border border-border shadow-lg">
+                  <Image
+                    src={spotlightStudent.imageSrc}
+                    alt={spotlightStudent.name}
+                    fill
+                    loading="lazy"
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+                </div>
+              </div>
+            </div>
+          </Container>
+        </section>
+      ),
+    },
+    {
+      id: "stories",
+      hidden: storiesSec?.hidden ?? 0,
+      sortOrder: storiesSec?.sortOrder ?? 3,
+      component: (
+        <section key="stories" className="border-border border-t py-24 sm:py-32 bg-canvas-muted/30">
+          <Container>
+            <SectionHeader
+              title={storiesSec?.title || "บันทึกความทรงจำ"}
+              subtitle={storiesSec?.subtitle || "เรื่องราว ภาพถ่าย และบันทึกเหตุการณ์ประทับใจในช่วงเรียนร่วมรุ่นกันของพวกเรา"}
+              ctaText="อ่านเรื่องราวทั้งหมด"
+              ctaHref="/stories"
+            />
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {topPosts.map((post) => (
+                <Card
+                  key={post.id}
+                  title={post.title}
+                  description={post.description}
+                  date={post.date}
+                  readTime={post.readTime}
+                  badge={post.category}
+                  href={`/stories/${post.slug}`}
+                  aspectRatio="video"
+                />
+              ))}
+            </div>
+          </Container>
+        </section>
+      ),
+    },
+    {
+      id: "gallery",
+      hidden: gallerySec?.hidden ?? 0,
+      sortOrder: gallerySec?.sortOrder ?? 4,
+      component: (
+        <section key="gallery" className="py-24 sm:py-32">
+          <Container>
+            <SectionHeader
+              title={gallerySec?.title || "ภาพความทรงจำประทับใจ"}
+              subtitle={gallerySec?.subtitle || "รวบรวมภาพบันทึกจังหวะชีวิตกิจกรรม วัยเรียน และความร่วมมือในผลงานรุ่นต่างๆ"}
+              ctaText="เปิดคลังภาพทั้งหมด"
+              ctaHref="/gallery"
+            />
+            <div className="grid gap-6 md:grid-cols-3">
+              {topGallery.map((item, idx) => (
+                <Card
+                  key={item.id}
+                  title={item.title}
+                  description={item.description}
+                  imageSrc={item.imageSrc}
+                  imageAlt={item.title}
+                  badge={item.album}
+                  aspectRatio={getBentoAspect(idx)}
+                  className={getBentoClass(idx)}
+                />
+              ))}
+            </div>
+          </Container>
+        </section>
+      ),
+    },
+    {
+      id: "videos",
+      hidden: videosSec?.hidden ?? 0,
+      sortOrder: videosSec?.sortOrder ?? 5,
+      component: (
+        <section key="videos" className="bg-canvas-muted/40 border-border border-t border-b py-24 sm:py-32">
+          <Container>
+            <SectionHeader
+              title={videosSec?.title || "วิดีโอเด่นความทรงจำ"}
+              subtitle={videosSec?.subtitle || "บันทึกเทปงานพิธีสำคัญ ไฮไลท์กิจกรรมโรงเรียน และสารคดีประมวลผลงานของรุ่น"}
+              ctaText="ดูวิดีโอทั้งหมด"
+              ctaHref="/media"
+            />
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {topVideos.map((video) => (
+                <div
+                  key={video.id}
+                  className="border-border bg-canvas group hover:border-text-muted flex flex-col overflow-hidden rounded-3xl border transition-all duration-300 hover:-translate-y-1"
+                >
+                  <div className="relative flex aspect-video items-center justify-center overflow-hidden bg-neutral-900">
+                    <Image
+                      src={video.coverImage}
+                      alt={video.title}
+                      fill
+                      loading="lazy"
+                      className="object-cover opacity-70 transition-transform duration-500 group-hover:scale-105"
+                      sizes="(max-width: 640px) 100vw, 33vw"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                      <div className="bg-canvas/90 border-border text-text flex h-14 w-14 items-center justify-center rounded-full border shadow-md backdrop-blur-sm transition-transform duration-300 group-hover:scale-110">
+                        <svg className="ml-1 h-6 w-6 fill-current" viewBox="0 0 24 24">
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      </div>
+                    </div>
+                    <span className="absolute right-4 bottom-4 rounded bg-black/70 px-2 py-1 text-xs font-semibold text-white">
+                      {video.duration}
+                    </span>
+                  </div>
+                  <div className="p-6">
+                    <span className="text-brand text-xs font-semibold tracking-wider uppercase">
+                      {video.category}
+                    </span>
+                    <h4 className="text-text mt-1 line-clamp-2 text-lg font-bold">{video.title}</h4>
+                    <p className="text-text-muted mt-2 line-clamp-2 text-sm">{video.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Container>
+        </section>
+      ),
+    },
+    {
+      id: "events",
+      hidden: eventsSec?.hidden ?? 0,
+      sortOrder: eventsSec?.sortOrder ?? 6,
+      component: (
+        <section key="events" className="py-24 sm:py-32">
+          <Container>
+            <SectionHeader
+              title={eventsSec?.title || "กิจกรรมของรุ่น"}
+              subtitle={eventsSec?.subtitle || "พบปะพูดคุยและสร้างสรรค์กิจกรรมดีๆ ร่วมกันระหว่างเพื่อนร่วมชั้นเรียน"}
+              ctaText="ดูกิจกรรมทั้งหมด"
+              ctaHref="/events"
+            />
+            <div className="grid gap-8 lg:grid-cols-2">
+              {upcomingEvents.map((event) => {
+                const [day, month] = event.date.split(" ");
+                return (
+                  <div
+                    key={event.id}
+                    className="border-border bg-canvas group hover:border-text-muted relative flex flex-col gap-6 overflow-hidden rounded-3xl border p-8 transition-all duration-300 sm:flex-row"
+                  >
+                    <div className="bg-brand/10 border-brand/20 text-brand flex h-20 w-20 flex-shrink-0 flex-col items-center justify-center rounded-2xl border">
+                      <span className="text-2xl font-black">{day}</span>
+                      <span className="text-xs font-bold tracking-widest uppercase">{month}</span>
+                    </div>
+                    <div className="flex flex-1 flex-col justify-between">
+                      <div>
+                        <span className="text-brand text-xs font-semibold tracking-wider uppercase">
+                          {event.phase}
+                        </span>
+                        <h3 className="text-text mt-1 text-2xl font-bold tracking-tight">
+                          {event.title}
+                        </h3>
+                        <p className="text-text-muted mt-2 text-sm leading-relaxed">
+                          {event.description}
+                        </p>
+                      </div>
+                      <div className="mt-6 flex items-center justify-between">
+                        <span className="text-text-muted text-xs font-medium">
+                          {event.time} &bull; {event.location}
+                        </span>
+                        <Link href="/events">
+                          <Button variant="outline" size="sm">
+                            ลงทะเบียนร่วมงาน
+                        </Button>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </Container>
+        </section>
+      ),
+    },
+  ];
+
+  // Filter out hidden sections and sort them by sortOrder
+  const visibleSections = renderSections
+    .filter((sec) => sec.hidden === 0)
+    .sort((a, b) => a.sortOrder - b.sortOrder);
 
   return (
     <main
@@ -106,252 +396,8 @@ export default function Home() {
         </Container>
       </section>
 
-      {/* 2. Minimal Portal Navigation Grid */}
-      <section className="border-border border-t border-b bg-canvas-muted/50 py-16">
-        <Container>
-          <div className="grid gap-6 md:grid-cols-3">
-            {[
-              {
-                title: "คลังภาพความทรงจำ",
-                desc: "รวบรวมรูปภาพกิจกรรมประทับใจ วันเรียน และแกลเลอรีภาพถ่ายรุ่น",
-                link: "/gallery",
-                color: "from-brand/10 to-brand/5",
-                actionText: "เปิดคลังรูปถ่าย",
-              },
-              {
-                title: "บทความ & เรื่องราวดีๆ",
-                desc: "อ่านไดอารี่ บันทึกความทรงจำ และเรื่องราวพิเศษของพวกเรา",
-                link: "/stories",
-                color: "from-canvas to-canvas-muted",
-                actionText: "อ่านเรื่องราวรุ่น",
-              },
-              {
-                title: "วิดีโอ & คลิปสั้น",
-                desc: "เทปบันทึกกิจกรรมค่ายดนตรี กีฬาสี และคลิปความสนุกสนานย้อนหลัง",
-                link: "/media",
-                color: "from-brand-secondary/10 to-brand-secondary/5",
-                actionText: "ชมวิดีโอดีๆ",
-              },
-            ].map((portal, idx) => (
-              <Link
-                key={idx}
-                href={portal.link}
-                className="border-border hover:border-text-muted bg-canvas group flex flex-col justify-between rounded-3xl border p-8 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
-              >
-                <div>
-                  <h3 className="text-xl font-bold tracking-tight">{portal.title}</h3>
-                  <p className="text-text-muted mt-2 text-sm leading-relaxed">{portal.desc}</p>
-                </div>
-                <div className="mt-8 flex items-center gap-2 text-xs font-bold tracking-wide uppercase text-brand group-hover:text-brand-secondary transition-colors">
-                  <span>{portal.actionText}</span>
-                  <svg
-                    className="h-4 w-4 transform transition-transform group-hover:translate-x-1"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                  </svg>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      {/* 3. Spotlight Banner */}
-      <section id="spotlight" className="py-24 sm:py-32">
-        <Container>
-          <div className="border-border bg-canvas-muted rounded-[32px] border p-8 sm:p-12 md:p-16">
-            <div className="grid gap-8 md:grid-cols-2 md:items-center">
-              <div>
-                <span className="bg-brand/10 border-brand/20 text-brand rounded-full border px-3.5 py-1 text-xs font-bold tracking-wider uppercase">
-                  นักเรียนเด่นประจำรุ่น
-                </span>
-                <h2 className="text-text mt-6 text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl">
-                  {spotlightStudent.name}
-                </h2>
-                <p className="text-brand text-sm font-semibold mt-2">{spotlightStudent.title}</p>
-                <p className="text-text-muted mt-6 text-base leading-relaxed">
-                  {spotlightStudent.achievement || spotlightStudent.bioParagraphs[0]}
-                </p>
-                <div className="mt-8">
-                  <Link href="/spotlight">
-                    <Button variant="outline" size="sm">
-                      อ่านประวัติสัมภาษณ์เพิ่มเติม
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-              <div className="relative aspect-square w-full overflow-hidden rounded-3xl border border-border shadow-lg">
-                <Image
-                  src={spotlightStudent.imageSrc}
-                  alt={spotlightStudent.name}
-                  fill
-                  loading="lazy"
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                />
-              </div>
-            </div>
-          </div>
-        </Container>
-      </section>
-
-      {/* 4. Class Memories Section */}
-      <section id="stories" className="border-border border-t py-24 sm:py-32 bg-canvas-muted/30">
-        <Container>
-          <SectionHeader
-            title="บันทึกความทรงจำ"
-            subtitle="เรื่องราว ภาพถ่าย และบันทึกเหตุการณ์ประทับใจในช่วงเรียนร่วมรุ่นกันของพวกเรา"
-            ctaText="อ่านเรื่องราวทั้งหมด"
-            ctaHref="/stories"
-          />
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {topPosts.map((post) => (
-              <Card
-                key={post.id}
-                title={post.title}
-                description={post.description}
-                date={post.date}
-                readTime={post.readTime}
-                badge={post.category}
-                href={`/stories/${post.slug}`}
-                aspectRatio="video"
-              />
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      {/* 5. Featured Gallery (Bento Style) */}
-      <section id="gallery" className="py-24 sm:py-32">
-        <Container>
-          <SectionHeader
-            title="ภาพความทรงจำประทับใจ"
-            subtitle="รวบรวมภาพบันทึกจังหวะชีวิตกิจกรรม วัยเรียน และความร่วมมือในผลงานรุ่นต่างๆ"
-            ctaText="เปิดคลังภาพทั้งหมด"
-            ctaHref="/gallery"
-          />
-          <div className="grid gap-6 md:grid-cols-3">
-            {topGallery.map((item, idx) => (
-              <Card
-                key={item.id}
-                title={item.title}
-                description={item.description}
-                imageSrc={item.imageSrc}
-                imageAlt={item.title}
-                badge={item.album}
-                aspectRatio={getBentoAspect(idx)}
-                className={getBentoClass(idx)}
-              />
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      {/* 6. Latest Videos Section */}
-      <section
-        id="videos"
-        className="bg-canvas-muted/40 border-border border-t border-b py-24 sm:py-32"
-      >
-        <Container>
-          <SectionHeader
-            title="วิดีโอเด่นความทรงจำ"
-            subtitle="บันทึกเทปงานพิธีสำคัญ ไฮไลท์กิจกรรมโรงเรียน และสารคดีประมวลผลงานของรุ่น"
-            ctaText="ดูวิดีโอทั้งหมด"
-            ctaHref="/media"
-          />
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {topVideos.map((video) => (
-              <div
-                key={video.id}
-                className="border-border bg-canvas group hover:border-text-muted flex flex-col overflow-hidden rounded-3xl border transition-all duration-300 hover:-translate-y-1"
-              >
-                <div className="relative flex aspect-video items-center justify-center overflow-hidden bg-neutral-900">
-                  <Image
-                    src={video.coverImage}
-                    alt={video.title}
-                    fill
-                    loading="lazy"
-                    className="object-cover opacity-70 transition-transform duration-500 group-hover:scale-105"
-                    sizes="(max-width: 640px) 100vw, 33vw"
-                  />
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                    <div className="bg-canvas/90 border-border text-text flex h-14 w-14 items-center justify-center rounded-full border shadow-md backdrop-blur-sm transition-transform duration-300 group-hover:scale-110">
-                      <svg className="ml-1 h-6 w-6 fill-current" viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
-                    </div>
-                  </div>
-                  <span className="absolute right-4 bottom-4 rounded bg-black/70 px-2 py-1 text-xs font-semibold text-white">
-                    {video.duration}
-                  </span>
-                </div>
-                <div className="p-6">
-                  <span className="text-brand text-xs font-semibold tracking-wider uppercase">
-                    {video.category}
-                  </span>
-                  <h4 className="text-text mt-1 line-clamp-2 text-lg font-bold">{video.title}</h4>
-                  <p className="text-text-muted mt-2 line-clamp-2 text-sm">{video.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      {/* 7. Upcoming Events Section */}
-      <section id="events" className="py-24 sm:py-32">
-        <Container>
-          <SectionHeader
-            title="กิจกรรมของรุ่น"
-            subtitle="พบปะพูดคุยและสร้างสรรค์กิจกรรมดีๆ ร่วมกันระหว่างเพื่อนร่วมชั้นเรียน"
-            ctaText="ดูกิจกรรมทั้งหมด"
-            ctaHref="/events"
-          />
-          <div className="grid gap-8 lg:grid-cols-2">
-            {upcomingEvents.map((event) => {
-              const [day, month] = event.date.split(" ");
-              return (
-                <div
-                  key={event.id}
-                  className="border-border bg-canvas group hover:border-text-muted relative flex flex-col gap-6 overflow-hidden rounded-3xl border p-8 transition-all duration-300 sm:flex-row"
-                >
-                  <div className="bg-brand/10 border-brand/20 text-brand flex h-20 w-20 flex-shrink-0 flex-col items-center justify-center rounded-2xl border">
-                    <span className="text-2xl font-black">{day}</span>
-                    <span className="text-xs font-bold tracking-widest uppercase">{month}</span>
-                  </div>
-                  <div className="flex flex-1 flex-col justify-between">
-                    <div>
-                      <span className="text-brand text-xs font-semibold tracking-wider uppercase">
-                        {event.phase}
-                      </span>
-                      <h3 className="text-text mt-1 text-2xl font-bold tracking-tight">
-                        {event.title}
-                      </h3>
-                      <p className="text-text-muted mt-2 text-sm leading-relaxed">
-                        {event.description}
-                      </p>
-                    </div>
-                    <div className="mt-6 flex items-center justify-between">
-                      <span className="text-text-muted text-xs font-medium">
-                        {event.time} &bull; {event.location}
-                      </span>
-                      <Link href="/events">
-                        <Button variant="outline" size="sm">
-                          ลงทะเบียนร่วมงาน
-                        </Button>
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </Container>
-      </section>
+      {/* Render Dynamic Sorted & Filtered Sections */}
+      {visibleSections.map((sec) => sec.component)}
 
       {/* 8. Apple-Style Footer */}
       <footer className="bg-canvas text-text border-border border-t py-16">

@@ -207,6 +207,25 @@ export default {
           menusRes = await env.DB.prepare("SELECT * FROM menus ORDER BY sortOrder ASC").all();
         }
 
+        // Check if homepage_sections exist, if not seed it
+        let sectionsRes = await env.DB.prepare("SELECT * FROM homepage_sections ORDER BY sortOrder ASC").all();
+        if (!sectionsRes.results || sectionsRes.results.length === 0) {
+          const defaultSections = [
+            { id: "portal", title: "ค้นหาความทรงจำตามหมวดหมู่", subtitle: "เข้าถึงภาพความทรงจำ ไดอารี่เรื่องเล่า และวิดีโอย้อนหลังได้อย่างสะดวกรวดเร็ว", hidden: 0, sortOrder: 1 },
+            { id: "spotlight", title: "นักเรียนเด่นประจำรุ่น", subtitle: "เรื่องราวประวัติและสัมภาษณ์เพื่อนร่วมชั้นเรียนคนสำคัญ", hidden: 0, sortOrder: 2 },
+            { id: "stories", title: "บันทึกความทรงจำ", subtitle: "เรื่องราว ภาพถ่าย และบันทึกเหตุการณ์ประทับใจในช่วงเรียนร่วมรุ่นกันของพวกเรา", hidden: 0, sortOrder: 3 },
+            { id: "gallery", title: "ภาพความทรงจำประทับใจ", subtitle: "รวบรวมภาพบันทึกจังหวะชีวิตกิจกรรม วัยเรียน และความร่วมมือในผลงานรุ่นต่างๆ", hidden: 0, sortOrder: 4 },
+            { id: "videos", title: "วิดีโอเด่นความทรงจำ", subtitle: "บันทึกเทปงานพิธีสำคัญ ไฮไลท์กิจกรรมโรงเรียน และสารคดีประมวลผลงานของรุ่น", hidden: 0, sortOrder: 5 },
+            { id: "events", title: "กิจกรรมของรุ่น", subtitle: "พบปะพูดคุยและสร้างสรรค์กิจกรรมดีๆ ร่วมกันระหว่างเพื่อนร่วมชั้นเรียน", hidden: 0, sortOrder: 6 },
+          ];
+          for (const s of defaultSections) {
+            await env.DB.prepare("INSERT INTO homepage_sections (id, title, subtitle, hidden, sortOrder) VALUES (?, ?, ?, ?, ?)")
+              .bind(s.id, s.title, s.subtitle, s.hidden, s.sortOrder)
+              .run();
+          }
+          sectionsRes = await env.DB.prepare("SELECT * FROM homepage_sections ORDER BY sortOrder ASC").all();
+        }
+
         // Fetch other tables
         const postsRes = await env.DB.prepare("SELECT * FROM posts").all();
         const eventsRes = await env.DB.prepare("SELECT * FROM events").all();
@@ -262,6 +281,7 @@ export default {
             timeline: mappedTimeline,
             gallery: galleryRes.results,
             menus: menusRes.results,
+            sections: sectionsRes.results,
           }),
           { headers: { ...headers, "Content-Type": "application/json" } },
         );
@@ -464,6 +484,18 @@ export default {
               data.id,
               data.label,
               data.href,
+              Number(data.sortOrder),
+            )
+            .run();
+        } else if (type === "homepage_sections") {
+          await env.DB.prepare(
+            "INSERT INTO homepage_sections (id, title, subtitle, hidden, sortOrder) VALUES (?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET title=excluded.title, subtitle=excluded.subtitle, hidden=excluded.hidden, sortOrder=excluded.sortOrder",
+          )
+            .bind(
+              data.id,
+              data.title,
+              data.subtitle,
+              Number(data.hidden),
               Number(data.sortOrder),
             )
             .run();

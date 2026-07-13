@@ -195,22 +195,15 @@ export default function Navbar() {
       <header className="border-border bg-canvas/80 sticky top-0 w-full border-b backdrop-blur-md">
         <Container clean className="flex items-center justify-between py-4">
           <div className="flex items-center gap-8">
-            <Link href="/" className="flex items-center gap-2.5 group">
-              <div className="relative h-8 w-8 overflow-hidden rounded-lg border border-border">
+            <Link href="/" className="flex items-center group">
+              <div className="relative h-12 w-12 overflow-hidden rounded-xl border border-border bg-white shadow-sm transition-shadow group-hover:shadow-md">
                 <Image
                   src="/assets/logo.jpg"
                   alt="SK150 Logo"
                   fill
-                  className="object-cover transition-transform group-hover:scale-110"
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                  priority
                 />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-brand text-sm font-black tracking-tight leading-none">
-                  SK150
-                </span>
-                <span className="text-text-muted text-[8px] font-bold tracking-widest uppercase leading-none mt-1 group-hover:text-brand transition-colors">
-                  Future Leaders
-                </span>
               </div>
             </Link>
 

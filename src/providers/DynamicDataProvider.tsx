@@ -24,6 +24,14 @@ export interface MenuItem {
   sortOrder: number;
 }
 
+export interface HomepageSection {
+  id: string;
+  title: string;
+  subtitle: string;
+  hidden: number; // 0 or 1
+  sortOrder: number;
+}
+
 const defaultMenus: MenuItem[] = [
   { id: "menu-1", label: "ความทรงจำ", href: "/stories", sortOrder: 1 },
   { id: "menu-2", label: "แกลเลอรี", href: "/gallery", sortOrder: 2 },
@@ -31,6 +39,15 @@ const defaultMenus: MenuItem[] = [
   { id: "menu-4", label: "ทำเนียบรุ่น", href: "/spotlight", sortOrder: 4 },
   { id: "menu-5", label: "ไทม์ไลน์", href: "/timeline", sortOrder: 5 },
   { id: "menu-6", label: "กิจกรรม", href: "/events", sortOrder: 6 },
+];
+
+const defaultSections: HomepageSection[] = [
+  { id: "portal", title: "ค้นหาความทรงจำตามหมวดหมู่", subtitle: "เข้าถึงภาพความทรงจำ ไดอารี่เรื่องเล่า และวิดีโอย้อนหลังได้อย่างสะดวกรวดเร็ว", hidden: 0, sortOrder: 1 },
+  { id: "spotlight", title: "นักเรียนเด่นประจำรุ่น", subtitle: "เรื่องราวประวัติและสัมภาษณ์เพื่อนร่วมชั้นเรียนคนสำคัญ", hidden: 0, sortOrder: 2 },
+  { id: "stories", title: "บันทึกความทรงจำ", subtitle: "เรื่องราว ภาพถ่าย และบันทึกเหตุการณ์ประทับใจในช่วงเรียนร่วมรุ่นกันของพวกเรา", hidden: 0, sortOrder: 3 },
+  { id: "gallery", title: "ภาพความทรงจำประทับใจ", subtitle: "รวบรวมภาพบันทึกจังหวะชีวิตกิจกรรม วัยเรียน และความร่วมมือในผลงานรุ่นต่างๆ", hidden: 0, sortOrder: 4 },
+  { id: "videos", title: "วิดีโอเด่นความทรงจำ", subtitle: "บันทึกเทปงานพิธีสำคัญ ไฮไลท์กิจกรรมโรงเรียน และสารคดีประมวลผลงานของรุ่น", hidden: 0, sortOrder: 5 },
+  { id: "events", title: "กิจกรรมของรุ่น", subtitle: "พบปะพูดคุยและสร้างสรรค์กิจกรรมดีๆ ร่วมกันระหว่างเพื่อนร่วมชั้นเรียน", hidden: 0, sortOrder: 6 },
 ];
 
 interface DynamicData {
@@ -42,6 +59,7 @@ interface DynamicData {
   timeline: TimelineEvent[];
   gallery: GalleryImage[];
   menus: MenuItem[];
+  sections: HomepageSection[];
   loading: boolean;
   refreshData: () => Promise<void>;
 }
@@ -58,6 +76,7 @@ export function DynamicDataProvider({ children }: { children: React.ReactNode })
     timeline: TimelineEvent[];
     gallery: GalleryImage[];
     menus: MenuItem[];
+    sections: HomepageSection[];
   }>({
     students: studentProfiles,
     posts: articles,
@@ -67,6 +86,7 @@ export function DynamicDataProvider({ children }: { children: React.ReactNode })
     timeline: timelineEvents,
     gallery: galleryImages,
     menus: defaultMenus,
+    sections: defaultSections,
   });
 
   const [loading, setLoading] = useState(true);
@@ -85,6 +105,7 @@ export function DynamicDataProvider({ children }: { children: React.ReactNode })
           timeline: json.timeline?.length ? json.timeline : timelineEvents,
           gallery: json.gallery?.length ? json.gallery : galleryImages,
           menus: json.menus?.length ? json.menus : defaultMenus,
+          sections: json.sections?.length ? json.sections : defaultSections,
         });
       }
     } catch (err) {

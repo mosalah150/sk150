@@ -87,3 +87,11 @@ CREATE TABLE IF NOT EXISTS menus (
   href TEXT NOT NULL,
   sortOrder INTEGER NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS homepage_sections (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  subtitle TEXT NOT NULL,
+  hidden INTEGER NOT NULL,
+  sortOrder INTEGER NOT NULL
+);
