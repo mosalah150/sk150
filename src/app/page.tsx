@@ -7,11 +7,9 @@ import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import SectionHeader from "@/components/ui/SectionHeader";
-import Breadcrumb from "@/components/ui/Breadcrumb";
 import { useDynamicData } from "@/providers/DynamicDataProvider";
 
 export default function Home() {
-  const breadcrumbItems = [{ label: "หน้าแรก", href: "/" }, { label: "ภาพรวมโครงการ" }];
   const { posts, events, media, students, gallery, sections } = useDynamicData();
   const [activeSlide, setActiveSlide] = React.useState(0);
 
@@ -353,10 +351,6 @@ export default function Home() {
       tabIndex={-1}
       className="bg-canvas text-text focus-visible:outline-brand focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
     >
-      {/* Breadcrumb Area */}
-      <Container className="pt-6 pb-2">
-        <Breadcrumb items={breadcrumbItems} />
-      </Container>
 
       {/* 1. Hero Section */}
       <section className="relative flex min-h-[85vh] items-center justify-center overflow-hidden py-24 sm:py-32">
