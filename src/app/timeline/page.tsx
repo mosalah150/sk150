@@ -59,20 +59,20 @@ export default function TimelinePage() {
         <Container>
           <div className="max-w-3xl">
             <span className="text-brand text-xs font-bold tracking-widest uppercase">
-              Chronology
+              ประวัติกิจกรรมรุ่น
             </span>
             <h1 className="text-text mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl">
-              Interactive Timeline
+              ไทม์ไลน์บันทึกความทรงจำ
             </h1>
             <p className="text-text-muted mt-4 text-lg leading-relaxed">
-              Slide through the core phases of the SK150 deployment system, from setup onboarding to
-              edge server launch handshakes.
+              สไลด์ดูเหตุการณ์ประวัติศาสตร์ที่พวกเรา รุ่น 150 ร่วมแรงทำร่วมกัน ตั้งแต่วันปฐมนิเทศ
+              ค่ายวิทย์ กีฬาสี คอนเสิร์ตดนตรี จนถึงวันสำเร็จการศึกษา
             </p>
           </div>
         </Container>
       </section>
 
-      {/* 2. Apple-Style Progress Navigation Track (Sticky-ready) */}
+      {/* 2. Apple-Style Progress Navigation Track */}
       <div className="bg-canvas/80 border-border sticky top-[73px] z-20 border-b py-6 backdrop-blur-md select-none">
         <Container>
           <div className="relative mx-auto flex max-w-4xl items-center justify-between px-4 sm:px-6">
@@ -155,7 +155,7 @@ export default function TimelinePage() {
                   }}
                   className="w-[88vw] shrink-0 snap-center px-2 select-none sm:w-[84vw] lg:w-[80vw]"
                 >
-                  {/* Slide Container (Rounded Widescreen Apple Card) */}
+                  {/* Slide Container */}
                   <div className="bg-canvas border-border hover:border-text-muted grid min-h-[500px] gap-8 rounded-[32px] border p-6 shadow-md transition-all duration-300 sm:p-10 lg:grid-cols-12 lg:gap-12">
                     {/* Visual Cover Panel */}
                     <div className="border-border bg-canvas-muted relative aspect-video min-h-[260px] w-full overflow-hidden rounded-[24px] border lg:col-span-6 lg:aspect-auto">
@@ -227,7 +227,7 @@ export default function TimelinePage() {
                       </div>
 
                       <div className="border-border text-text-muted mt-8 flex items-center justify-between border-t pt-4 text-xs font-semibold">
-                        <span>Project Milestone</span>
+                        <span>ลำดับประวัติศิษย์เก่า</span>
                         <span>{event.date}</span>
                       </div>
                     </div>

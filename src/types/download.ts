@@ -2,7 +2,7 @@ export interface DownloadFile {
   id: string;
   title: string;
   description: string;
-  category: "PDF" | "Wallpaper" | "Logo" | "Documents";
+  category: string;
   fileSize: string;
   fileExtension: string;
   href: string;

@@ -8,6 +8,14 @@ import { DownloadFile } from "@/types/download";
 
 type CategoryFilter = "All" | "PDF" | "Wallpaper" | "Logo" | "Documents";
 
+const filterLabels: Record<CategoryFilter, string> = {
+  All: "ทั้งหมด",
+  PDF: "เอกสาร PDF",
+  Wallpaper: "ภาพพื้นหลัง",
+  Logo: "ตราสัญลักษณ์",
+  Documents: "เอกสารรุ่น",
+};
+
 export default function DownloadsPage() {
   const [activeCategory, setActiveCategory] = useState<CategoryFilter>("All");
 
@@ -22,7 +30,7 @@ export default function DownloadsPage() {
     // Simulate edge fetch response lag (1000ms)
     setTimeout(() => {
       setDownloadingStates((prev) => ({ ...prev, [file.id]: false }));
-      alert(`Simulating browser download: ${file.title}.${file.fileExtension.toLowerCase()}`);
+      alert(`จำลองการดาวน์โหลดไฟล์: ${file.title}.${file.fileExtension.toLowerCase()}`);
     }, 1000);
   };
 
@@ -54,13 +62,15 @@ export default function DownloadsPage() {
       <section className="bg-canvas-muted border-border border-b py-16 sm:py-20">
         <Container>
           <div className="mb-12 max-w-3xl">
-            <span className="text-brand text-xs font-bold tracking-widest uppercase">Assets</span>
+            <span className="text-brand text-xs font-bold tracking-widest uppercase">
+              คลังไฟล์ดาวน์โหลด
+            </span>
             <h1 className="text-text mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl">
-              Downloads Center
+              ดาวน์โหลดเอกสาร & รูปภาพ
             </h1>
             <p className="text-text-muted mt-4 text-lg leading-relaxed">
-              Retrieve vector brand logos, high-resolution desktop wallpapers, design token schemas,
-              and platform architecture whitepapers.
+              ดาวน์โหลดหนังสือทำเนียบรุ่นฉบับ PDF โลโก้เวกเตอร์ประจำรุ่น 150
+              และภาพพื้นหลังตราสัญลักษณ์โรงเรียนสำหรับหน้าจอคอมพิวเตอร์และโทรศัพท์มือถือ
             </p>
           </div>
 
@@ -76,7 +86,7 @@ export default function DownloadsPage() {
                     : "bg-canvas text-text-muted border-border hover:bg-canvas-muted hover:text-text hover:border-text-muted border"
                 }`}
               >
-                {category}
+                {filterLabels[category]}
               </button>
             ))}
           </div>
@@ -87,8 +97,8 @@ export default function DownloadsPage() {
       <section className="py-16 sm:py-24">
         <Container>
           <SectionHeader
-            title={`${activeCategory} Resources`}
-            subtitle="Securely compiled assets verified against local platform testing environments."
+            title={`หมวดหมู่: ${filterLabels[activeCategory]}`}
+            subtitle="รายการไฟล์และสื่อจำลองทั้งหมดของรุ่น 150 สำหรับนำไปใช้งานประกอบผลงานรุ่น"
           />
 
           {filteredFiles.length > 0 ? (
@@ -144,7 +154,7 @@ export default function DownloadsPage() {
                         {isDownloading ? (
                           <>
                             <div className="border-text-muted h-3 w-3 animate-spin rounded-full border-2 border-t-transparent" />
-                            Fetching...
+                            กำลังดาวน์โหลด...
                           </>
                         ) : (
                           <>
@@ -161,7 +171,7 @@ export default function DownloadsPage() {
                                 d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
                               />
                             </svg>
-                            Download
+                            ดาวน์โหลด
                           </>
                         )}
                       </button>
@@ -172,7 +182,7 @@ export default function DownloadsPage() {
             </div>
           ) : (
             <div className="border-border bg-canvas-muted rounded-3xl border py-16 text-center">
-              <p className="text-text-muted text-lg">No files found in this category.</p>
+              <p className="text-text-muted text-lg">ไม่พบไฟล์ที่เกี่ยวข้องในหมวดหมู่นี้</p>
             </div>
           )}
         </Container>

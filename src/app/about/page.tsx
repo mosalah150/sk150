@@ -4,24 +4,25 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Container from "@/components/ui/Container";
 import SectionHeader from "@/components/ui/SectionHeader";
+
 // Mock Committee Members
 const committeeMembers = [
   {
-    name: "Alex Thorne",
-    role: "Core Infrastructure Lead",
-    bio: "Core platform architect specializing in Next.js Edge compile pipelines and Cloudflare V8 worker emulations.",
+    name: "เมษา ศิริวัฒนา (เมย์)",
+    role: "ประธานสภานักเรียน & ประธานรุ่น 150",
+    bio: "รับหน้าที่จัดตั้งคณะกรรมการสืบสานทำเนียบรุ่นดิจิทัล ประสานงานหนังสือรุ่น และกิจกรรมคืนสู่เหย้า",
     image: "/assets/spotlight.png",
   },
   {
-    name: "Maya Henderson",
-    role: "Lead Visual Architect",
-    bio: "Visual system designer responsible for standardizing oklch CSS color tokens and responsive glassmorphic cards.",
+    name: "อนันต์ เตชะวงศ์ (นนท์)",
+    role: "กัปตันทีมกีฬาและประธานสปิริตรุ่น",
+    bio: "ผู้จัดตั้งกิจกรรมกีฬาเชื่อมความสัมพันธ์ รณรงค์แนะแนวเรียนต่อน้อง ม.ปลาย และดูแลระบบสุขภาพศิษย์เก่า",
     image: "/assets/spotlight.png",
   },
   {
-    name: "Marcus Vance",
-    role: "Systems Operations Lead",
-    bio: "Infrastructure manager coordinating automated sandbox verification scripts and continuous Edge deployments.",
+    name: "ธีรภัทร เมธา (เจมส์)",
+    role: "คณะกรรมการฝ่ายมีเดียและเทคโนโลยี",
+    bio: "ผู้ประสานการออกแบบภาพหน้าเว็บ รวบรวมคลังวิดีโอยูทูบ และบันทึกประวัติเหตุการณ์ในทำเนียบรุ่น",
     image: "/assets/spotlight.png",
   },
 ];
@@ -29,24 +30,24 @@ const committeeMembers = [
 // Mock FAQs
 const faqs = [
   {
-    question: "What is the core design philosophy of SK150?",
+    question: "ทำเนียบรุ่นดิจิทัล SK150 นี้จัดทำขึ้นเพื่ออะไร?",
     answer:
-      "SK150 is modeled around Apple's clean layouts, Medium's readable editorial typography columns, and Nike's energetic, high-speed motion design. We prioritize whitespace, card layouts, translucent glassmorphism overlays, and outline styles.",
+      "จัดทำขึ้นเพื่อรวบรวมข้อมูลเพื่อนร่วมรุ่น 150 และบันทึกความทรงจำวันสำเร็จการศึกษา กิจกรรมกีฬาสี และค่ายอาสา เพื่อสืบสานสายสัมพันธ์และเป็นพื้นที่เชื่อมโยงช่วยเหลือกันในอนาคต",
   },
   {
-    question: "Why does the platform compile directly to Cloudflare Pages?",
+    question: "เพื่อนร่วมรุ่นคนอื่นสามารถเข้ามาอัปเดตประวัติหรือข้อมูลการติดต่อได้อย่างไร?",
     answer:
-      "Cloudflare Pages compiles routing paths directly as lightweight V8 isolates rather than heavy node containers. This reduces cold start delays and serves visual layouts from edge nodes closest to the client in under 10 milliseconds.",
+      "สามารถทำได้โดยติดต่อคณะทำงานผ่านกล่องข้อความหน้าติดต่อเรา หรือประสานงานโดยตรงกับประธานรุ่นเพื่ออัปเดตพอร์ตการติดต่อในหน้าทำเนียบศิษย์เก่า",
   },
   {
-    question: "How are design variables and color schemes managed?",
+    question: "กิจกรรมคืนสู่เหย้าศิษย์เก่ามีกำหนดจัดขึ้นเป็นประจำทุกปีหรือไม่?",
     answer:
-      "All colors are configured inside globals.css using oklch color scales. Dynamic dark themes are evaluated instantly client-side using light-dark() CSS rules, avoiding layout flashes (FOUC).",
+      "คณะทำงานรุ่นตั้งใจจัดกิจกรรมงานคืนสู่เหย้าอย่างน้อยปีละ 1 ครั้ง และมีการติววิชาแนะแนวเรียนต่อให้กับรุ่นน้องในช่วงวันสำคัญแบบไฮบริดทั้งในโรงเรียนและทางออนไลน์",
   },
   {
-    question: "How does the global spotlight search work?",
+    question: "ปุ่มค้นหาอัจฉริยะ (⌘K) บนแถบเมนูใช้ค้นหาอะไรได้บ้าง?",
     answer:
-      "Spotlight search runs entirely client-side, matching keywords across articles, galleries, events, and student profiles in less than 2 milliseconds. It can be triggered instantly using keyboard shortcuts like ⌘K or /.",
+      "ปุ่มค้นหาอัจฉริยะสามารถค้นหาได้แบบเรียลไทม์ทุกสิ่งบนแพลตฟอร์มนี้ เช่น ชื่อเล่นเพื่อนร่วมรุ่น หมวดหมู่กิจกรรม วันปัจฉิมนิเทศ หรือไฟล์ภาพพื้นหลังตราโรงเรียนสำหรับดาวน์โหลด",
   },
 ];
 
@@ -83,12 +84,12 @@ export default function AboutPage() {
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formInputs.name || !formInputs.email || !formInputs.message) {
-      alert("Please fill in all form fields.");
+      alert("กรุณากรอกข้อมูลให้ครบถ้วนทุกช่องครับ");
       return;
     }
 
     if (!isTurnstileVerified) {
-      alert("Please complete the security Turnstile verification.");
+      alert("กรุณากดปุ่มเพื่อยืนยันความปลอดภัย (Turnstile) ก่อนส่งข้อความ");
       return;
     }
 
@@ -97,7 +98,7 @@ export default function AboutPage() {
     // Simulate database write lag (1000ms)
     setTimeout(() => {
       setIsSubmitting(false);
-      alert(`Message successfully submitted! Thank you, ${formInputs.name}.`);
+      alert(`ส่งข้อความของคุณเรียบร้อยแล้ว! ขอบคุณครับ คุณ ${formInputs.name}.`);
       setFormInputs({ name: "", email: "", message: "" });
       setIsTurnstileVerified(false);
     }, 1000);
@@ -110,14 +111,14 @@ export default function AboutPage() {
         <Container>
           <div className="max-w-3xl">
             <span className="text-brand text-xs font-bold tracking-widest uppercase">
-              Organization
+              คณะผู้จัดทำ
             </span>
             <h1 className="text-text mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl">
-              About SK150
+              เกี่ยวกับ SK150
             </h1>
             <p className="text-text-muted mt-4 text-lg leading-relaxed">
-              Discover our visual principles, historical developments, active committee board, and
-              developer resources.
+              สืบสานความทรงจำ และแบ่งปันข้อมูลข่าวสารศิษย์เก่ารุ่น 150
+              ในสไตล์เว็บทำเนียบรุ่นพรีเมียม
             </p>
           </div>
         </Container>
@@ -130,28 +131,28 @@ export default function AboutPage() {
             {/* Vision Panel */}
             <div className="border-border bg-canvas hover:border-text-muted rounded-3xl border p-8 transition-all duration-300 sm:p-10">
               <span className="text-brand text-xs font-bold tracking-widest uppercase">
-                The Dream
+                ความมุ่งหวัง
               </span>
-              <h2 className="text-text mt-3 text-3xl font-black tracking-tight">Our Vision</h2>
+              <h2 className="text-text mt-3 text-3xl font-black tracking-tight">
+                วิสัยทัศน์ของเรา
+              </h2>
               <p className="text-text-muted mt-5 text-sm leading-relaxed sm:text-base">
-                We believe that modern web applications should paint instantly, look premium, and be
-                accessible to all users. Our visual goal is to bridge high-end Apple-style design
-                aesthetics with Nike-style high-speed motion, proving that performance and beauty
-                can coexist in edge runtimes.
+                พวกเราเชื่อว่ามิตรภาพและความคุ้นเคยในห้องเรียนไม่ได้สิ้นสุดลงในวันรับประกาศนียบัตร
+                เป้าหมายของเราคือการสร้างพื้นที่ดิจิทัลที่รวมเรื่องราวกิจกรรมกีฬาสี
+                และรูปถ่ายแสนประทับใจของทุกคนไว้ในที่เดียว เพื่อการเชื่อมโยงอย่างยั่งยืน
               </p>
             </div>
 
             {/* Mission Panel */}
             <div className="border-border bg-canvas hover:border-text-muted rounded-3xl border p-8 transition-all duration-300 sm:p-10">
               <span className="text-brand text-xs font-bold tracking-widest uppercase">
-                The Action
+                การลงมือทำ
               </span>
-              <h2 className="text-text mt-3 text-3xl font-black tracking-tight">Our Mission</h2>
+              <h2 className="text-text mt-3 text-3xl font-black tracking-tight">พันธกิจของเรา</h2>
               <p className="text-text-muted mt-5 text-sm leading-relaxed sm:text-base">
-                Our mission is to standardize visual layouts inside lightweight Cloudflare workers.
-                By minimizing input latency, enforcing strict local sandbox audits, and building
-                accessible component pipelines, we empower student teams to ship production-ready
-                edge pages in under 4 seconds.
+                พวกเรามุ่งมั่นจัดเก็บประวัติข้อมูลศิษย์เก่าในลักษณะที่ปลอดภัย
+                จัดทำกิจกรรมช่วยเหลือสังคม แนะแนวน้องๆ รุ่นหลังที่ต้องการสอบเข้ามหาวิทยาลัย
+                และเป็นศูนย์กลางข่าวสารของรุ่น 150
               </p>
             </div>
           </div>
@@ -162,8 +163,8 @@ export default function AboutPage() {
       <section className="bg-canvas-muted border-border border-y py-20">
         <Container>
           <SectionHeader
-            title="Our History & Progress"
-            subtitle="Explore our key developmental milestones over the last decade."
+            title="ไทม์ไลน์พัฒนาการของรุ่น"
+            subtitle="เส้นทางการเรียนรู้และจุดเปลี่ยนสำคัญของพวกเราตลอดหลายปีที่ผ่านมา"
           />
 
           <div className="border-border relative mx-auto ml-4 max-w-4xl space-y-12 border-l pl-10 sm:ml-8 sm:pl-12 md:ml-12">
@@ -174,14 +175,15 @@ export default function AboutPage() {
               </div>
               <div>
                 <span className="text-brand text-xs font-bold tracking-wider uppercase">
-                  2026 &bull; Platform Migration
+                  2026 &bull; ปีสำเร็จการศึกษา
                 </span>
                 <h3 className="mt-1 text-xl font-bold tracking-tight">
-                  Next.js 15 App Router & Tailwind v4
+                  ปัจฉิมนิเทศและเปิดตัวทำเนียบรุ่น
                 </h3>
                 <p className="text-text-muted mt-2 text-xs leading-relaxed sm:text-sm">
-                  Migrated all components to Next.js 15 Server layouts, caching static assets
-                  directly on Cloudflare worker nodes worldwide for sub-10ms TTFB.
+                  สำเร็จการศึกษาระดับมัธยมศึกษาอย่างเป็นทางการ พร้อมจัดทำหนังสือรุ่น
+                  และพัฒนาทำเนียบรุ่นดิจิทัลขึ้นสู่เซิร์ฟเวอร์เพื่อให้เพื่อนๆ
+                  ทุกคนล็อกอินเข้ามาหาเบอร์โทรติดต่อ
                 </p>
               </div>
             </div>
@@ -193,12 +195,14 @@ export default function AboutPage() {
               </div>
               <div>
                 <span className="text-text-muted text-xs font-bold tracking-wider uppercase">
-                  2023 &bull; Design Overhaul
+                  2024 &bull; กิจกรรมสร้างชื่อเสียง
                 </span>
-                <h3 className="mt-1 text-xl font-bold tracking-tight">Unified Token Integration</h3>
+                <h3 className="mt-1 text-xl font-bold tracking-tight">
+                  ชนะเลิศฟุตบอลกีฬาสีประเพณี
+                </h3>
                 <p className="text-text-muted mt-2 text-xs leading-relaxed sm:text-sm">
-                  Standardized on oklch variables and backdrop-filters to build high-end dark modes
-                  and glassmorphic card primitives.
+                  กวาดรางวัลแข่งกีฬาวิ่งกรีฑาและคว้าถ้วยแชมป์ฟุตบอลโรงเรียนประจำปี
+                  สร้างความสนิทสนมกลมเกลียวและการเชียร์แบบสร้างสรรค์
                 </p>
               </div>
             </div>
@@ -210,12 +214,12 @@ export default function AboutPage() {
               </div>
               <div>
                 <span className="text-text-muted text-xs font-bold tracking-wider uppercase">
-                  2016 &bull; Foundation Kickoff
+                  2023 &bull; ก้าวแรกแห่งการรวมตัว
                 </span>
-                <h3 className="mt-1 text-xl font-bold tracking-tight">Base Platform Release</h3>
+                <h3 className="mt-1 text-xl font-bold tracking-tight">วันปฐมนิเทศและค่ายปฐมวัย</h3>
                 <p className="text-text-muted mt-2 text-xs leading-relaxed sm:text-sm">
-                  Initialized the first student dashboard to test web compilation targets and share
-                  resources locally.
+                  เข้าสู่โรงเรียน ค้นพบเพื่อนห้องเรียนใหม่ ค่ายละลายพฤติกรรมดนตรีและศิลปะ
+                  ที่เป็นจุดเริ่มต้นมิตรภาพอันยาวนาน
                 </p>
               </div>
             </div>
@@ -227,8 +231,8 @@ export default function AboutPage() {
       <section className="py-20 sm:py-28">
         <Container>
           <SectionHeader
-            title="The Committee Board"
-            subtitle="Meet the core student leaders behind the design and infrastructure."
+            title="คณะกรรมการตัวแทนรุ่น"
+            subtitle="ทำความรู้จักผู้มีบทบาทประสานงานและขับเคลื่อนกิจกรรมศิษย์เก่าในปัจจุบัน"
           />
 
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -264,8 +268,8 @@ export default function AboutPage() {
       <section className="bg-canvas-muted border-border border-y py-20">
         <Container>
           <SectionHeader
-            title="Frequently Asked Questions"
-            subtitle="Answers to common technical and design queries regarding SK150."
+            title="คำถามที่พบบ่อย"
+            subtitle="คำถามและความรู้ทางเทคนิคทั่วไปสำหรับการใช้งานและวัตถุประสงค์ของเว็บ SK150"
           />
 
           <div className="mx-auto max-w-3xl space-y-4 text-left">
@@ -316,12 +320,14 @@ export default function AboutPage() {
             {/* Left Column: Office Contacts */}
             <div className="text-left lg:col-span-5">
               <span className="text-brand text-xs font-bold tracking-widest uppercase">
-                Handshake
+                การติดต่อเรา
               </span>
-              <h2 className="text-text mt-3 text-3xl font-black tracking-tight">Get in Touch</h2>
+              <h2 className="text-text mt-3 text-3xl font-black tracking-tight">
+                ติดต่อสภานักเรียน
+              </h2>
               <p className="text-text-muted mt-4 text-sm leading-relaxed sm:text-base">
-                Have questions about design systems variables or serverless Pages integrations? Send
-                us a direct message.
+                หากคุณมีข้อเสนอแนะในการจัดกิจกรรมรุ่น หรือต้องการขอเพิ่มประวัติข้อมูลศิษย์เก่าในระบบ
+                กรุณาส่งข้อความติดต่อฝ่ายประชาสัมพันธ์
               </p>
 
               <div className="text-text-muted mt-8 space-y-6 text-sm font-semibold">
@@ -354,7 +360,7 @@ export default function AboutPage() {
                       d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
                     />
                   </svg>
-                  <span>Systems Laboratory, Block B</span>
+                  <span>ห้องสภานักเรียนชั้น 2 อาคารอำนวยการ</span>
                 </div>
               </div>
             </div>
@@ -367,7 +373,7 @@ export default function AboutPage() {
                     htmlFor="name"
                     className="text-text-muted mb-2 block text-xs font-bold tracking-wider uppercase"
                   >
-                    Name
+                    ชื่อของคุณ
                   </label>
                   <input
                     type="text"
@@ -375,7 +381,7 @@ export default function AboutPage() {
                     name="name"
                     value={formInputs.name}
                     onChange={handleInputChange}
-                    placeholder="Enter your name"
+                    placeholder="กรุณากรอกชื่อ-นามสกุลของคุณ"
                     className="bg-canvas border-border text-text placeholder-text-muted focus:border-brand w-full rounded-xl border px-4 py-3 text-sm focus:outline-none"
                     required
                   />
@@ -386,7 +392,7 @@ export default function AboutPage() {
                     htmlFor="email"
                     className="text-text-muted mb-2 block text-xs font-bold tracking-wider uppercase"
                   >
-                    Email Address
+                    อีเมลติดต่อ
                   </label>
                   <input
                     type="email"
@@ -405,7 +411,7 @@ export default function AboutPage() {
                     htmlFor="message"
                     className="text-text-muted mb-2 block text-xs font-bold tracking-wider uppercase"
                   >
-                    Message
+                    ข้อความ / คำถามของคุณ
                   </label>
                   <textarea
                     id="message"
@@ -413,13 +419,13 @@ export default function AboutPage() {
                     rows={4}
                     value={formInputs.message}
                     onChange={handleInputChange}
-                    placeholder="Describe your design or performance query"
+                    placeholder="ระบุข้อความที่คุณต้องการส่งให้เรา"
                     className="bg-canvas border-border text-text placeholder-text-muted focus:border-brand w-full resize-none rounded-xl border px-4 py-3 text-sm focus:outline-none"
                     required
                   />
                 </div>
 
-                {/* Cloudflare Turnstile Mock Widget (Sprint 13 Protection) */}
+                {/* Cloudflare Turnstile Mock Widget */}
                 <div className="border-border bg-canvas flex max-w-sm items-center justify-between rounded-2xl border p-4">
                   <div className="flex items-center gap-3">
                     <button
@@ -449,10 +455,10 @@ export default function AboutPage() {
                     </button>
                     <span className="text-text-muted text-xs font-semibold select-none">
                       {isTurnstileVerified
-                        ? "Verification Successful"
+                        ? "ยืนยันความปลอดภัยสำเร็จ"
                         : isVerifyingTurnstile
-                          ? "Verifying..."
-                          : "Verify that you are human"}
+                          ? "กำลังตรวจสอบ..."
+                          : "โปรดยืนยันว่าคุณเป็นมนุษย์"}
                     </span>
                   </div>
                   <div className="pointer-events-none flex flex-col items-end opacity-80 select-none">
@@ -493,10 +499,10 @@ export default function AboutPage() {
                     {isSubmitting ? (
                       <span className="flex items-center gap-2">
                         <div className="border-text-muted h-3.5 w-3.5 animate-spin rounded-full border-2 border-t-transparent" />
-                        Sending...
+                        กำลังส่งข้อความ...
                       </span>
                     ) : (
-                      "Send Message"
+                      "ส่งข้อความ"
                     )}
                   </button>
                 </div>

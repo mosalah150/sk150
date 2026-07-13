@@ -8,13 +8,13 @@ import SectionHeader from "@/components/ui/SectionHeader";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 
 export default function Home() {
-  const breadcrumbItems = [{ label: "Home", href: "/" }, { label: "Platform Overview" }];
+  const breadcrumbItems = [{ label: "หน้าแรก", href: "/" }, { label: "ภาพรวมโครงการ" }];
 
   return (
     <main
       id="content"
       tabIndex={-1}
-      className="bg-canvas text-text flex min-h-screen flex-col transition-colors duration-200 outline-none"
+      className="bg-canvas text-text focus-visible:outline-brand focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
     >
       {/* Breadcrumb Area */}
       <Container className="pt-6 pb-2">
@@ -34,33 +34,32 @@ export default function Home() {
             className="object-cover opacity-80 dark:opacity-60"
             sizes="100vw"
           />
-          {/* Subtle Dark/Light Masks to guarantee contrast */}
-          <div className="from-canvas via-canvas/50 absolute inset-0 bg-gradient-to-t to-transparent" />
+          {/* Subtle dark overlays for premium readability */}
           <div className="from-canvas/90 via-canvas/30 absolute inset-0 bg-gradient-to-r to-transparent" />
         </div>
 
         <Container className="relative z-10 w-full">
           <div className="max-w-3xl">
             <div className="border-brand/30 bg-brand/10 text-brand mb-8 inline-flex items-center rounded-full border px-4 py-1.5 text-xs font-semibold tracking-wide uppercase backdrop-blur-sm">
-              STUDENT DIRECTORY &bull; CLASS OF 150
+              ทำเนียบรุ่นศิษย์เก่า &bull; รุ่น 150
             </div>
             <h1 className="text-text text-5xl leading-[1.05] font-black tracking-tighter uppercase sm:text-6xl md:text-7xl lg:text-8xl">
-              Class of <span className="text-brand">150</span>.<br />
-              Our Story.
+              รุ่น <span className="text-brand">150</span>.<br />
+              เรื่องราวของเรา.
             </h1>
             <p className="text-text-muted mt-8 max-w-xl text-lg leading-relaxed font-normal sm:text-xl">
-              Celebrating our journey, classmates, and school memories. The official digital
-              yearbook and alumni network directory for the graduating students of SK150.
+              ร่วมระลึกถึงการเดินทาง มิตรภาพเพื่อนร่วมชั้นเรียน และความทรงจำอันล้ำค่าในรั้วโรงเรียน
+              ทำเนียบรุ่นดิจิทัลสำหรับนักเรียนรุ่น 150
             </p>
             <div className="mt-10 flex flex-wrap gap-4">
               <Link href="/spotlight">
                 <Button variant="primary" size="lg">
-                  Browse Classmates
+                  ค้นหาเพื่อนร่วมรุ่น
                 </Button>
               </Link>
               <Link href="/timeline">
                 <Button variant="glass" size="lg">
-                  View School Timeline
+                  ประวัติกิจกรรมรุ่น
                 </Button>
               </Link>
             </div>
@@ -72,8 +71,8 @@ export default function Home() {
       <section id="spotlight" className="py-24 sm:py-32">
         <Container>
           <SectionHeader
-            title="Student Spotlight"
-            subtitle="Highlighting class leaders, student-athletes, and active contributors of Class 150."
+            title="นักเรียนเด่นประจำรุ่น"
+            subtitle="ทำความรู้จักผู้นำรุ่น กัปตันทีมกีฬา และผู้สร้างผลงานขับเคลื่อนกิจกรรมรุ่น 150"
           />
           <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
             {/* Left Col - Portrait */}
@@ -91,31 +90,31 @@ export default function Home() {
             {/* Right Col - Story */}
             <div className="flex flex-col justify-center lg:col-span-7">
               <span className="text-brand text-xs font-bold tracking-widest uppercase">
-                Spotlight Profile
+                แนะนำศิษย์เก่าเด่น
               </span>
               <h3 className="text-text mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
-                Maya Henderson
+                เมษา ศิริวัฒนา (เมย์)
               </h3>
               <p className="text-text-muted mt-1 text-sm font-semibold">
-                Class President & Student Council Leader
+                ประธานรุ่น & ประธานสภานักเรียน รุ่น 150
               </p>
 
               <blockquote className="border-brand text-text mt-8 border-l-4 pl-6 font-serif text-xl leading-relaxed italic">
-                &ldquo;Preserving our class memories was a collective effort. Creating this digital
-                yearbook and directory allows us to stay connected as classmates, sharing our
-                journeys and supporting each other long after graduation.&rdquo;
+                &ldquo;การทำทำเนียบรุ่นและหนังสือรุ่นครั้งนี้เป็นความร่วมมือร่วมใจของพวกเราทุกคน
+                การพัฒนาหน้าเว็บนี้ทำให้เพื่อนๆ สามารถกลับมาเชื่อมต่อ ค้นหา และช่วยเหลือกันได้เสมอ
+                ไม่ว่าหลังจากนี้พวกเราจะแยกย้ายไปทำอะไรที่ไหนในโลกก็ตาม&rdquo;
               </blockquote>
 
               <p className="text-text-muted mt-6 text-base leading-relaxed">
-                Maya organized over a dozen student activities, leading the yearbook project to
-                capture the milestones of our school days, from Sports Day triumphs to final
-                graduation moments.
+                เมย์ทำหน้าที่คอยประสานงานกิจกรรมรุ่นตลอดมัธยมศึกษาตอนปลาย
+                และเป็นหัวเรือใหญ่รวบรวมรูปภาพบันทึกความทรงจำ ตั้งแต่งานกีฬาสี ค่ายทัศนศึกษา
+                จนถึงนาทีจบการศึกษาปัจฉิมนิเทศ
               </p>
 
               <div className="mt-8">
                 <Link href="/spotlight">
                   <Button variant="outline" size="md">
-                    Read Full Spotlight Story
+                    อ่านประวัติฉบับเต็ม
                   </Button>
                 </Link>
               </div>
@@ -128,36 +127,36 @@ export default function Home() {
       <section id="stories" className="border-border border-t py-24 sm:py-32">
         <Container>
           <SectionHeader
-            title="Class Memories"
-            subtitle="Stories, memories, and reflections from our school days together."
-            ctaText="Read all stories"
+            title="บันทึกความทรงจำ"
+            subtitle="เรื่องราว ภาพถ่าย และบันทึกเหตุการณ์ประทับใจในช่วงเรียนร่วมรุ่นกันของพวกเรา"
+            ctaText="อ่านเรื่องราวทั้งหมด"
             ctaHref="/stories"
           />
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             <Card
-              title="Class of 150 Graduation Day Recap: Looking Back at Our Journey"
-              description="A summary of our graduation ceremony, the valedictorian speech, and the final walk we took together as classmates."
-              date="July 10, 2026"
-              readTime="5 min read"
-              badge="Graduation"
+              title="บันทึกวันปัจฉิมนิเทศ รุ่น 150: เส้นทางและความทรงจำที่ไม่มีวันเลือนหาย"
+              description="สรุปภาพบรรยากาศพิธีมอบประกาศนียบัตร คำกล่าวตัวแทนรุ่น และก้าวเดินสุดท้ายในรั้วโรงเรียนร่วมกันของพวกเรา"
+              date="10 กรกฎาคม 2026"
+              readTime="อ่าน 5 นาที"
+              badge="วันสำเร็จการศึกษา"
               href="/stories/class-of-150-graduation-day-recap"
               aspectRatio="video"
             />
             <Card
-              title="SK150 Annual Sports Day: Reliving the Red Team Championship"
-              description="Revisiting the intense track matches, cheerleading routines, and how the Red Team snatched the overall championship trophy."
-              date="July 08, 2026"
-              readTime="8 min read"
-              badge="Sports Day"
+              title="ควันหลงงานกีฬาสีประจำปี: เมื่อสีแดงคว้าถ้วยรางวัลชนะเลิศ"
+              description="ย้อนชมภาพการแข่งขันวิ่งผลัดสุดดุเดือด ขบวนพาเหรดอันตระการตา และนาทีคว้าถ้วยรางวัลแชมป์ของกองเชียร์สีแดง"
+              date="08 กรกฎาคม 2026"
+              readTime="อ่าน 8 นาที"
+              badge="งานกีฬาสี"
               href="/stories/sk150-annual-sports-day-highlights"
               aspectRatio="video"
             />
             <Card
-              title="Revisiting Our Summer Music Camp: Behind the Melodies"
-              description="A look back at our three-day musical retreat in the mountains, late-night campfires, and the final summer performance."
-              date="July 05, 2026"
-              readTime="4 min read"
-              badge="Music Camp"
+              title="ย้อนรอยค่ายดนตรีฤดูร้อน: เบื้องหลังท่วงทำนองในหุบเขา"
+              description="บันทึกความทรงจำค่ายดนตรีและศิลปะ 3 วัน 2 คืนในหุบเขาอันเงียบสงบ กิจกรรมรอบกองไฟ และการแสดงดนตรีส่งท้ายฤดูร้อน"
+              date="05 กรกฎาคม 2026"
+              readTime="อ่าน 4 นาที"
+              badge="ค่ายดนตรี"
               href="/stories/revisiting-our-summer-music-camp"
               aspectRatio="video"
             />
@@ -165,45 +164,47 @@ export default function Home() {
         </Container>
       </section>
 
-      {/* 3. Upcoming Events Section */}
+      {/* 4. Upcoming Events Section */}
       <section
         id="events"
         className="bg-canvas-muted border-border border-t border-b py-24 sm:py-32"
       >
         <Container>
           <SectionHeader
-            title="Upcoming Events"
-            subtitle="Join our active community in live sessions, workshops, and build hacks."
-            ctaText="View full schedule"
-            ctaHref="#events"
+            title="กิจกรรมของรุ่น"
+            subtitle="พบปะพูดคุยและสร้างสรรค์กิจกรรมดีๆ ร่วมกันระหว่างเพื่อนและน้องๆ รุ่นปัจจุบัน"
+            ctaText="ดูกิจกรรมทั้งหมด"
+            ctaHref="/events"
           />
           <div className="grid gap-8 lg:grid-cols-2">
             {/* Event Card 1 */}
             <div className="border-border bg-canvas group hover:border-text-muted relative flex flex-col gap-6 overflow-hidden rounded-3xl border p-8 transition-all duration-300 sm:flex-row">
               <div className="bg-brand/10 border-brand/20 text-brand flex h-20 w-20 flex-shrink-0 flex-col items-center justify-center rounded-2xl border">
                 <span className="text-2xl font-black">24</span>
-                <span className="text-xs font-bold tracking-widest uppercase">Jul</span>
+                <span className="text-xs font-bold tracking-widest uppercase">ก.ค.</span>
               </div>
               <div className="flex flex-1 flex-col justify-between">
                 <div>
                   <span className="text-brand text-xs font-semibold tracking-wider uppercase">
-                    Hackathon
+                    พบปะสังสรรค์
                   </span>
                   <h3 className="text-text mt-1 text-2xl font-bold tracking-tight">
-                    SK150 App Router Hack
+                    งานคืนสู่เหย้าศิษย์เก่า รุ่น 150
                   </h3>
                   <p className="text-text-muted mt-2 text-sm leading-relaxed">
-                    Build dynamic visual components using Next.js 15 and Tailwind CSS v4 in a
-                    48-hour sprint. Collaborations welcome.
+                    งานเลี้ยงสังสรรค์รวมรุ่นหลังจบการศึกษา ร่วมอัปเดตชีวิตการทำงานและมหาวิทยาลัย
+                    พร้อมรับประทานอาหารเย็นร่วมกันที่หอประชุมโรงเรียน
                   </p>
                 </div>
                 <div className="mt-6 flex items-center justify-between">
                   <span className="text-text-muted text-xs font-medium">
-                    10:00 AM &bull; Discord Live
+                    18:00 น. &bull; หอประชุมใหญ่โรงเรียน
                   </span>
-                  <Button variant="outline" size="sm">
-                    Register
-                  </Button>
+                  <Link href="/events">
+                    <Button variant="outline" size="sm">
+                      ลงทะเบียนร่วมงาน
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -212,28 +213,30 @@ export default function Home() {
             <div className="border-border bg-canvas group hover:border-text-muted relative flex flex-col gap-6 overflow-hidden rounded-3xl border p-8 transition-all duration-300 sm:flex-row">
               <div className="bg-brand/10 border-brand/20 text-brand flex h-20 w-20 flex-shrink-0 flex-col items-center justify-center rounded-2xl border">
                 <span className="text-2xl font-black">12</span>
-                <span className="text-xs font-bold tracking-widest uppercase">Aug</span>
+                <span className="text-xs font-bold tracking-widest uppercase">ส.ค.</span>
               </div>
               <div className="flex flex-1 flex-col justify-between">
                 <div>
                   <span className="text-brand text-xs font-semibold tracking-wider uppercase">
-                    Workshop
+                    เพื่อสังคม
                   </span>
                   <h3 className="text-text mt-1 text-2xl font-bold tracking-tight">
-                    Tailwind CSS v4 Deep Dive
+                    กิจกรรมแนะแนวน้อง ม.ปลาย
                   </h3>
                   <p className="text-text-muted mt-2 text-sm leading-relaxed">
-                    Explore dynamic variable mapping, custom `@theme` configuration, and
-                    light-dark() CSS engine integrations.
+                    พี่แบ่งปันเทคนิคการทำพอร์ตโฟลิโอ รีวิวคณะวิชาต่างๆ มหาวิทยาลัยยอดนิยม
+                    และการเตรียมตัวสอบเข้าให้แก่น้องๆ ในโรงเรียนปัจจุบัน
                   </p>
                 </div>
                 <div className="mt-6 flex items-center justify-between">
                   <span className="text-text-muted text-xs font-medium">
-                    2:00 PM &bull; Zoom Virtual
+                    13:00 - 16:30 น. &bull; หอประชุม อาคาร 3
                   </span>
-                  <Button variant="outline" size="sm">
-                    Register
-                  </Button>
+                  <Link href="/events">
+                    <Button variant="outline" size="sm">
+                      ลงชื่อวิทยากร
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -241,43 +244,43 @@ export default function Home() {
         </Container>
       </section>
 
-      {/* 4. Featured Gallery (Bento Style) */}
+      {/* 5. Featured Gallery (Bento Style) */}
       <section id="gallery" className="py-24 sm:py-32">
         <Container>
           <SectionHeader
-            title="Featured Gallery"
-            subtitle="Curated showcases of architectural digital prototypes, aesthetic designs, and sport layouts."
+            title="ภาพความทรงจำประทับใจ"
+            subtitle="รวบรวมภาพบันทึกจังหวะชีวิตกิจกรรม วัยเรียน และความร่วมมือในผลงานรุ่นต่างๆ"
           />
           <div className="grid gap-8 md:grid-cols-3">
             {/* Bento Card 1 - 2 cols */}
             <Card
-              title="System Analytics & Digital Mockups"
-              description="Dynamic hardware-accelerated layouts utilizing 3D data mapping and glass interfaces."
+              title="การเรียนการสอนและปฏิบัติการแล็บวิทย์"
+              description="ภาพจำลองบันทึกจังหวะการทดลองทางเคมีและปฏิบัติการวิชาการวิทยาร่วมห้องเรียน"
               imageSrc="/assets/gallery_2.png"
-              imageAlt="Holographic data workspace"
-              badge="Prototyping"
+              imageAlt="Chemistry class lab workspace"
+              badge="วิชาการและวิจัย"
               aspectRatio="wide"
               className="md:col-span-2"
             />
 
             {/* Bento Card 2 - 1 col */}
             <Card
-              title="Digital Aesthetics"
-              description="Abstract geometrical systems constructed using custom layers and light accents."
+              title="นิทรรศการผลงานศิลปะทำมือ"
+              description="ภาพระบายสีน้ำและศิลปะออกแบบจากวิชาสุนทรียศาสตร์ประจำรุ่น 150"
               imageSrc="/assets/gallery_1.png"
               imageAlt="Abstract geometric art"
-              badge="Artwork"
+              badge="นิทรรศการศิลปะ"
               aspectRatio="portrait"
               className="md:col-span-1"
             />
 
             {/* Bento Card 3 - 3 cols */}
             <Card
-              title="High-Performance Motion Designs"
-              description="Aesthetic athlete motion studies focusing on high-speed blur, layout lines, and premium sport visuals."
+              title="การแข่งขันกรีฑาและกีฬาสีประจำปี"
+              description="บันทึกภาพแอคชั่นความเร็ว สปิริตเชียร์ และชัยชนะร่วมประวัติศาสตร์ของงานกีฬาสี"
               imageSrc="/assets/gallery_3.png"
-              imageAlt="Athlete sprinting on track at night"
-              badge="Creative Direction"
+              imageAlt="Athletes running on track field"
+              badge="การแข่งขันกีฬา"
               aspectRatio="wide"
               className="md:col-span-3"
             />
@@ -285,17 +288,17 @@ export default function Home() {
         </Container>
       </section>
 
-      {/* 5. Latest Videos Section */}
+      {/* 6. Latest Videos Section */}
       <section
         id="videos"
         className="bg-canvas-muted border-border border-t border-b py-24 sm:py-32"
       >
         <Container>
           <SectionHeader
-            title="Latest Videos"
-            subtitle="Visual walk-throughs, designer panel discussions, and platform breakdowns."
-            ctaText="Browse all videos"
-            ctaHref="#videos"
+            title="วิดีโอเด่นความทรงจำ"
+            subtitle="บันทึกเทปงานพิธีสำคัญ ไฮไลท์กิจกรรมโรงเรียน และสารคดีประมวลผลงานของรุ่น"
+            ctaText="ดูวิดีโอทั้งหมด"
+            ctaHref="/media"
           />
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {/* Video Card 1 */}
@@ -321,14 +324,13 @@ export default function Home() {
               </div>
               <div className="p-6">
                 <span className="text-brand text-xs font-semibold tracking-wider uppercase">
-                  Guide
+                  ปัจฉิมนิเทศ
                 </span>
                 <h4 className="text-text mt-1 line-clamp-2 text-lg font-bold">
-                  SK150 Platform Walkthrough
+                  บันทึกเทปพิธีปัจฉิมนิเทศสำเร็จการศึกษา
                 </h4>
                 <p className="text-text-muted mt-2 line-clamp-2 text-sm">
-                  Take a complete visual tour of our file structures, design styles, and Edge
-                  setups.
+                  ชมความประทับใจ การรับประกาศนียบัตรอย่างเป็นทางการ และบูมอำลาเพื่อนของรุ่น 150
                 </p>
               </div>
             </div>
@@ -356,14 +358,13 @@ export default function Home() {
               </div>
               <div className="p-6">
                 <span className="text-brand text-xs font-semibold tracking-wider uppercase">
-                  Panel
+                  กีฬาสี
                 </span>
                 <h4 className="text-text mt-1 line-clamp-2 text-lg font-bold">
-                  Designing for Apple & Nike Aesthetics
+                  คลิปไฮไลท์งานกีฬาสี: ชัยชนะสีแดง
                 </h4>
                 <p className="text-text-muted mt-2 line-clamp-2 text-sm">
-                  Our design leads outline the principles of breathing whitespace, bold text, and
-                  visual flow.
+                  รวมช็อตเด็ดการแข่งวิ่งผลัด ขบวนพาเหรดตระการตา และเสียงกองเชียร์สปิริตดังกระหึ่ม
                 </p>
               </div>
             </div>
@@ -391,14 +392,13 @@ export default function Home() {
               </div>
               <div className="p-6">
                 <span className="text-brand text-xs font-semibold tracking-wider uppercase">
-                  Tutorial
+                  ค่ายเพลง
                 </span>
                 <h4 className="text-text mt-1 line-clamp-2 text-lg font-bold">
-                  Building Next-on-Pages Deployments
+                  สารคดีเบื้องหลังค่ายดนตรีหุบเขา
                 </h4>
                 <p className="text-text-muted mt-2 line-clamp-2 text-sm">
-                  A step-by-step setup configuring Next.js 15 routing for Cloudflare&apos;s
-                  serverless nodes.
+                  บันทึกการเดินทาง ค้างแคมป์ และการซ้อมประสานเสียงดนตรีร่วมกันของเพื่อนๆ
                 </p>
               </div>
             </div>
@@ -413,8 +413,8 @@ export default function Home() {
       >
         <Container>
           <SectionHeader
-            title="Timeline Preview"
-            subtitle="Track our build path, system milestones, and future launch targets."
+            title="ไทม์ไลน์กิจกรรมรุ่น"
+            subtitle="บันทึกก้าวเดินการทำกิจกรรมและการสำเร็จการศึกษารุ่น 150"
           />
           <div className="border-border relative ml-4 space-y-12 border-l pl-8 sm:ml-6 sm:pl-10 md:ml-8">
             {/* Timeline Item 1 */}
@@ -432,13 +432,12 @@ export default function Home() {
               </div>
               <div>
                 <span className="text-brand text-xs font-semibold tracking-wider uppercase">
-                  Phase 1 &bull; Completed
+                  ก้าวที่ 1 &bull; เสร็จสิ้น
                 </span>
-                <h4 className="text-text mt-1 text-xl font-bold">Foundation Setup</h4>
+                <h4 className="text-text mt-1 text-xl font-bold">วันปฐมนิเทศนักเรียนใหม่</h4>
                 <p className="text-text-muted mt-2 max-w-xl text-sm leading-relaxed">
-                  Initialized Next.js 15, integrated ESLint v9 FlatCompat, set up Prettier
-                  configurations with Tailwind v4 variables, and verified edge compilation
-                  compatibility.
+                  วันต้อนรับศิษย์ใหม่ สานสัมพันธ์กิจกรรมกลุ่มละลายพฤติกรรม
+                  และพบปะครูอาจารย์ที่ปรึกษา เพื่อปรับตัวในรั้วโรงเรียน
                 </p>
               </div>
             </div>
@@ -450,15 +449,14 @@ export default function Home() {
               </div>
               <div>
                 <span className="text-brand text-xs font-semibold tracking-wider uppercase">
-                  Phase 2 &bull; In Progress
+                  ก้าวที่ 2 &bull; เสร็จสิ้น
                 </span>
                 <h4 className="text-text mt-1 text-xl font-bold">
-                  Design System & Homepage Complete
+                  มหกรรมกีฬาสีประจำปีและการประกวดเชียร์
                 </h4>
                 <p className="text-text-muted mt-2 max-w-xl text-sm leading-relaxed">
-                  Constructing reusable layout UI components (Cards, Buttons, Headers) and
-                  assembling 7 responsive visual sections inspired by Apple, Medium, and Nike
-                  styles.
+                  ร่วมแรงแข่งขันกรีฑา กีฬา และประกวดขบวนพาเหรดสร้างสรรค์สุดยิ่งใหญ่ของกลุ่มสีต่างๆ
+                  สะท้อนพลังสามัคคี
                 </p>
               </div>
             </div>
@@ -470,14 +468,12 @@ export default function Home() {
               </div>
               <div>
                 <span className="text-text-muted text-xs font-semibold tracking-wider uppercase">
-                  Phase 3 &bull; September 2026
+                  ก้าวที่ 5 &bull; เสร็จสิ้น
                 </span>
-                <h4 className="text-text mt-1 text-xl font-bold">
-                  Alpha Launch & Global Hackathon
-                </h4>
+                <h4 className="text-text mt-1 text-xl font-bold">วันปัจฉิมนิเทศและวันจบการศึกษา</h4>
                 <p className="text-text-muted mt-2 max-w-xl text-sm leading-relaxed">
-                  Enabling full interactive dashboard elements, hosting collaborative team sprints,
-                  and launching the final platform to beta testers worldwide.
+                  พิธีมอบใบประกาศนียบัตรจบการศึกษาอย่างเป็นทางการ กิจกรรมกราบอำลาครูบาอาจารย์
+                  และงานสังสรรค์ส่งท้ายรุ่น 150
                 </p>
               </div>
             </div>
@@ -492,28 +488,37 @@ export default function Home() {
             {/* Col 1 */}
             <div>
               <h5 className="text-text-muted text-xs font-bold tracking-wider uppercase">
-                Platform
+                แพลตฟอร์มรุ่น
               </h5>
               <ul className="mt-4 space-y-2.5 text-sm">
                 <li>
-                  <a href="#" className="text-text-muted hover:text-text transition-colors">
-                    Overview
-                  </a>
+                  <Link href="/about" className="text-text-muted hover:text-text transition-colors">
+                    ภาพรวมโปรเจกต์
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="text-text-muted hover:text-text transition-colors">
-                    Features
-                  </a>
+                  <Link
+                    href="/gallery"
+                    className="text-text-muted hover:text-text transition-colors"
+                  >
+                    แกลเลอรีรูปภาพ
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="text-text-muted hover:text-text transition-colors">
-                    Integrations
-                  </a>
+                  <Link
+                    href="/spotlight"
+                    className="text-text-muted hover:text-text transition-colors"
+                  >
+                    ทำเนียบศิษย์เก่า
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="text-text-muted hover:text-text transition-colors">
-                    Release Notes
-                  </a>
+                  <Link
+                    href="/timeline"
+                    className="text-text-muted hover:text-text transition-colors"
+                  >
+                    ไทม์ไลน์กิจกรรม
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -521,28 +526,29 @@ export default function Home() {
             {/* Col 2 */}
             <div>
               <h5 className="text-text-muted text-xs font-bold tracking-wider uppercase">
-                Community
+                ชุมชนรุ่น 150
               </h5>
               <ul className="mt-4 space-y-2.5 text-sm">
                 <li>
-                  <a href="#" className="text-text-muted hover:text-text transition-colors">
-                    Discord Channel
-                  </a>
+                  <Link
+                    href="/events"
+                    className="text-text-muted hover:text-text transition-colors"
+                  >
+                    งานคืนสู่เหย้า
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="text-text-muted hover:text-text transition-colors">
-                    Student Work
-                  </a>
+                  <Link
+                    href="/stories"
+                    className="text-text-muted hover:text-text transition-colors"
+                  >
+                    บันทึกความทรงจำ
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="text-text-muted hover:text-text transition-colors">
-                    Hackathons
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-text-muted hover:text-text transition-colors">
-                    Sponsorships
-                  </a>
+                  <Link href="/media" className="text-text-muted hover:text-text transition-colors">
+                    คลังวิดีโอรุ่น
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -550,28 +556,24 @@ export default function Home() {
             {/* Col 3 */}
             <div>
               <h5 className="text-text-muted text-xs font-bold tracking-wider uppercase">
-                Resources
+                คลังทรัพยากร
               </h5>
               <ul className="mt-4 space-y-2.5 text-sm">
                 <li>
-                  <a href="#" className="text-text-muted hover:text-text transition-colors">
-                    Documentation
-                  </a>
+                  <Link
+                    href="/downloads"
+                    className="text-text-muted hover:text-text transition-colors"
+                  >
+                    ดาวน์โหลดเอกสาร
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="text-text-muted hover:text-text transition-colors">
-                    Tutorials
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-text-muted hover:text-text transition-colors">
-                    Brand Assets
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-text-muted hover:text-text transition-colors">
-                    Academic Plan
-                  </a>
+                  <Link
+                    href="/downloads"
+                    className="text-text-muted hover:text-text transition-colors"
+                  >
+                    ภาพพื้นหลัง & โลโก้รุ่น
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -579,28 +581,18 @@ export default function Home() {
             {/* Col 4 */}
             <div>
               <h5 className="text-text-muted text-xs font-bold tracking-wider uppercase">
-                Legal & Company
+                เกี่ยวกับระบบ
               </h5>
               <ul className="mt-4 space-y-2.5 text-sm">
                 <li>
-                  <a href="#" className="text-text-muted hover:text-text transition-colors">
-                    About Us
-                  </a>
+                  <Link href="/about" className="text-text-muted hover:text-text transition-colors">
+                    เกี่ยวกับพวกเรา
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="text-text-muted hover:text-text transition-colors">
-                    Privacy Policy
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-text-muted hover:text-text transition-colors">
-                    Terms of Service
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-text-muted hover:text-text transition-colors">
-                    Security Rules
-                  </a>
+                  <Link href="/admin" className="text-text-muted hover:text-text transition-colors">
+                    ผู้ดูแลระบบ (Admin)
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -608,18 +600,18 @@ export default function Home() {
 
           <div className="border-border mt-16 flex flex-col items-center justify-between gap-6 border-t pt-8 sm:flex-row">
             <div className="text-text-muted flex flex-col items-center gap-4 text-xs sm:flex-row">
-              <span>&copy; {new Date().getFullYear()} SK150. All rights reserved.</span>
+              <span>&copy; {new Date().getFullYear()} SK150. สงวนลิขสิทธิ์ทั้งหมด.</span>
               <span className="hidden sm:inline">|</span>
               <a href="#" className="hover:text-text">
-                Privacy Agreement
+                ข้อตกลงการใช้งาน
               </a>
               <span className="hidden sm:inline">&bull;</span>
               <a href="#" className="hover:text-text">
-                Cookie Settings
+                การตั้งค่าคุกกี้
               </a>
             </div>
             <div className="text-text-muted text-xs">
-              Built globally &bull; Optimized at the edge
+              ทำเนียบรุ่นศิษย์เก่าโรงเรียน &bull; พัฒนาโดยศิษย์เก่า รุ่น 150
             </div>
           </div>
         </Container>

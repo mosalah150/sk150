@@ -209,7 +209,7 @@ export default function Navbar() {
                     activeMenu === "platform" ? "bg-canvas-muted text-text" : ""
                   }`}
                 >
-                  Platform
+                  แพลตฟอร์ม
                   <svg
                     className={`h-4 w-4 transform transition-transform duration-200 ${
                       activeMenu === "platform" ? "rotate-180" : ""
@@ -235,7 +235,7 @@ export default function Navbar() {
                     activeMenu === "resources" ? "bg-canvas-muted text-text" : ""
                   }`}
                 >
-                  Resources
+                  คลังข้อมูล
                   <svg
                     className={`h-4 w-4 transform transition-transform duration-200 ${
                       activeMenu === "resources" ? "rotate-180" : ""
@@ -254,37 +254,37 @@ export default function Navbar() {
                 href="/stories"
                 className="hover:bg-canvas-muted hover:text-text focus-visible:outline-brand rounded-full px-4 py-2 transition-all duration-150 focus-visible:outline focus-visible:outline-2"
               >
-                Stories
+                ความทรงจำ
               </Link>
               <Link
                 href="/gallery"
                 className="hover:bg-canvas-muted hover:text-text focus-visible:outline-brand rounded-full px-4 py-2 transition-all duration-150 focus-visible:outline focus-visible:outline-2"
               >
-                Gallery
+                แกลเลอรี
               </Link>
               <Link
                 href="/media"
                 className="hover:bg-canvas-muted hover:text-text focus-visible:outline-brand rounded-full px-4 py-2 transition-all duration-150 focus-visible:outline focus-visible:outline-2"
               >
-                Videos
+                วิดีโอ
               </Link>
               <Link
                 href="/spotlight"
                 className="hover:bg-canvas-muted hover:text-text focus-visible:outline-brand rounded-full px-4 py-2 transition-all duration-150 focus-visible:outline focus-visible:outline-2"
               >
-                Spotlight
+                ทำเนียบรุ่น
               </Link>
               <Link
                 href="/timeline"
                 className="hover:bg-canvas-muted hover:text-text focus-visible:outline-brand rounded-full px-4 py-2 transition-all duration-150 focus-visible:outline focus-visible:outline-2"
               >
-                Timeline
+                ไทม์ไลน์
               </Link>
               <Link
                 href="/events"
                 className="hover:bg-canvas-muted hover:text-text focus-visible:outline-brand rounded-full px-4 py-2 transition-all duration-150 focus-visible:outline focus-visible:outline-2"
               >
-                Events
+                กิจกรรม
               </Link>
             </nav>
           </div>
@@ -310,7 +310,7 @@ export default function Navbar() {
                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                   />
                 </svg>
-                <span className="hidden sm:inline">Search...</span>
+                <span className="hidden sm:inline">ค้นหา...</span>
               </span>
               <kbd className="border-border bg-canvas text-text-muted hidden h-5 items-center gap-0.5 rounded border px-1.5 font-mono text-[10px] font-medium select-none sm:inline-flex">
                 <span className="text-xs">⌘</span>K
@@ -476,7 +476,7 @@ export default function Navbar() {
           <input
             ref={searchInputRef}
             type="text"
-            placeholder="Search platform resources, stories, timeline phases..."
+            placeholder="ค้นหาข้อมูลทำเนียบรุ่น ความทรงจำ กิจกรรม หรือเอกสารดาวน์โหลด..."
             className="text-text placeholder-text-muted w-full bg-transparent py-1 text-base outline-none sm:text-lg"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -507,7 +507,7 @@ export default function Navbar() {
                 {matchedStories.length > 0 && (
                   <div className="space-y-2">
                     <span className="text-text-muted block text-[10px] font-bold tracking-widest uppercase">
-                      Stories & Articles
+                      บันทึกความทรงจำรุ่น
                     </span>
                     <div className="grid gap-2">
                       {matchedStories.map((item) => (
@@ -547,7 +547,7 @@ export default function Navbar() {
                 {matchedGallery.length > 0 && (
                   <div className="space-y-2">
                     <span className="text-text-muted block text-[10px] font-bold tracking-widest uppercase">
-                      Visual Gallery
+                      คลังภาพประทับใจ
                     </span>
                     <div className="grid gap-2">
                       {matchedGallery.map((item) => (
@@ -607,7 +607,7 @@ export default function Navbar() {
                 {matchedEvents.length > 0 && (
                   <div className="space-y-2">
                     <span className="text-text-muted block text-[10px] font-bold tracking-widest uppercase">
-                      Events & Milestones
+                      กิจกรรมศิษย์เก่า
                     </span>
                     <div className="grid gap-2">
                       {matchedEvents.map((item) => (
@@ -647,7 +647,7 @@ export default function Navbar() {
                 {matchedStudents.length > 0 && (
                   <div className="space-y-2">
                     <span className="text-text-muted block text-[10px] font-bold tracking-widest uppercase">
-                      Student Spotlights
+                      ทำเนียบแนะนำศิษย์เก่าเด่น
                     </span>
                     <div className="grid gap-2">
                       {matchedStudents.map((item) => (
@@ -687,7 +687,7 @@ export default function Navbar() {
                 {matchedDownloads.length > 0 && (
                   <div className="space-y-2">
                     <span className="text-text-muted block text-[10px] font-bold tracking-widest uppercase">
-                      Resources & Downloads
+                      เอกสารดาวน์โหลด
                     </span>
                     <div className="grid gap-2">
                       {matchedDownloads.map((item) => (
@@ -696,7 +696,7 @@ export default function Navbar() {
                           href="#"
                           onClick={(e) => {
                             e.preventDefault();
-                            alert(`Downloading: ${item.title}`);
+                            alert(`กำลังจำลองการดาวน์โหลดไฟล์: ${item.title}`);
                             closeSearch();
                           }}
                           className="hover:bg-canvas-muted hover:border-border flex cursor-pointer items-center justify-between rounded-2xl border border-transparent p-3.5 text-left transition-all"
@@ -709,7 +709,7 @@ export default function Navbar() {
                               {item.title}
                             </h5>
                             <span className="text-text-muted mt-1 block text-xs">
-                              Size: {item.fileSize}
+                              ขนาดไฟล์: {item.fileSize}
                             </span>
                           </div>
                           <svg
@@ -734,27 +734,27 @@ export default function Navbar() {
             ) : (
               <div className="py-12 text-center">
                 <p className="text-text-muted text-base">
-                  No results found for &ldquo;{searchQuery}&rdquo;
+                  ไม่พบผลลัพธ์สำหรับ &ldquo;{searchQuery}&rdquo;
                 </p>
                 <p className="text-text-muted mt-2 text-xs">
-                  Try searching for other terms like &ldquo;Edge&rdquo;, &ldquo;Design&rdquo;, or
-                  &ldquo;Hackathon&rdquo;
+                  ลองค้นหาคำอื่นๆ เช่น &ldquo;ปัจฉิม&rdquo;, &ldquo;กีฬาสี&rdquo; หรือ
+                  &ldquo;ทำเนียบ&rdquo;
                 </p>
               </div>
             )
           ) : (
             <div className="space-y-4 text-left">
               <span className="text-text-muted block text-xs font-semibold tracking-wider uppercase">
-                Quick Navigation Links
+                ทางเข้าข้อมูลด่วน
               </span>
               <div className="grid grid-cols-2 gap-3">
                 {[
-                  { label: "Platform Stories", href: "/stories" },
-                  { label: "Visual Gallery", href: "/gallery" },
-                  { label: "Interactive Timeline", href: "/timeline" },
-                  { label: "Student Spotlight", href: "/spotlight" },
-                  { label: "System Events", href: "/events" },
-                  { label: "Media Library", href: "/media" },
+                  { label: "ความทรงจำรุ่น", href: "/stories" },
+                  { label: "คลังภาพกิจกรรม", href: "/gallery" },
+                  { label: "ไทม์ไลน์กิจกรรม", href: "/timeline" },
+                  { label: "แนะนำศิษย์เก่า", href: "/spotlight" },
+                  { label: "กิจกรรมทำเนียบรุ่น", href: "/events" },
+                  { label: "วิดีโอความทรงจำ", href: "/media" },
                 ].map((item, idx) => (
                   <Link
                     key={idx}
@@ -770,10 +770,10 @@ export default function Navbar() {
           )}
         </div>
         <div className="border-border bg-canvas-muted text-text-muted flex items-center justify-between border-t px-6 py-3 text-[11px] font-medium">
-          <span>Search query is matched dynamically</span>
+          <span>ระบบจำลองการค้นหาข้อมูลแบบเรียลไทม์</span>
           <span>
-            Press <kbd className="bg-canvas border-border rounded border px-1 font-mono">ESC</kbd>{" "}
-            to close
+            กดปุ่ม <kbd className="bg-canvas border-border rounded border px-1 font-mono">ESC</kbd>{" "}
+            เพื่อปิดหน้าต่าง
           </span>
         </div>
       </dialog>

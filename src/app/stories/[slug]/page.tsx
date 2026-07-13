@@ -84,8 +84,8 @@ export default async function ArticleDetailPage({ params }: Props) {
       : articles.filter((a) => a.id !== article.id).slice(0, 3);
 
   const breadcrumbItems = [
-    { label: "Home", href: "/" },
-    { label: "Stories", href: "/stories" },
+    { label: "หน้าแรก", href: "/" },
+    { label: "ความทรงจำ", href: "/stories" },
     { label: article.title },
   ];
 
@@ -145,7 +145,7 @@ export default async function ArticleDetailPage({ params }: Props) {
           </div>
         </div>
 
-        {/* Feature Cover Image (LCP optimized) */}
+        {/* Feature Cover Image */}
         <div className="border-border relative mt-12 aspect-video w-full overflow-hidden rounded-3xl border shadow-lg">
           <Image
             src={article.imageSrc}
@@ -179,8 +179,8 @@ export default async function ArticleDetailPage({ params }: Props) {
                 return (
                   <React.Fragment key={index}>
                     <blockquote className="border-brand text-text my-10 border-l-4 pl-6 font-serif text-xl leading-relaxed italic sm:text-2xl">
-                      &ldquo;Modern web engineering is not just about writing clean scripts; it is
-                      about building dynamic layouts that paint instantly at the edge.&rdquo;
+                      &ldquo;มิตรภาพที่เกิดขึ้นในรั้วโรงเรียนไม่ใช่แค่ช่วงเวลาสั้นๆ
+                      แต่มันคือสายใยความทรงจำที่พวกเราจะช่วยกันดูแลและเก็บรักษาไว้ตลอดไป&rdquo;
                     </blockquote>
                     <p>{paragraph}</p>
                   </React.Fragment>
@@ -209,8 +209,8 @@ export default async function ArticleDetailPage({ params }: Props) {
       <section className="bg-canvas-muted border-border border-t py-24">
         <Container>
           <SectionHeader
-            title="Related Articles"
-            subtitle="Explore additional deep dives from matches in this category."
+            title="เรื่องราวอื่นๆ ที่เกี่ยวข้อง"
+            subtitle="บันทึกความทรงจำและกิจกรรมอื่นๆ ที่น่าสนใจเพิ่มเติมในหัวข้อนี้"
           />
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {finalRelated.map((related) => (

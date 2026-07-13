@@ -87,7 +87,7 @@ export default function EventsPage() {
         <section className="bg-canvas-muted border-border relative overflow-hidden border-b py-20 sm:py-28">
           <Container className="relative z-10 flex flex-col items-center text-center">
             <span className="text-brand text-xs font-bold tracking-widest uppercase">
-              Next Live Keynote
+              กิจกรรมที่กำลังจะเกิดขึ้นเร็วๆ นี้
             </span>
             <h1 className="text-text mt-3 max-w-2xl text-3xl leading-tight font-extrabold tracking-tight sm:text-4xl md:text-5xl">
               {nextEvent.title}
@@ -96,13 +96,13 @@ export default function EventsPage() {
               {nextEvent.description}
             </p>
 
-            {/* Countdown Grid (Apple style timer) */}
+            {/* Countdown Grid */}
             <div className="mt-12 grid w-full max-w-xl grid-cols-4 gap-4 sm:gap-6">
               {[
-                { label: "Days", val: mounted ? timeLeft.days : "--" },
-                { label: "Hours", val: mounted ? timeLeft.hours : "--" },
-                { label: "Minutes", val: mounted ? timeLeft.minutes : "--" },
-                { label: "Seconds", val: mounted ? timeLeft.seconds : "--" },
+                { label: "วัน", val: mounted ? timeLeft.days : "--" },
+                { label: "ชั่วโมง", val: mounted ? timeLeft.hours : "--" },
+                { label: "นาที", val: mounted ? timeLeft.minutes : "--" },
+                { label: "วินาที", val: mounted ? timeLeft.seconds : "--" },
               ].map((item, idx) => (
                 <div
                   key={idx}
@@ -161,8 +161,18 @@ export default function EventsPage() {
             </div>
 
             <div className="mt-8 flex gap-4">
-              <Button variant="primary">Add to Calendar</Button>
-              <Button variant="outline">Register Live Stage</Button>
+              <Button
+                variant="primary"
+                onClick={() => alert("เพิ่มลงในปฏิทินเรียบร้อยแล้ว (จำลอง)")}
+              >
+                เพิ่มลงปฏิทิน
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => alert("ลงทะเบียนเข้าร่วมงานออนไลน์เรียบร้อยแล้ว (จำลอง)")}
+              >
+                ลงทะเบียนร่วมงาน
+              </Button>
             </div>
           </Container>
           {/* Subtle bg mesh glow */}
@@ -174,11 +184,11 @@ export default function EventsPage() {
       <section className="py-24 sm:py-32">
         <Container>
           <SectionHeader
-            title="Roadmap & Event Timeline"
-            subtitle="Track our platform developments, milestones, and upcoming hacks chronologically."
+            title="กำหนดการและไทม์ไลน์กิจกรรม"
+            subtitle="ติดตามข่าวสาร กิจกรรมรุ่น และการจัดงานคืนสู่เหย้าในรูปแบบไทม์ไลน์อย่างเป็นระเบียบ"
           />
 
-          {/* Timeline Path (Nike/Apple design) */}
+          {/* Timeline Path */}
           <div className="border-border relative ml-4 space-y-16 border-l pl-10 sm:ml-8 sm:pl-12 md:ml-12">
             {events
               .slice()
@@ -211,7 +221,7 @@ export default function EventsPage() {
                     <div className="max-w-3xl">
                       <span className="flex items-center gap-3 text-xs font-bold tracking-wider uppercase">
                         <span className={isUpcoming ? "text-brand" : "text-text-muted"}>
-                          {event.type}
+                          {isUpcoming ? "กิจกรรมใหม่" : "ผ่านไปแล้ว"}
                         </span>
                         <span className="bg-border h-1.5 w-1.5 rounded-full" />
                         <span className="text-text-muted">{event.phase}</span>
@@ -254,8 +264,8 @@ export default function EventsPage() {
       <section className="bg-canvas-muted border-border border-t py-24 sm:py-32">
         <Container>
           <SectionHeader
-            title="Past Events Archive"
-            subtitle="Catch up on highlights, photo galleries, and video recaps from our completed events."
+            title="คลังความทรงจำกิจกรรมที่ผ่านมา"
+            subtitle="ประมวลภาพประทับใจ คลังรูปถ่าย และคลิปไฮไลท์บรรยากาศกิจกรรมที่พวกเราจัดทำร่วมกันสำเร็จแล้ว"
           />
 
           <div className="space-y-16">
@@ -296,7 +306,7 @@ export default function EventsPage() {
                         </button>
                       )}
                       <span className="absolute top-4 left-4 z-10 rounded-full border border-white/10 bg-black/60 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-white uppercase backdrop-blur-sm">
-                        Recap Video
+                        วิดีโอสรุปกิจกรรม
                       </span>
                     </>
                   )}
@@ -354,7 +364,7 @@ export default function EventsPage() {
                   {/* Inline Event Photo Gallery */}
                   <div className="border-border mt-6 border-t pt-6">
                     <span className="text-text-muted mb-3 block text-[10px] font-bold tracking-widest uppercase">
-                      Event Gallery
+                      คลังภาพประดับใจในงาน
                     </span>
                     <div className="flex scrollbar-none gap-3 overflow-x-auto pb-2">
                       {event.galleryImages.map((imgUrl, imgIdx) => (
@@ -382,7 +392,7 @@ export default function EventsPage() {
         </Container>
       </section>
 
-      {/* Full-Screen Image Lightbox modal for gallery photo previews */}
+      {/* Full-Screen Image Lightbox modal */}
       <dialog
         ref={lightboxRef}
         className="border-border bg-canvas/98 h-[75vh] w-[92%] max-w-4xl overflow-hidden rounded-3xl border p-0 shadow-2xl backdrop-blur-lg outline-none select-none backdrop:bg-black/90 backdrop:backdrop-blur-md"
@@ -423,7 +433,7 @@ export default function EventsPage() {
           </div>
 
           <div className="flex h-10 items-center justify-center text-xs font-medium text-neutral-400">
-            SK150 Event Album View
+            แกลเลอรีภาพกิจกรรม รุ่น SK150
           </div>
         </div>
       </dialog>

@@ -17,14 +17,13 @@ export default function SpotlightPage() {
         <Container>
           <div className="mb-12 max-w-3xl">
             <span className="text-brand text-xs font-bold tracking-widest uppercase">
-              Spotlight
+              ทำเนียบศิษย์เก่า
             </span>
             <h1 className="text-text mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl">
-              Student Spotlight
+              นักเรียนเด่นประจำรุ่น
             </h1>
             <p className="text-text-muted mt-4 text-lg leading-relaxed">
-              Read editorial profiles and deep dive interviews with key innovators and systems
-              leaders shaping the SK150 network.
+              อ่านบันทึกสัมภาษณ์เจาะลึกและประวัติเพื่อนร่วมรุ่นที่มีบทบาทสำคัญในการทำกิจกรรมรุ่น 150
             </p>
           </div>
 

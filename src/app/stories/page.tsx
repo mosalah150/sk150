@@ -9,7 +9,15 @@ import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import { articles } from "@/utils/blogData";
 
-type CategoryFilter = "All" | "Design" | "Performance" | "DevOps" | "Sports";
+type CategoryFilter = "All" | "วันจบการศึกษา" | "งานกีฬาสี" | "ค่ายดนตรี" | "วันแรกในโรงเรียน";
+
+const filterLabels: Record<CategoryFilter, string> = {
+  All: "ทั้งหมด",
+  วันจบการศึกษา: "วันจบการศึกษา",
+  งานกีฬาสี: "งานกีฬาสี",
+  ค่ายดนตรี: "ค่ายดนตรี",
+  วันแรกในโรงเรียน: "วันแรกในโรงเรียน",
+};
 
 export default function StoriesPage() {
   const [activeCategory, setActiveCategory] = useState<CategoryFilter>("All");
@@ -23,7 +31,13 @@ export default function StoriesPage() {
     return matchesCategory;
   });
 
-  const categories: CategoryFilter[] = ["All", "Design", "Performance", "DevOps", "Sports"];
+  const categories: CategoryFilter[] = [
+    "All",
+    "วันจบการศึกษา",
+    "งานกีฬาสี",
+    "ค่ายดนตรี",
+    "วันแรกในโรงเรียน",
+  ];
 
   return (
     <div className="bg-canvas text-text flex-1 transition-colors duration-200">
@@ -31,76 +45,84 @@ export default function StoriesPage() {
       <section className="bg-canvas-muted border-border border-b py-16 sm:py-20">
         <Container>
           <div className="mb-12 max-w-3xl">
-            <span className="text-brand text-xs font-bold tracking-widest uppercase">Magazine</span>
+            <span className="text-brand text-xs font-bold tracking-widest uppercase">
+              ทำเนียบความทรงจำ
+            </span>
             <h1 className="text-text mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl">
-              Stories & Perspectives
+              บันทึกความทรงจำรุ่น
             </h1>
             <p className="text-text-muted mt-4 text-lg leading-relaxed">
-              Read insights, detailed tutorials, and design principles compiled by our core
-              infrastructure and visual architecture teams.
+              รวบรวมบันทึก บล็อกข้อเขียนสั้นๆ รูปภาพ และเรื่องราวความประทับใจร่วมรุ่น 150
+              ที่พวกเราเคยทำร่วมกัน
             </p>
           </div>
 
-          {/* Featured Card (Apple/Medium layout style) */}
-          <div className="border-border bg-canvas hover:border-text-muted group relative overflow-hidden rounded-3xl border shadow-xl transition-all duration-300">
-            {/* Absolute overlay link covering the card */}
-            <Link
-              href={`/stories/${featuredArticle.slug}`}
-              className="absolute inset-0 z-20"
-              aria-label={`Read Featured Story: ${featuredArticle.title}`}
-            />
-            <div className="grid lg:grid-cols-12">
-              {/* Image Banner */}
-              <div className="relative aspect-video min-h-[320px] w-full overflow-hidden lg:col-span-7 lg:aspect-auto">
-                <Image
-                  src={featuredArticle.imageSrc}
-                  alt={featuredArticle.title}
-                  fill
-                  priority
-                  className="object-cover transition-transform duration-500 group-hover:scale-102"
-                  sizes="(max-width: 1024px) 100vw, 60vw"
-                />
-                <span className="bg-brand text-canvas absolute top-6 left-6 z-10 rounded-full px-3.5 py-1 text-xs font-bold tracking-wider uppercase shadow-md">
-                  Featured Story
-                </span>
-              </div>
-
-              {/* Story Details */}
-              <div className="flex flex-col justify-between p-8 sm:p-10 lg:col-span-5">
-                <div>
-                  <span className="text-brand text-xs font-bold tracking-wider uppercase">
-                    {featuredArticle.category}
+          {/* Featured Card */}
+          {featuredArticle && (
+            <div className="border-border bg-canvas hover:border-text-muted group relative overflow-hidden rounded-3xl border shadow-xl transition-all duration-300">
+              {/* Absolute overlay link covering the card */}
+              <Link
+                href={`/stories/${featuredArticle.slug}`}
+                className="absolute inset-0 z-20"
+                aria-label={`Read Featured Story: ${featuredArticle.title}`}
+              />
+              <div className="grid lg:grid-cols-12">
+                {/* Image Banner */}
+                <div className="relative aspect-video min-h-[320px] w-full overflow-hidden lg:col-span-7 lg:aspect-auto">
+                  <Image
+                    src={featuredArticle.imageSrc}
+                    alt={featuredArticle.title}
+                    fill
+                    priority
+                    className="object-cover transition-transform duration-500 group-hover:scale-102"
+                    sizes="(max-width: 1024px) 100vw, 60vw"
+                  />
+                  <span className="bg-brand text-canvas absolute top-6 left-6 z-10 rounded-full px-3.5 py-1 text-xs font-bold tracking-wider uppercase shadow-md">
+                    เรื่องแนะนำประจำวัน
                   </span>
-                  <h2 className="text-text group-hover:text-brand mt-3 text-2xl font-black tracking-tight transition-colors sm:text-3xl">
-                    {featuredArticle.title}
-                  </h2>
-                  <p className="text-text-muted mt-4 text-sm leading-relaxed">
-                    {featuredArticle.description}
-                  </p>
                 </div>
 
-                <div className="border-border mt-8 flex items-center justify-between border-t pt-6">
-                  <div className="flex items-center gap-3">
-                    <div className="border-border relative h-10 w-10 overflow-hidden rounded-full border">
-                      <Image
-                        src={featuredArticle.author.avatar}
-                        alt={featuredArticle.author.name}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <div>
-                      <h4 className="text-text text-sm font-bold">{featuredArticle.author.name}</h4>
-                      <p className="text-text-muted text-xs font-medium">{featuredArticle.date}</p>
-                    </div>
+                {/* Story Details */}
+                <div className="flex flex-col justify-between p-8 sm:p-10 lg:col-span-5">
+                  <div>
+                    <span className="text-brand text-xs font-bold tracking-wider uppercase">
+                      {featuredArticle.category}
+                    </span>
+                    <h2 className="text-text group-hover:text-brand mt-3 text-2xl font-black tracking-tight transition-colors sm:text-3xl">
+                      {featuredArticle.title}
+                    </h2>
+                    <p className="text-text-muted mt-4 text-sm leading-relaxed">
+                      {featuredArticle.description}
+                    </p>
                   </div>
-                  <span className="text-text-muted text-xs font-semibold">
-                    {featuredArticle.readTime}
-                  </span>
+
+                  <div className="border-border mt-8 flex items-center justify-between border-t pt-6">
+                    <div className="flex items-center gap-3">
+                      <div className="border-border relative h-10 w-10 overflow-hidden rounded-full border">
+                        <Image
+                          src={featuredArticle.author.avatar}
+                          alt={featuredArticle.author.name}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <div>
+                        <h4 className="text-text text-sm font-bold">
+                          {featuredArticle.author.name}
+                        </h4>
+                        <p className="text-text-muted text-xs font-medium">
+                          {featuredArticle.date}
+                        </p>
+                      </div>
+                    </div>
+                    <span className="text-text-muted text-xs font-semibold">
+                      {featuredArticle.readTime}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
         </Container>
       </section>
 
@@ -119,14 +141,14 @@ export default function StoriesPage() {
                     : "bg-canvas-muted text-text-muted hover:bg-canvas hover:text-text border-border hover:border-text-muted border"
                 }`}
               >
-                {category}
+                {filterLabels[category]}
               </button>
             ))}
           </div>
 
           <SectionHeader
-            title={`${activeCategory === "All" ? "Recent" : activeCategory} Articles`}
-            subtitle="Explore comprehensive logs, visual mockups, and deployment guides."
+            title={`ความทรงจำ: ${filterLabels[activeCategory]}`}
+            subtitle="สำรวจและทบทวนความหลังวันวาน กิจกรรมกีฬาสี ปัจฉิมนิเทศ และวันแรกในรั้วโรงเรียน"
           />
 
           {filteredArticles.length > 0 ? (
@@ -165,14 +187,14 @@ export default function StoriesPage() {
             </div>
           ) : (
             <div className="border-border bg-canvas-muted rounded-3xl border py-16 text-center">
-              <p className="text-text-muted text-lg">No articles found in this category.</p>
+              <p className="text-text-muted text-lg">ไม่พบเรื่องราวกิจกรรมในหมวดหมู่นี้</p>
               <Button
                 variant="outline"
                 size="sm"
                 className="mt-4"
                 onClick={() => setActiveCategory("All")}
               >
-                Reset Category Filters
+                รีเซ็ตการกรองหมวดหมู่
               </Button>
             </div>
           )}

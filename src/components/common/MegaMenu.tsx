@@ -20,8 +20,8 @@ export default function MegaMenu({ isOpen, menuType, onClose }: MegaMenuProps) {
 
   const platformItems: MegaMenuItem[] = [
     {
-      title: "About Overview",
-      description: "Explore the Next.js 15, Tailwind v4, and Cloudflare Pages foundation details.",
+      title: "เกี่ยวกับทำเนียบรุ่น",
+      description: "ทำความเข้าใจวัตถุประสงค์ คณะจัดทำ และเบื้องหลังเทคโนโลยีของแพลตฟอร์มนี้",
       href: "/about",
       icon: (
         <svg
@@ -40,10 +40,9 @@ export default function MegaMenu({ isOpen, menuType, onClose }: MegaMenuProps) {
       ),
     },
     {
-      title: "Design System Elements",
-      description:
-        "Visual guidelines built with modern oklch variables and custom light-dark() utilities.",
-      href: "#design",
+      title: "คลังภาพกิจกรรม",
+      description: "ประมวลภาพกีฬาสี กิจกรรมในชั้นเรียน และค่ายวิชาการต่างๆ ของรุ่น 150",
+      href: "/gallery",
       icon: (
         <svg
           className="h-6 w-6"
@@ -61,8 +60,8 @@ export default function MegaMenu({ isOpen, menuType, onClose }: MegaMenuProps) {
       ),
     },
     {
-      title: "Developer Hub & Tools",
-      description: "Admin panel dashboard with D1 SQL consoles and R2 file upload progress logs.",
+      title: "ผู้ดูแลระบบ (Admin)",
+      description: "คอนโซลจัดการข้อมูลศิษย์เก่า ตรวจสอบผู้ส่งข้อความ และอนุมัติการโพสต์ประวัติ",
       href: "/admin",
       icon: (
         <svg
@@ -84,10 +83,9 @@ export default function MegaMenu({ isOpen, menuType, onClose }: MegaMenuProps) {
 
   const resourceItems: MegaMenuItem[] = [
     {
-      title: "Documentation API",
-      description:
-        "Complete technical manuals covering routing adapters and local verification steps.",
-      href: "#docs",
+      title: "คู่มือแนะแนวศึกษาต่อ",
+      description: "คู่มือรวบรวมเทคนิคการเตรียมพอร์ตโฟลิโอและคะแนนสอบสำหรับรุ่นน้อง ม.ปลาย",
+      href: "/downloads",
       icon: (
         <svg
           className="h-6 w-6"
@@ -105,9 +103,9 @@ export default function MegaMenu({ isOpen, menuType, onClose }: MegaMenuProps) {
       ),
     },
     {
-      title: "Guides & Tutorials",
-      description: "Step-by-step videos and walkthroughs covering bento layouts and accessibility.",
-      href: "#tutorials",
+      title: "วิดีโอและสื่อบันทึกภาพ",
+      description: "รวมเทปบันทึกภาพพิธีจบการศึกษา และคลิปสั้นเบื้องหลังการทำกิจกรรมต่างๆ",
+      href: "/media",
       icon: (
         <svg
           className="h-6 w-6"
@@ -125,9 +123,9 @@ export default function MegaMenu({ isOpen, menuType, onClose }: MegaMenuProps) {
       ),
     },
     {
-      title: "Community Discord",
-      description: "Join active designer panels, student spotlight entries, and group hackathons.",
-      href: "#community",
+      title: "ทำเนียบศิษย์เก่า",
+      description: "ค้นหาข้อมูลช่องทางติดต่อศิษย์เก่าแต่ละห้องเรียน รวมถึงเบอร์โทรหรือไอจีเพื่อน",
+      href: "/spotlight",
       icon: (
         <svg
           className="h-6 w-6"
@@ -145,8 +143,8 @@ export default function MegaMenu({ isOpen, menuType, onClose }: MegaMenuProps) {
       ),
     },
     {
-      title: "Downloads Center",
-      description: "Retrieve vector logos, brand assets, wallpapers, and spec PDFs.",
+      title: "ศูนย์ดาวน์โหลดเอกสาร",
+      description: "ดาวน์โหลดโลโก้ประจำรุ่น ภาพพื้นหลังสัญลักษณ์โรงเรียน และหนังสือรุ่น PDF",
       href: "/downloads",
       icon: (
         <svg
@@ -167,7 +165,8 @@ export default function MegaMenu({ isOpen, menuType, onClose }: MegaMenuProps) {
   ];
 
   const currentItems = menuType === "platform" ? platformItems : resourceItems;
-  const menuTitle = menuType === "platform" ? "SK150 Platform Overview" : "Developer Resources Hub";
+  const menuTitle =
+    menuType === "platform" ? "ภาพรวมแพลตฟอร์มรุ่น SK150" : "ศูนย์รวมคลังข้อมูลและเอกสาร";
 
   return (
     <div
@@ -202,25 +201,29 @@ export default function MegaMenu({ isOpen, menuType, onClose }: MegaMenuProps) {
           </div>
         </div>
 
-        {/* Feature Highlight Panel (Nike / Apple aesthetic card) */}
+        {/* Feature Highlight Panel */}
         <div className="border-border bg-canvas-muted group relative flex flex-col justify-between overflow-hidden rounded-3xl border p-6 lg:col-span-4">
           <div>
             <span className="text-brand text-xs font-bold tracking-widest uppercase">
-              Featured Event
+              กิจกรรมที่กำลังจะเกิดขึ้น
             </span>
-            <h4 className="text-text mt-3 text-xl font-bold tracking-tight">SK150 Hackathon</h4>
+            <h4 className="text-text mt-3 text-xl font-bold tracking-tight">
+              งานคืนสู่เหย้า SK150
+            </h4>
             <p className="text-text-muted mt-2 text-xs leading-relaxed sm:text-sm">
-              Register now for the virtual design hackathon on July 24. Build dynamic edge
-              interfaces in 48 hours.
+              เปิดลงทะเบียนเข้าร่วมสังสรรค์ศิษย์เก่าในวันที่ 24 กรกฎาคมนี้
+              ย้อนคืนวันวานร่วมรับประทานอาหารค่ำ
             </p>
           </div>
           <div className="mt-8 flex items-center justify-between">
             <span className="text-text-muted text-xs font-medium">
-              Virtual &bull; Open Registration
+              หอประชุมโรงเรียน &bull; เปิดลงทะเบียนแล้ว
             </span>
-            <Button variant="primary" size="sm" className="relative z-10">
-              Register
-            </Button>
+            <Link href="/events">
+              <Button variant="primary" size="sm" className="relative z-10" onClick={onClose}>
+                ลงทะเบียน
+              </Button>
+            </Link>
           </div>
           {/* Subtle background glow */}
           <div className="bg-brand/10 group-hover:bg-brand/20 pointer-events-none absolute -right-16 -bottom-16 h-32 w-32 rounded-full blur-3xl transition-all duration-300" />

@@ -6,7 +6,24 @@ import Container from "@/components/ui/Container";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { galleryImages, GalleryImage } from "@/utils/galleryData";
 
-type AlbumFilter = "All" | "Visual Art" | "Athletics" | "Workspaces";
+type AlbumFilter =
+  | "All"
+  | "การเรียนการสอน"
+  | "ศิลปะและวิชาการ"
+  | "อาคารสถานที่"
+  | "กีฬาโรงเรียน"
+  | "เบื้องหลังกิจกรรม"
+  | "วันจบการศึกษา";
+
+const albumLabels: Record<AlbumFilter, string> = {
+  All: "ทั้งหมด",
+  การเรียนการสอน: "การเรียนการสอน",
+  ศิลปะและวิชาการ: "ศิลปะและวิชาการ",
+  อาคารสถานที่: "อาคารสถานที่",
+  กีฬาโรงเรียน: "กีฬาโรงเรียน",
+  เบื้องหลังกิจกรรม: "เบื้องหลังกิจกรรม",
+  วันจบการศึกษา: "วันจบการศึกษา",
+};
 
 export default function GalleryPage() {
   const [activeAlbum, setActiveAlbum] = useState<AlbumFilter>("All");
@@ -109,7 +126,15 @@ export default function GalleryPage() {
   }, [activeAlbum]);
 
   const activePhoto = activePhotoIndex !== null ? filteredImages[activePhotoIndex] : null;
-  const albums: AlbumFilter[] = ["All", "Visual Art", "Athletics", "Workspaces"];
+  const albums: AlbumFilter[] = [
+    "All",
+    "การเรียนการสอน",
+    "ศิลปะและวิชาการ",
+    "อาคารสถานที่",
+    "กีฬาโรงเรียน",
+    "เบื้องหลังกิจกรรม",
+    "วันจบการศึกษา",
+  ];
 
   return (
     <div className="bg-canvas text-text flex-1 transition-colors duration-200">
@@ -117,13 +142,15 @@ export default function GalleryPage() {
       <section className="bg-canvas-muted border-border border-b py-16 sm:py-20">
         <Container>
           <div className="mb-12 max-w-3xl">
-            <span className="text-brand text-xs font-bold tracking-widest uppercase">Showcase</span>
+            <span className="text-brand text-xs font-bold tracking-widest uppercase">
+              คลังภาพประทับใจ
+            </span>
             <h1 className="text-text mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl">
-              Visual Gallery
+              แกลเลอรีรูปภาพ
             </h1>
             <p className="text-text-muted mt-4 text-lg leading-relaxed">
-              Explore dynamic design prototypes, computational geometry, track sports, and student
-              collaboration spaces built inside the SK150 network.
+              ภาพบันทึกความทรงจำของพวกเรา รุ่น 150 ตั้งแต่วันแรกที่ปฐมนิเทศ กิจกรรมห้องเรียน
+              คอนเสิร์ตดนตรี จนถึงวันสำเร็จการศึกษา
             </p>
           </div>
 
@@ -139,7 +166,7 @@ export default function GalleryPage() {
                     : "bg-canvas text-text-muted hover:bg-canvas-muted hover:text-text border-border hover:border-text-muted border"
                 }`}
               >
-                {album}
+                {albumLabels[album]}
               </button>
             ))}
           </div>
@@ -150,8 +177,8 @@ export default function GalleryPage() {
       <section className="py-16 sm:py-24">
         <Container clean>
           <SectionHeader
-            title={`${activeAlbum} Album`}
-            subtitle="Click on any visual model to inspect metadata details and trigger full-screen lightbox previews."
+            title={`อัลบั้ม: ${albumLabels[activeAlbum]}`}
+            subtitle="คลิกที่ภาพใดก็ได้เพื่อขยายแสดงคำบรรยายรายละเอียดภาพ และเปิดสไลด์โชว์"
             className="px-4 sm:px-6 lg:px-8"
           />
 
@@ -221,7 +248,7 @@ export default function GalleryPage() {
             </div>
           ) : (
             <div className="border-border bg-canvas-muted mx-8 rounded-3xl border py-16 text-center">
-              <p className="text-text-muted text-lg">No images found in this album.</p>
+              <p className="text-text-muted text-lg">ไม่พบรูปภาพความทรงจำในอัลบั้มนี้</p>
             </div>
           )}
 
@@ -231,20 +258,20 @@ export default function GalleryPage() {
               <div className="flex flex-col items-center gap-3">
                 <div className="border-brand h-8 w-8 animate-spin rounded-full border-4 border-t-transparent" />
                 <span className="text-text-muted text-xs font-semibold tracking-wider uppercase">
-                  Loading assets...
+                  กำลังโหลดรูปภาพเพิ่มเติม...
                 </span>
               </div>
             )}
             {!loading && loadCount >= 3 && (
               <span className="text-text-muted text-xs font-bold tracking-widest uppercase">
-                All visual items loaded
+                โหลดรูปภาพความทรงจำของรุ่นครบถ้วนแล้ว
               </span>
             )}
           </div>
         </Container>
       </section>
 
-      {/* 3. Accessible Apple Photos Lightbox Modal Dialog */}
+      {/* Lightbox Modal Dialog */}
       <dialog
         ref={lightboxDialogRef}
         className="border-border bg-canvas/98 h-[85vh] w-[92%] max-w-5xl overflow-hidden rounded-3xl border p-0 shadow-2xl backdrop-blur-lg outline-none select-none backdrop:bg-black/90 backdrop:backdrop-blur-md"

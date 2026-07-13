@@ -4,7 +4,7 @@ export interface Video {
   description: string;
   platform: "youtube" | "tiktok";
   videoId: string;
-  category: "Tutorials" | "Panel Talks" | "Creative Highlights";
+  category: string;
   duration: string;
   date: string;
   coverImage: string;

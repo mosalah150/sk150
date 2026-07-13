@@ -14,6 +14,16 @@ import { studentProfiles as initialStudents } from "@/utils/spotlightData";
 
 type AdminTab = "Overview" | "News" | "Events" | "Gallery" | "Videos" | "Downloads" | "Students";
 
+const tabLabels: Record<AdminTab, string> = {
+  Overview: "ภาพรวมระบบ",
+  News: "บันทึกความทรงจำ",
+  Events: "กิจกรรมของรุ่น",
+  Gallery: "คลังภาพถ่าย",
+  Videos: "วิดีโอเด่น",
+  Downloads: "ดาวน์โหลดเอกสาร",
+  Students: "ทำเนียบศิษย์เก่า",
+};
+
 export default function AdminDashboardPage() {
   // 1. Auth States
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -32,9 +42,9 @@ export default function AdminDashboardPage() {
 
   // 4. Cloudflare D1 SQL & R2 Storage Telemetry Logs
   const [telemetryLogs, setTelemetryLogs] = useState<string[]>([
-    "[SYSTEM] Ready. Authentication node initialized.",
-    "[D1] Initialized connection to database: sk150_production.db",
-    "[R2] Connected to storage bucket: sk150_assets_bucket",
+    "[SYSTEM] ระบบพร้อมทำงาน เริ่มต้นระบบยืนยันตัวตนแอดมิน",
+    "[D1] เชื่อมต่อฐานข้อมูลสำเร็จ: sk150_production.db",
+    "[R2] เชื่อมต่อคลังเก็บไฟล์สำเร็จ: sk150_assets_bucket",
   ]);
 
   // 5. Generic Form State
@@ -57,14 +67,14 @@ export default function AdminDashboardPage() {
     setTimeout(() => {
       setIsLoggedIn(true);
       setIsLoggingIn(false);
-      addLog("[AUTH] Google Sign-In succeeded for: admin@sk150.pages.dev");
+      addLog("[AUTH] ลงชื่อเข้าใช้ผ่าน Google สำเร็จสำหรับ: admin@sk150.pages.dev");
     }, 1200);
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
     setActiveTab("Overview");
-    addLog("[AUTH] Admin User logged out.");
+    addLog("[AUTH] ผู้ดูแลระบบออกจากระบบ.");
   };
 
   // Helper clear inputs
@@ -102,14 +112,14 @@ export default function AdminDashboardPage() {
         slug: formInputs.title.toLowerCase().replace(/ /g, "-"),
         title: formInputs.title,
         description: formInputs.description,
-        content: ["Placeholder paragraph details compiled in Admin panel."],
+        content: ["ข้อมูลจำลองที่เพิ่มจากแดชบอร์ดแอดมิน"],
         imageSrc: "/assets/gallery_2.png",
-        category: "Design" as const,
-        tags: ["System"],
-        date: "Today",
-        readTime: "3 min read",
+        category: "กิจกรรมรุ่น",
+        tags: ["ระบบ"],
+        date: "วันนี้",
+        readTime: "อ่าน 3 นาที",
         publishedTime: new Date().toISOString(),
-        author: { name: "Admin", avatar: "/assets/spotlight.png", title: "Operator" },
+        author: { name: "แอดมิน", avatar: "/assets/spotlight.png", title: "ผู้ดูแลระบบ" },
       };
       setArticles((prev) => [newArticle, ...prev]);
       addLog(
@@ -141,13 +151,13 @@ export default function AdminDashboardPage() {
         title: formInputs.title,
         description: formInputs.description,
         type: "upcoming" as const,
-        date: "TBD",
-        time: "TBD",
-        location: "Virtual Stage",
-        locationType: "virtual" as const,
+        date: "เร็วๆ นี้",
+        time: "ระบุภายหลัง",
+        location: "หอประชุมใหญ่โรงเรียน",
+        locationType: "physical" as const,
         coverImage: "/assets/gallery_1.png",
         galleryImages: ["/assets/gallery_1.png"],
-        phase: "Admin Created Stage",
+        phase: "แอดมินสร้างใหม่",
       };
       setEvents((prev) => [newEvent, ...prev]);
       addLog(
@@ -166,16 +176,16 @@ export default function AdminDashboardPage() {
     setTimeout(() => {
       const newImg = {
         id: (gallery.length + 1).toString(),
-        title: `Uploaded Asset: ${mockFilename}`,
-        description: "Mock file stored on Cloudflare R2",
+        title: `ไฟล์อัปโหลด: ${mockFilename}`,
+        description: "ไฟล์รูปภาพจำลองบันทึกบน Cloudflare R2",
         imageSrc: "/assets/gallery_1.png",
-        album: "Visual Art" as const,
+        album: "เบื้องหลังกิจกรรม",
         aspectRatio: "video" as const,
-        location: "Edge Storage Node",
-        date: "July 2026",
+        location: "ลานอเนกประสงค์",
+        date: "กรกฎาคม 2026",
       };
       setGallery((prev) => [newImg, ...prev]);
-      addLog(`[R2 OBJECT] HTTP/1.1 200 OK. Saved to bucket. Size: ${mockSize}`);
+      addLog(`[R2 OBJECT] HTTP/1.1 200 OK. อัปโหลดเข้า R2 bucket สำเร็จ. ขนาดไฟล์: ${mockSize}`);
       addLog(
         `[D1 SQL] INSERT INTO gallery_images (id, title, imageSrc) VALUES ('${newImg.id}', '${newImg.title}', '${newImg.imageSrc}');`,
       );
@@ -205,14 +215,14 @@ export default function AdminDashboardPage() {
         description: formInputs.description,
         platform: "youtube" as const,
         videoId: "dQw4w9WgXcQ",
-        category: "Tutorials" as const,
-        duration: "10:00",
-        date: "TBD",
+        category: "วิดีโอทั่วไป",
+        duration: "05:00",
+        date: "วันนี้",
         coverImage: "/assets/gallery_3.png",
       };
       setVideos((prev) => [newVideo, ...prev]);
       addLog(
-        `[D1 SQL] INSERT INTO videos (id, title, videoId, platform) VALUES ('${newVideo.id}', '${newVideo.title}', '${newVideo.videoId}', '${newVideo.platform}');`,
+        `[D1 SQL] INSERT INTO videos (id, title, videoId, category) VALUES ('${newVideo.id}', '${newVideo.title}', '${newVideo.videoId}', '${newVideo.category}');`,
       );
     }
     resetForm();
@@ -235,18 +245,18 @@ export default function AdminDashboardPage() {
         `[D1 SQL] UPDATE downloads SET title='${formInputs.title}', description='${formInputs.description}' WHERE id='${editingId}';`,
       );
     } else {
-      const newDownload = {
+      const newDl = {
         id: (downloads.length + 1).toString(),
         title: formInputs.title,
         description: formInputs.description,
-        category: "PDF" as const,
-        fileSize: "1.0 MB",
+        category: "PDF",
+        fileSize: "1.5 MB",
         fileExtension: "PDF",
         href: "#",
       };
-      setDownloads((prev) => [newDownload, ...prev]);
+      setDownloads((prev) => [newDl, ...prev]);
       addLog(
-        `[D1 SQL] INSERT INTO downloads (id, title, fileSize, fileExtension) VALUES ('${newDownload.id}', '${newDownload.title}', '${newDownload.fileSize}', '${newDownload.fileExtension}');`,
+        `[D1 SQL] INSERT INTO downloads (id, title, fileSize) VALUES ('${newDl.id}', '${newDl.title}', '${newDl.fileSize}');`,
       );
     }
     resetForm();
@@ -271,14 +281,14 @@ export default function AdminDashboardPage() {
         id: (students.length + 1).toString(),
         name: formInputs.name,
         title: formInputs.role,
-        achievement: "Spotlight Highlight",
-        bioParagraphs: ["Profile added via admin panel."],
+        achievement: "ศิษย์เก่าแนะนำ",
+        bioParagraphs: ["ประวัติศิษย์เก่าเพิ่มเติมโดยแอดมิน"],
         imageSrc: "/assets/spotlight.png",
         instagram: "#",
         tiktok: "#",
         youtube: "#",
-        metrics: [{ label: "Added", value: "Today" }],
-        highlightQuote: "Dynamic student profile synced.",
+        metrics: [{ label: "เข้าร่วม", value: "วันนี้" }],
+        highlightQuote: "ความทรงจำและมิตรภาพที่เติบโตไปด้วยกัน",
       };
       setStudents((prev) => [newStudent, ...prev]);
       addLog(
@@ -290,7 +300,7 @@ export default function AdminDashboardPage() {
 
   // Global Delete Handler
   const handleDeleteItem = (id: string, type: AdminTab) => {
-    if (!confirm(`Are you sure you want to delete item: ${id}?`)) return;
+    if (!confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบรายการรหัส: ${id}?`)) return;
 
     switch (type) {
       case "News":
@@ -361,10 +371,10 @@ export default function AdminDashboardPage() {
             <span className="text-brand block text-xs font-bold tracking-widest uppercase">
               SK150 Platform
             </span>
-            <h1 className="text-text mt-3 text-3xl font-black tracking-tight">Management Panel</h1>
+            <h1 className="text-text mt-3 text-3xl font-black tracking-tight">ระบบจัดการแอดมิน</h1>
             <p className="text-text-muted mt-4 text-xs leading-relaxed sm:text-sm">
-              Sign in with your Google Workspace profile to manage news logs, visual folders,
-              roadmap timelines, and object downloads.
+              กรุณาเข้าสู่ระบบผ่านบัญชี Google Workspace ของคุณเพื่อจัดการประวัตินักเรียน คลังรูปภาพ
+              และไฟล์ดาวน์โหลดหนังสือรุ่น
             </p>
 
             <button
@@ -375,7 +385,7 @@ export default function AdminDashboardPage() {
               {isLoggingIn ? (
                 <>
                   <div className="border-text-muted h-4 w-4 animate-spin rounded-full border-2 border-t-transparent" />
-                  Authorizing...
+                  กำลังลงชื่อเข้าใช้...
                 </>
               ) : (
                 <>
@@ -397,7 +407,7 @@ export default function AdminDashboardPage() {
                       d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.96 1.19 15.24 0 12 0 10.74 0 6.72 2.06 4.75 5.97L7.84 8.37c.78-2.33 2.96-4.07 5.53-4.07z"
                     />
                   </svg>
-                  Sign in with Google
+                  ลงชื่อเข้าใช้ด้วย Google
                 </>
               )}
             </button>
@@ -414,7 +424,7 @@ export default function AdminDashboardPage() {
                   A
                 </div>
                 <div>
-                  <h4 className="text-text text-sm font-bold">Admin Panel</h4>
+                  <h4 className="text-text text-sm font-bold">คอนโซลแอดมิน</h4>
                   <p className="text-text-muted text-[10px] font-medium">sk150.pages.dev</p>
                 </div>
               </div>
@@ -444,19 +454,21 @@ export default function AdminDashboardPage() {
                         : "text-text-muted hover:bg-canvas hover:text-text"
                     }`}
                   >
-                    {tab}
+                    {tabLabels[tab]}
                   </button>
                 ))}
               </nav>
             </div>
 
             <div className="border-border mt-10 flex items-center justify-between border-t pt-4">
-              <span className="text-text-muted text-[10px] font-bold uppercase">Authorized</span>
+              <span className="text-text-muted text-[10px] font-bold uppercase">
+                ยืนยันสิทธิ์แล้ว
+              </span>
               <button
                 onClick={handleLogout}
                 className="cursor-pointer text-xs font-bold text-rose-500 hover:text-rose-600"
               >
-                Sign Out
+                ออกจากระบบ
               </button>
             </div>
           </aside>
@@ -466,9 +478,9 @@ export default function AdminDashboardPage() {
             {/* Top Area: Active Segment CRUD */}
             <div>
               <div className="border-border mb-8 flex items-center justify-between border-b pb-4">
-                <h1 className="text-2xl font-black tracking-tight">{activeTab} Management</h1>
+                <h1 className="text-2xl font-black tracking-tight">จัดการ{tabLabels[activeTab]}</h1>
                 <span className="text-text-muted text-xs font-bold uppercase">
-                  Production Database
+                  ฐานข้อมูลหลัก (D1)
                 </span>
               </div>
 
@@ -478,50 +490,52 @@ export default function AdminDashboardPage() {
                   <div className="grid gap-6 sm:grid-cols-3">
                     <div className="border-border bg-canvas rounded-3xl border p-6">
                       <span className="text-text-muted block text-xs font-bold tracking-wider uppercase">
-                        Cloudflare D1 tables
+                        ตาราง D1 SQL Database
                       </span>
-                      <span className="mt-2 block text-3xl font-black">6 Active</span>
+                      <span className="mt-2 block text-3xl font-black">6 ตารางออนไลน์</span>
                     </div>
                     <div className="border-border bg-canvas rounded-3xl border p-6">
                       <span className="text-text-muted block text-xs font-bold tracking-wider uppercase">
-                        R2 storage bucket
+                        คลังไฟล์ R2 Storage
                       </span>
-                      <span className="mt-2 block text-3xl font-black">24 Assets</span>
+                      <span className="mt-2 block text-3xl font-black">24 รายการ</span>
                     </div>
                     <div className="border-border bg-canvas rounded-3xl border p-6">
                       <span className="text-text-muted block text-xs font-bold tracking-wider uppercase">
-                        Edge TTFB Response
+                        ความเร็วสืบค้นเฉลี่ย (TTFB)
                       </span>
-                      <span className="text-brand mt-2 block text-3xl font-black">8 ms avg</span>
+                      <span className="text-brand mt-2 block text-3xl font-black">
+                        8 มิลลิวินาที
+                      </span>
                     </div>
                   </div>
 
                   <div className="border-border bg-canvas rounded-3xl border p-6 sm:p-8">
-                    <h3 className="text-lg font-bold">SQL Tables Summary</h3>
+                    <h3 className="text-lg font-bold">ข้อมูลสถิติตาราง SQL</h3>
                     <div className="text-text-muted mt-4 grid gap-2 text-xs font-semibold">
                       <div className="border-border flex justify-between border-b py-2">
-                        <span>articles</span>
-                        <span>{articles.length} rows</span>
+                        <span>articles (ความทรงจำ)</span>
+                        <span>{articles.length} แถว</span>
                       </div>
                       <div className="border-border flex justify-between border-b py-2">
-                        <span>events</span>
-                        <span>{events.length} rows</span>
+                        <span>events (กิจกรรม)</span>
+                        <span>{events.length} แถว</span>
                       </div>
                       <div className="border-border flex justify-between border-b py-2">
-                        <span>gallery_images</span>
-                        <span>{gallery.length} rows</span>
+                        <span>gallery_images (รูปถ่าย)</span>
+                        <span>{gallery.length} แถว</span>
                       </div>
                       <div className="border-border flex justify-between border-b py-2">
-                        <span>videos</span>
-                        <span>{videos.length} rows</span>
+                        <span>videos (วิดีโอ)</span>
+                        <span>{videos.length} แถว</span>
                       </div>
                       <div className="border-border flex justify-between border-b py-2">
-                        <span>downloads</span>
-                        <span>{downloads.length} rows</span>
+                        <span>downloads (ดาวน์โหลด)</span>
+                        <span>{downloads.length} แถว</span>
                       </div>
                       <div className="flex justify-between py-2">
-                        <span>students</span>
-                        <span>{students.length} rows</span>
+                        <span>students (ศิษย์เก่า)</span>
+                        <span>{students.length} แถว</span>
                       </div>
                     </div>
                   </div>
@@ -537,34 +551,44 @@ export default function AdminDashboardPage() {
                     className="bg-canvas-muted border-border space-y-4 rounded-3xl border p-6"
                   >
                     <h4 className="text-sm font-bold">
-                      {editingId ? "Edit Article" : "Create New Article"}
+                      {editingId ? "แก้ไขบันทึกความทรงจำ" : "เขียนบันทึกความทรงจำใหม่"}
                     </h4>
                     <div className="grid gap-4 sm:grid-cols-2">
-                      <input
-                        type="text"
-                        name="title"
-                        placeholder="Article Title"
-                        value={formInputs.title}
-                        onChange={handleInputChange}
-                        className="bg-canvas border-border focus:border-brand w-full rounded-xl border px-4 py-2.5 text-sm focus:outline-none"
-                        required
-                      />
-                      <input
-                        type="text"
-                        name="description"
-                        placeholder="Short summary description"
-                        value={formInputs.description}
-                        onChange={handleInputChange}
-                        className="bg-canvas border-border focus:border-brand w-full rounded-xl border px-4 py-2.5 text-sm focus:outline-none"
-                        required
-                      />
+                      <div>
+                        <span className="text-text-muted mb-1 block text-[10px]">
+                          ตัวอย่าง: บันทึกวันปัจฉิมนิเทศ รุ่น 150
+                        </span>
+                        <input
+                          type="text"
+                          name="title"
+                          placeholder="หัวข้อเรื่องราว"
+                          value={formInputs.title}
+                          onChange={handleInputChange}
+                          className="bg-canvas border-border focus:border-brand w-full rounded-xl border px-4 py-2.5 text-sm focus:outline-none"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <span className="text-text-muted mb-1 block text-[10px]">
+                          ตัวอย่าง: สรุปบรรยากาศแห่งความประทับใจร่วมรุ่น
+                        </span>
+                        <input
+                          type="text"
+                          name="description"
+                          placeholder="คำอธิบายสรุปสั้นๆ"
+                          value={formInputs.description}
+                          onChange={handleInputChange}
+                          className="bg-canvas border-border focus:border-brand w-full rounded-xl border px-4 py-2.5 text-sm focus:outline-none"
+                          required
+                        />
+                      </div>
                     </div>
                     <div className="flex justify-end gap-2">
                       <Button variant="outline" size="sm" onClick={resetForm}>
-                        Cancel
+                        ยกเลิก
                       </Button>
                       <Button variant="primary" size="sm" type="submit">
-                        Save (D1 COMMIT)
+                        บันทึกข้อมูล (D1 COMMIT)
                       </Button>
                     </div>
                   </form>
@@ -585,13 +609,13 @@ export default function AdminDashboardPage() {
                             onClick={() => handleEditTrigger(item, "News")}
                             className="text-brand cursor-pointer text-xs font-bold hover:underline"
                           >
-                            Edit
+                            แก้ไข
                           </button>
                           <button
                             onClick={() => handleDeleteItem(item.id, "News")}
                             className="cursor-pointer text-xs font-bold text-rose-500 hover:underline"
                           >
-                            Delete
+                            ลบ
                           </button>
                         </div>
                       </div>
@@ -608,34 +632,44 @@ export default function AdminDashboardPage() {
                     className="bg-canvas-muted border-border space-y-4 rounded-3xl border p-6"
                   >
                     <h4 className="text-sm font-bold">
-                      {editingId ? "Edit Event" : "Create New Event"}
+                      {editingId ? "แก้ไขกิจกรรมรุ่น" : "สร้างกิจกรรมรุ่นใหม่"}
                     </h4>
                     <div className="grid gap-4 sm:grid-cols-2">
-                      <input
-                        type="text"
-                        name="title"
-                        placeholder="Event Title"
-                        value={formInputs.title}
-                        onChange={handleInputChange}
-                        className="bg-canvas border-border focus:border-brand w-full rounded-xl border px-4 py-2.5 text-sm focus:outline-none"
-                        required
-                      />
-                      <input
-                        type="text"
-                        name="description"
-                        placeholder="Event Description"
-                        value={formInputs.description}
-                        onChange={handleInputChange}
-                        className="bg-canvas border-border focus:border-brand w-full rounded-xl border px-4 py-2.5 text-sm focus:outline-none"
-                        required
-                      />
+                      <div>
+                        <span className="text-text-muted mb-1 block text-[10px]">
+                          ตัวอย่าง: งานเลี้ยงคืนสู่เหย้าประจำปี
+                        </span>
+                        <input
+                          type="text"
+                          name="title"
+                          placeholder="ชื่อกิจกรรม"
+                          value={formInputs.title}
+                          onChange={handleInputChange}
+                          className="bg-canvas border-border focus:border-brand w-full rounded-xl border px-4 py-2.5 text-sm focus:outline-none"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <span className="text-text-muted mb-1 block text-[10px]">
+                          ตัวอย่าง: พบปะคุยชีวิตเรียนต่อและร่วมทานข้าวกลางวัน
+                        </span>
+                        <input
+                          type="text"
+                          name="description"
+                          placeholder="รายละเอียดกิจกรรม"
+                          value={formInputs.description}
+                          onChange={handleInputChange}
+                          className="bg-canvas border-border focus:border-brand w-full rounded-xl border px-4 py-2.5 text-sm focus:outline-none"
+                          required
+                        />
+                      </div>
                     </div>
                     <div className="flex justify-end gap-2">
                       <Button variant="outline" size="sm" onClick={resetForm}>
-                        Cancel
+                        ยกเลิก
                       </Button>
                       <Button variant="primary" size="sm" type="submit">
-                        Save (D1 COMMIT)
+                        บันทึกข้อมูล (D1 COMMIT)
                       </Button>
                     </div>
                   </form>
@@ -655,13 +689,13 @@ export default function AdminDashboardPage() {
                             onClick={() => handleEditTrigger(item, "Events")}
                             className="text-brand cursor-pointer text-xs font-bold hover:underline"
                           >
-                            Edit
+                            แก้ไข
                           </button>
                           <button
                             onClick={() => handleDeleteItem(item.id, "Events")}
                             className="cursor-pointer text-xs font-bold text-rose-500 hover:underline"
                           >
-                            Delete
+                            ลบ
                           </button>
                         </div>
                       </div>
@@ -691,9 +725,11 @@ export default function AdminDashboardPage() {
                         d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
                       />
                     </svg>
-                    <h4 className="mt-4 text-sm font-bold">Simulate Cloudflare R2 Upload</h4>
+                    <h4 className="mt-4 text-sm font-bold">
+                      จำลองการอัปโหลดไฟล์เข้าระบบ Cloudflare R2
+                    </h4>
                     <p className="text-text-muted mt-1 text-xs">
-                      Click anywhere in this box to upload mock images directly to storage
+                      คลิกตรงนี้เพื่อจำลองการเลือกและอัปโหลดรูปภาพบันทึกความทรงจำของเพื่อนร่วมรุ่น
                     </p>
                   </div>
 
@@ -718,7 +754,7 @@ export default function AdminDashboardPage() {
                           onClick={() => handleDeleteItem(item.id, "Gallery")}
                           className="cursor-pointer text-xs font-bold text-rose-500 hover:underline"
                         >
-                          Delete
+                          ลบ
                         </button>
                       </div>
                     ))}
@@ -734,34 +770,44 @@ export default function AdminDashboardPage() {
                     className="bg-canvas-muted border-border space-y-4 rounded-3xl border p-6"
                   >
                     <h4 className="text-sm font-bold">
-                      {editingId ? "Edit Video" : "Create New Video"}
+                      {editingId ? "แก้ไขวิดีโอเด่น" : "เพิ่มวิดีโอเด่นความทรงจำใหม่"}
                     </h4>
                     <div className="grid gap-4 sm:grid-cols-2">
-                      <input
-                        type="text"
-                        name="title"
-                        placeholder="Video Title"
-                        value={formInputs.title}
-                        onChange={handleInputChange}
-                        className="bg-canvas border-border focus:border-brand w-full rounded-xl border px-4 py-2.5 text-sm focus:outline-none"
-                        required
-                      />
-                      <input
-                        type="text"
-                        name="description"
-                        placeholder="Video Description"
-                        value={formInputs.description}
-                        onChange={handleInputChange}
-                        className="bg-canvas border-border focus:border-brand w-full rounded-xl border px-4 py-2.5 text-sm focus:outline-none"
-                        required
-                      />
+                      <div>
+                        <span className="text-text-muted mb-1 block text-[10px]">
+                          ตัวอย่าง: วิดีโอไฮไลท์งานกีฬาสี รุ่น 150
+                        </span>
+                        <input
+                          type="text"
+                          name="title"
+                          placeholder="ชื่อวิดีโอ"
+                          value={formInputs.title}
+                          onChange={handleInputChange}
+                          className="bg-canvas border-border focus:border-brand w-full rounded-xl border px-4 py-2.5 text-sm focus:outline-none"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <span className="text-text-muted mb-1 block text-[10px]">
+                          ตัวอย่าง: บันทึกภาพกล้องระดับสายตาวิ่งผลัดและกองเชียร์
+                        </span>
+                        <input
+                          type="text"
+                          name="description"
+                          placeholder="คำอธิบายวิดีโอ"
+                          value={formInputs.description}
+                          onChange={handleInputChange}
+                          className="bg-canvas border-border focus:border-brand w-full rounded-xl border px-4 py-2.5 text-sm focus:outline-none"
+                          required
+                        />
+                      </div>
                     </div>
                     <div className="flex justify-end gap-2">
                       <Button variant="outline" size="sm" onClick={resetForm}>
-                        Cancel
+                        ยกเลิก
                       </Button>
                       <Button variant="primary" size="sm" type="submit">
-                        Save (D1 COMMIT)
+                        บันทึกข้อมูล (D1 COMMIT)
                       </Button>
                     </div>
                   </form>
@@ -781,13 +827,13 @@ export default function AdminDashboardPage() {
                             onClick={() => handleEditTrigger(item, "Videos")}
                             className="text-brand cursor-pointer text-xs font-bold hover:underline"
                           >
-                            Edit
+                            แก้ไข
                           </button>
                           <button
                             onClick={() => handleDeleteItem(item.id, "Videos")}
                             className="cursor-pointer text-xs font-bold text-rose-500 hover:underline"
                           >
-                            Delete
+                            ลบ
                           </button>
                         </div>
                       </div>
@@ -804,34 +850,44 @@ export default function AdminDashboardPage() {
                     className="bg-canvas-muted border-border space-y-4 rounded-3xl border p-6"
                   >
                     <h4 className="text-sm font-bold">
-                      {editingId ? "Edit Download" : "Create New Download"}
+                      {editingId ? "แก้ไขเอกสารดาวน์โหลด" : "สร้างไฟล์ดาวน์โหลดใหม่"}
                     </h4>
                     <div className="grid gap-4 sm:grid-cols-2">
-                      <input
-                        type="text"
-                        name="title"
-                        placeholder="Download Title"
-                        value={formInputs.title}
-                        onChange={handleInputChange}
-                        className="bg-canvas border-border focus:border-brand w-full rounded-xl border px-4 py-2.5 text-sm focus:outline-none"
-                        required
-                      />
-                      <input
-                        type="text"
-                        name="description"
-                        placeholder="File Description"
-                        value={formInputs.description}
-                        onChange={handleInputChange}
-                        className="bg-canvas border-border focus:border-brand w-full rounded-xl border px-4 py-2.5 text-sm focus:outline-none"
-                        required
-                      />
+                      <div>
+                        <span className="text-text-muted mb-1 block text-[10px]">
+                          ตัวอย่าง: หนังสือทำเนียบรุ่น 150 (.PDF)
+                        </span>
+                        <input
+                          type="text"
+                          name="title"
+                          placeholder="ชื่อหัวข้อดาวน์โหลด"
+                          value={formInputs.title}
+                          onChange={handleInputChange}
+                          className="bg-canvas border-border focus:border-brand w-full rounded-xl border px-4 py-2.5 text-sm focus:outline-none"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <span className="text-text-muted mb-1 block text-[10px]">
+                          ตัวอย่าง: เอกสารรวมเบอร์โทรศัพท์และที่อยู่เพื่อนๆ
+                        </span>
+                        <input
+                          type="text"
+                          name="description"
+                          placeholder="คำอธิบายเนื้อหาไฟล์"
+                          value={formInputs.description}
+                          onChange={handleInputChange}
+                          className="bg-canvas border-border focus:border-brand w-full rounded-xl border px-4 py-2.5 text-sm focus:outline-none"
+                          required
+                        />
+                      </div>
                     </div>
                     <div className="flex justify-end gap-2">
                       <Button variant="outline" size="sm" onClick={resetForm}>
-                        Cancel
+                        ยกเลิก
                       </Button>
                       <Button variant="primary" size="sm" type="submit">
-                        Save (D1 COMMIT)
+                        บันทึกข้อมูล (D1 COMMIT)
                       </Button>
                     </div>
                   </form>
@@ -851,13 +907,13 @@ export default function AdminDashboardPage() {
                             onClick={() => handleEditTrigger(item, "Downloads")}
                             className="text-brand cursor-pointer text-xs font-bold hover:underline"
                           >
-                            Edit
+                            แก้ไข
                           </button>
                           <button
                             onClick={() => handleDeleteItem(item.id, "Downloads")}
                             className="cursor-pointer text-xs font-bold text-rose-500 hover:underline"
                           >
-                            Delete
+                            ลบ
                           </button>
                         </div>
                       </div>
@@ -874,34 +930,44 @@ export default function AdminDashboardPage() {
                     className="bg-canvas-muted border-border space-y-4 rounded-3xl border p-6"
                   >
                     <h4 className="text-sm font-bold">
-                      {editingId ? "Edit Student Profile" : "Create New Student Spotlight"}
+                      {editingId ? "แก้ไขประวัติศิษย์เก่า" : "เพิ่มประวัติศิษย์เก่าใหม่"}
                     </h4>
                     <div className="grid gap-4 sm:grid-cols-2">
-                      <input
-                        type="text"
-                        name="name"
-                        placeholder="Student Full Name"
-                        value={formInputs.name}
-                        onChange={handleInputChange}
-                        className="bg-canvas border-border focus:border-brand w-full rounded-xl border px-4 py-2.5 text-sm focus:outline-none"
-                        required
-                      />
-                      <input
-                        type="text"
-                        name="role"
-                        placeholder="Role / Title"
-                        value={formInputs.role}
-                        onChange={handleInputChange}
-                        className="bg-canvas border-border focus:border-brand w-full rounded-xl border px-4 py-2.5 text-sm focus:outline-none"
-                        required
-                      />
+                      <div>
+                        <span className="text-text-muted mb-1 block text-[10px]">
+                          ตัวอย่าง: นายณัฐพล สมดี (พล)
+                        </span>
+                        <input
+                          type="text"
+                          name="name"
+                          placeholder="ชื่อ-นามสกุล (ชื่อเล่น)"
+                          value={formInputs.name}
+                          onChange={handleInputChange}
+                          className="bg-canvas border-border focus:border-brand w-full rounded-xl border px-4 py-2.5 text-sm focus:outline-none"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <span className="text-text-muted mb-1 block text-[10px]">
+                          ตัวอย่าง: ประธานชมรมวิศวกรรมไอทีรุ่น 150
+                        </span>
+                        <input
+                          type="text"
+                          name="role"
+                          placeholder="ตำแหน่งหรือผลงานสำคัญประจำรุ่น"
+                          value={formInputs.role}
+                          onChange={handleInputChange}
+                          className="bg-canvas border-border focus:border-brand w-full rounded-xl border px-4 py-2.5 text-sm focus:outline-none"
+                          required
+                        />
+                      </div>
                     </div>
                     <div className="flex justify-end gap-2">
                       <Button variant="outline" size="sm" onClick={resetForm}>
-                        Cancel
+                        ยกเลิก
                       </Button>
                       <Button variant="primary" size="sm" type="submit">
-                        Save (D1 COMMIT)
+                        บันทึกข้อมูล (D1 COMMIT)
                       </Button>
                     </div>
                   </form>
@@ -921,13 +987,13 @@ export default function AdminDashboardPage() {
                             onClick={() => handleEditTrigger(item, "Students")}
                             className="text-brand cursor-pointer text-xs font-bold hover:underline"
                           >
-                            Edit
+                            แก้ไข
                           </button>
                           <button
                             onClick={() => handleDeleteItem(item.id, "Students")}
                             className="cursor-pointer text-xs font-bold text-rose-500 hover:underline"
                           >
-                            Delete
+                            ลบ
                           </button>
                         </div>
                       </div>
@@ -937,11 +1003,11 @@ export default function AdminDashboardPage() {
               )}
             </div>
 
-            {/* Bottom Status Terminal (SQL logs & R2 payloads logging panel) */}
+            {/* Bottom Status Terminal */}
             <div className="mt-12 rounded-3xl border border-neutral-800 bg-black p-6 text-left select-text">
               <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
                 <span className="block font-mono text-[10px] font-bold tracking-widest text-neutral-400 uppercase">
-                  Cloudflare Stack Telemetry Logs (D1 + R2)
+                  บันทึกสถานะ Cloudflare SQL & R2 Storage (ระบบจำลอง)
                 </span>
                 <span className="h-2 w-2 animate-ping rounded-full bg-green-500" />
               </div>
