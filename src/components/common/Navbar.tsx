@@ -196,12 +196,12 @@ export default function Navbar() {
         <Container clean className="flex items-center justify-between py-4">
           <div className="flex items-center gap-8">
             <Link href="/" className="flex items-center group">
-              <div className="relative h-12 w-12 overflow-hidden rounded-xl border border-border bg-white shadow-sm transition-shadow group-hover:shadow-md">
+              <div className="relative h-16 w-16 transition-transform duration-300 group-hover:scale-105">
                 <Image
-                  src="/assets/logo.jpg"
+                  src="/assets/logo.png"
                   alt="SK150 Logo"
                   fill
-                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                  className="object-contain"
                   priority
                 />
               </div>
