@@ -2,9 +2,13 @@
 
 :root {
   /* Color System Tokens */
-  --color-brand-light: oklch(0.55 0.22 281.3);
-  --color-brand-dark: oklch(0.72 0.16 281.3);
+  --color-brand-light: #ed69ad;
+  --color-brand-dark: #009ee4;
   --color-brand: var(--color-brand-light);
+
+  --color-brand-secondary-light: #009ee4;
+  --color-brand-secondary-dark: #ed69ad;
+  --color-brand-secondary: var(--color-brand-secondary-light);
 
   --color-canvas-light: oklch(0.99 0.002 281.3);
   --color-canvas-dark: oklch(0.12 0.008 281.3);
@@ -37,6 +41,7 @@
   /* Fallback for browsers without light-dark support */
   @media (prefers-color-scheme: dark) {
     --color-brand: var(--color-brand-dark);
+    --color-brand-secondary: var(--color-brand-secondary-dark);
     --color-canvas: var(--color-canvas-dark);
     --color-canvas-muted: var(--color-canvas-muted-dark);
     --color-text: var(--color-text-dark);
@@ -49,6 +54,10 @@
   /* Standard CSS light-dark() evaluation if supported */
   @supports (color: light-dark(white, black)) {
     --color-brand: light-dark(var(--color-brand-light), var(--color-brand-dark));
+    --color-brand-secondary: light-dark(
+      var(--color-brand-secondary-light),
+      var(--color-brand-secondary-dark)
+    );
     --color-canvas: light-dark(var(--color-canvas-light), var(--color-canvas-dark));
     --color-canvas-muted: light-dark(
       var(--color-canvas-muted-light),
@@ -70,6 +79,7 @@
 /* Force dark-mode selectors for HTML manual toggling if pinned */
 html.dark {
   --color-brand: var(--color-brand-dark) !important;
+  --color-brand-secondary: var(--color-brand-secondary-dark) !important;
   --color-canvas: var(--color-canvas-dark) !important;
   --color-canvas-muted: var(--color-canvas-muted-dark) !important;
   --color-text: var(--color-text-dark) !important;
@@ -81,6 +91,7 @@ html.dark {
 
 html.light {
   --color-brand: var(--color-brand-light) !important;
+  --color-brand-secondary: var(--color-brand-secondary-light) !important;
   --color-canvas: var(--color-canvas-light) !important;
   --color-canvas-muted: var(--color-canvas-muted-light) !important;
   --color-text: var(--color-text-light) !important;
@@ -108,6 +119,7 @@ html.light {
 /* Tailwind Theme Mapping */
 @theme {
   --color-brand: var(--color-brand);
+  --color-brand-secondary: var(--color-brand-secondary);
   --color-canvas: var(--color-canvas);
   --color-canvas-muted: var(--color-canvas-muted);
   --color-text: var(--color-text);

@@ -197,7 +197,7 @@ export default function Navbar() {
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="text-text-muted hidden items-center gap-1 text-sm font-semibold md:flex">
+            <nav className="text-text-muted hidden items-center gap-1 text-base font-semibold md:flex">
               {/* Platform Button Trigger */}
               <div className="relative">
                 <button

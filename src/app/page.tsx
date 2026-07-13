@@ -77,7 +77,7 @@ export default function Home() {
               ทำเนียบรุ่นศิษย์เก่า &bull; รุ่น 150
             </div>
             <h1 className="text-text text-5xl leading-[1.05] font-black tracking-tighter uppercase sm:text-6xl md:text-7xl lg:text-8xl">
-              รุ่น <span className="text-brand">150</span>.<br />
+              รุ่น <span className="bg-gradient-to-r from-brand to-brand-secondary bg-clip-text text-transparent">150</span>.<br />
               เรื่องราวของเรา.
             </h1>
             <p className="text-text-muted mt-8 max-w-xl text-lg leading-relaxed font-normal sm:text-xl">
