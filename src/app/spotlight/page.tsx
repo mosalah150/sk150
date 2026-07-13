@@ -26,13 +26,13 @@ export default function SpotlightPage() {
         <Container>
           <div className="mb-12 max-w-3xl">
             <span className="text-brand text-xs font-bold tracking-widest uppercase">
-              ทำเนียบศิษย์เก่า
+              ทำเนียบเพื่อน ม.1
             </span>
             <h1 className="text-text mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl">
-              สุภาพบุรุษนักเรียนเด่นประจำรุ่น
+              สุภาพบุรุษเพื่อนร่วมรุ่น ม.1
             </h1>
             <p className="text-text-muted mt-4 text-lg leading-relaxed">
-              อ่านบันทึกประวัติและบทสัมภาษณ์เจาะลึกเพื่อนนักเรียนโรงเรียนสวนกุหลาบวิทยาลัย รุ่น 150 ผู้นำแห่งอนาคต (Future Leaders)
+              ทำความรู้จักและบันทึกความทรงจำของเพื่อนๆ สวนกุหลาบวิทยาลัย รุ่น 150 (ม.1) ก้าวแรกสู่วิถีสุภาพบุรุษชมพู-ฟ้า
             </p>
           </div>
 

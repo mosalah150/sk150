@@ -123,8 +123,8 @@ export default function MegaMenu({ isOpen, menuType, onClose }: MegaMenuProps) {
       ),
     },
     {
-      title: "ทำเนียบศิษย์เก่า",
-      description: "ค้นหาข้อมูลช่องทางติดต่อศิษย์เก่าแต่ละห้องเรียน รวมถึงเบอร์โทรหรือไอจีเพื่อน",
+      title: "ทำเนียบเพื่อน ม.1",
+      description: "ค้นหาข้อมูลช่องทางติดต่อและรายชื่อเพื่อนร่วมชั้น ม.1 สวนกุหลาบฯ รุ่น 150",
       href: "/spotlight",
       icon: (
         <svg
