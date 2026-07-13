@@ -80,3 +80,10 @@ CREATE TABLE IF NOT EXISTS timeline (
   bullets TEXT NOT NULL,          -- JSON string array
   date TEXT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS menus (
+  id TEXT PRIMARY KEY,
+  label TEXT NOT NULL,
+  href TEXT NOT NULL,
+  sortOrder INTEGER NOT NULL
+);

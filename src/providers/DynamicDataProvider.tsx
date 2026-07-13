@@ -15,7 +15,23 @@ import { EventItem } from "@/types/event";
 import { Video } from "@/types/media";
 import { DownloadFile } from "@/types/download";
 import { TimelineEvent } from "@/types/timeline";
-import { GalleryImage } from "@/utils/galleryData"; // galleryImages uses the type directly
+import { GalleryImage } from "@/utils/galleryData";
+
+export interface MenuItem {
+  id: string;
+  label: string;
+  href: string;
+  sortOrder: number;
+}
+
+const defaultMenus: MenuItem[] = [
+  { id: "menu-1", label: "ความทรงจำ", href: "/stories", sortOrder: 1 },
+  { id: "menu-2", label: "แกลเลอรี", href: "/gallery", sortOrder: 2 },
+  { id: "menu-3", label: "วิดีโอ", href: "/media", sortOrder: 3 },
+  { id: "menu-4", label: "ทำเนียบรุ่น", href: "/spotlight", sortOrder: 4 },
+  { id: "menu-5", label: "ไทม์ไลน์", href: "/timeline", sortOrder: 5 },
+  { id: "menu-6", label: "กิจกรรม", href: "/events", sortOrder: 6 },
+];
 
 interface DynamicData {
   students: StudentProfile[];
@@ -25,6 +41,7 @@ interface DynamicData {
   downloads: DownloadFile[];
   timeline: TimelineEvent[];
   gallery: GalleryImage[];
+  menus: MenuItem[];
   loading: boolean;
   refreshData: () => Promise<void>;
 }
@@ -40,6 +57,7 @@ export function DynamicDataProvider({ children }: { children: React.ReactNode })
     downloads: DownloadFile[];
     timeline: TimelineEvent[];
     gallery: GalleryImage[];
+    menus: MenuItem[];
   }>({
     students: studentProfiles,
     posts: articles,
@@ -48,6 +66,7 @@ export function DynamicDataProvider({ children }: { children: React.ReactNode })
     downloads: downloadFiles,
     timeline: timelineEvents,
     gallery: galleryImages,
+    menus: defaultMenus,
   });
 
   const [loading, setLoading] = useState(true);
@@ -57,7 +76,6 @@ export function DynamicDataProvider({ children }: { children: React.ReactNode })
       const res = await fetch("/api/data");
       if (res.ok) {
         const json = await res.json();
-        // Fallback to static mock data if DB returns empty tables or missing fields
         setData({
           students: json.students?.length ? json.students : studentProfiles,
           posts: json.posts?.length ? json.posts : articles,
@@ -66,12 +84,13 @@ export function DynamicDataProvider({ children }: { children: React.ReactNode })
           downloads: json.downloads?.length ? json.downloads : downloadFiles,
           timeline: json.timeline?.length ? json.timeline : timelineEvents,
           gallery: json.gallery?.length ? json.gallery : galleryImages,
+          menus: json.menus?.length ? json.menus : defaultMenus,
         });
       }
     } catch (err) {
       console.warn(
         "Could not load dynamic data from Cloudflare D1. Falling back to local static files.",
-        err,
+        err
       );
     } finally {
       setLoading(false);

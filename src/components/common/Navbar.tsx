@@ -11,8 +11,10 @@ import { articles } from "@/utils/blogData";
 import { galleryImages } from "@/utils/galleryData";
 import { events } from "@/utils/eventData";
 import { studentProfiles } from "@/utils/spotlightData";
+import { useDynamicData } from "@/providers/DynamicDataProvider";
 
 export default function Navbar() {
+  const { menus } = useDynamicData();
   const [activeMenu, setActiveMenu] = useState<"platform" | "resources" | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -266,42 +268,15 @@ export default function Navbar() {
                 </button>
               </div>
 
-              <Link
-                href="/stories"
-                className="hover:bg-canvas-muted hover:text-text focus-visible:outline-brand rounded-full px-4 py-2 transition-all duration-150 focus-visible:outline focus-visible:outline-2"
-              >
-                ความทรงจำ
-              </Link>
-              <Link
-                href="/gallery"
-                className="hover:bg-canvas-muted hover:text-text focus-visible:outline-brand rounded-full px-4 py-2 transition-all duration-150 focus-visible:outline focus-visible:outline-2"
-              >
-                แกลเลอรี
-              </Link>
-              <Link
-                href="/media"
-                className="hover:bg-canvas-muted hover:text-text focus-visible:outline-brand rounded-full px-4 py-2 transition-all duration-150 focus-visible:outline focus-visible:outline-2"
-              >
-                วิดีโอ
-              </Link>
-              <Link
-                href="/spotlight"
-                className="hover:bg-canvas-muted hover:text-text focus-visible:outline-brand rounded-full px-4 py-2 transition-all duration-150 focus-visible:outline focus-visible:outline-2"
-              >
-                ทำเนียบรุ่น
-              </Link>
-              <Link
-                href="/timeline"
-                className="hover:bg-canvas-muted hover:text-text focus-visible:outline-brand rounded-full px-4 py-2 transition-all duration-150 focus-visible:outline focus-visible:outline-2"
-              >
-                ไทม์ไลน์
-              </Link>
-              <Link
-                href="/events"
-                className="hover:bg-canvas-muted hover:text-text focus-visible:outline-brand rounded-full px-4 py-2 transition-all duration-150 focus-visible:outline focus-visible:outline-2"
-              >
-                กิจกรรม
-              </Link>
+              {menus.map((item) => (
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  className="hover:bg-canvas-muted hover:text-text focus-visible:outline-brand rounded-full px-4 py-2 transition-all duration-150 focus-visible:outline focus-visible:outline-2"
+                >
+                  {item.label}
+                </Link>
+              ))}
             </nav>
           </div>
 

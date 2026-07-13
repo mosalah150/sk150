@@ -10,7 +10,7 @@ import Container from "@/components/ui/Container";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { useDynamicData } from "@/providers/DynamicDataProvider";
 
-type AdminTab = "Overview" | "Posts" | "Students" | "Events" | "Media" | "Downloads" | "Gallery";
+type AdminTab = "Overview" | "Posts" | "Students" | "Events" | "Media" | "Downloads" | "Gallery" | "Menus";
 
 const tabLabels: Record<AdminTab, string> = {
   Overview: "ภาพรวมระบบ",
@@ -20,10 +20,11 @@ const tabLabels: Record<AdminTab, string> = {
   Media: "วิดีโอ & คลิปสั้น",
   Downloads: "เอกสารดาวน์โหลด",
   Gallery: "คลังสื่อรูปภาพ (R2/KV)",
+  Menus: "จัดการเมนูนำทาง (Header)",
 };
 
 export default function AdminDashboardPage() {
-  const { posts, students, events, media, downloads, gallery, refreshData } = useDynamicData();
+  const { posts, students, events, media, downloads, gallery, menus, refreshData } = useDynamicData();
 
   // Auth States
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -256,6 +257,13 @@ export default function AdminDashboardPage() {
     fileSize: "",
     fileExtension: "PDF",
     href: "",
+  });
+
+  const [menuForm, setMenuForm] = useState({
+    id: "",
+    label: "",
+    href: "",
+    sortOrder: 1,
   });
 
   return (
@@ -1941,6 +1949,138 @@ export default function AdminDashboardPage() {
                                 ก๊อปปี้ลิงก์รูป
                               </button>
                             </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 8. MENUS EDITOR (เมนูนำทาง) */}
+                {activeTab === "Menus" && (
+                  <div className="border-border bg-canvas-muted space-y-8 rounded-[32px] border p-8">
+                    <SectionHeader
+                      title="ปรับแต่งเมนูนำทางบนเว็บหลัก"
+                      subtitle="เพิ่ม ลบ แก้ไขชื่อ หรือสลับลำดับการแสดงผลของเมนูหลักบนแถบเมนูด้านบน (Header)"
+                    />
+
+                    {/* Menu Form */}
+                    <form
+                      onSubmit={async (e) => {
+                        e.preventDefault();
+                        if (!menuForm.id || !menuForm.label || !menuForm.href) {
+                          alert("กรุณากรอกข้อมูลให้ครบถ้วน");
+                          return;
+                        }
+
+                        const success = await handleSaveData("menus", menuForm);
+                        if (success) {
+                          alert("บันทึกเมนูสำเร็จ!");
+                          setMenuForm({
+                            id: "",
+                            label: "",
+                            href: "",
+                            sortOrder: 1,
+                          });
+                        }
+                      }}
+                      className="bg-canvas border-border rounded-2xl border p-6 space-y-4"
+                    >
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">ID เมนู (ห้ามซ้ำ เช่น menu-7)</label>
+                          <input
+                            type="text"
+                            value={menuForm.id}
+                            onChange={(e) => setMenuForm({ ...menuForm, id: e.target.value })}
+                            placeholder="ตัวอย่าง: menu-7"
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">ลำดับเมนู (ตัวเลขน้อยอยู่ซ้าย)</label>
+                          <input
+                            type="number"
+                            value={menuForm.sortOrder}
+                            onChange={(e) => setMenuForm({ ...menuForm, sortOrder: Number(e.target.value) })}
+                            placeholder="ตัวอย่าง: 7"
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">ชื่อเมนูนำทาง (ภาษาไทย)</label>
+                          <input
+                            type="text"
+                            value={menuForm.label}
+                            onChange={(e) => setMenuForm({ ...menuForm, label: e.target.value })}
+                            placeholder="ตัวอย่าง: ช่องทางติดต่อ"
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">ลิงก์ปลายทาง (เช่น /contact หรือลิงก์ภายนอก)</label>
+                          <input
+                            type="text"
+                            value={menuForm.href}
+                            onChange={(e) => setMenuForm({ ...menuForm, href: e.target.value })}
+                            placeholder="ตัวอย่าง: /downloads"
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="flex justify-end gap-3 pt-2">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setMenuForm({
+                              id: "",
+                              label: "",
+                              href: "",
+                              sortOrder: 1,
+                            })
+                          }
+                          className="text-text-muted border rounded-xl px-4 py-2 text-xs font-bold"
+                        >
+                          ล้างฟอร์ม
+                        </button>
+                        <button
+                          type="submit"
+                          className="bg-brand text-canvas rounded-xl px-6 py-2.5 text-xs font-bold"
+                        >
+                          บันทึกเมนู
+                        </button>
+                      </div>
+                    </form>
+
+                    {/* Menus List */}
+                    <div className="space-y-3">
+                      <h4 className="text-text-muted text-sm font-bold">เมนูนำทางในระบบทั้งหมด ({menus.length})</h4>
+                      <div className="divide-y border border-border rounded-2xl bg-canvas overflow-hidden">
+                        {menus.map((item) => (
+                          <div key={item.id} className="p-4 flex items-center justify-between gap-4">
+                            <div>
+                              <span className="bg-brand/10 text-brand text-[10px] font-black px-2 py-0.5 rounded">ลำดับ: {item.sortOrder}</span>
+                              <h5 className="font-bold text-sm mt-1">{item.label}</h5>
+                              <p className="text-xs text-text-muted mt-0.5">ลิงก์: {item.href}</p>
+                            </div>
+                            <button
+                              onClick={() => {
+                                setMenuForm({
+                                  id: item.id,
+                                  label: item.label,
+                                  href: item.href,
+                                  sortOrder: item.sortOrder,
+                                });
+                                addLog(`[FORM] ดึงข้อมูลเมนูเพื่อแก้ไข: ${item.label}`);
+                              }}
+                              className="text-brand text-xs font-bold border border-brand/20 px-3 py-1.5 rounded-lg"
+                            >
+                              แก้ไข
+                            </button>
                           </div>
                         ))}
                       </div>

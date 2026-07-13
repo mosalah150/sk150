@@ -188,6 +188,25 @@ export default {
           studentsRes = await env.DB.prepare("SELECT * FROM students").all();
         }
 
+        // Check if menus exist, if not seed it
+        let menusRes = await env.DB.prepare("SELECT * FROM menus ORDER BY sortOrder ASC").all();
+        if (!menusRes.results || menusRes.results.length === 0) {
+          const defaultMenus = [
+            { id: "menu-1", label: "ความทรงจำ", href: "/stories", sortOrder: 1 },
+            { id: "menu-2", label: "แกลเลอรี", href: "/gallery", sortOrder: 2 },
+            { id: "menu-3", label: "วิดีโอ", href: "/media", sortOrder: 3 },
+            { id: "menu-4", label: "ทำเนียบรุ่น", href: "/spotlight", sortOrder: 4 },
+            { id: "menu-5", label: "ไทม์ไลน์", href: "/timeline", sortOrder: 5 },
+            { id: "menu-6", label: "กิจกรรม", href: "/events", sortOrder: 6 },
+          ];
+          for (const m of defaultMenus) {
+            await env.DB.prepare("INSERT INTO menus (id, label, href, sortOrder) VALUES (?, ?, ?, ?)")
+              .bind(m.id, m.label, m.href, m.sortOrder)
+              .run();
+          }
+          menusRes = await env.DB.prepare("SELECT * FROM menus ORDER BY sortOrder ASC").all();
+        }
+
         // Fetch other tables
         const postsRes = await env.DB.prepare("SELECT * FROM posts").all();
         const eventsRes = await env.DB.prepare("SELECT * FROM events").all();
@@ -242,6 +261,7 @@ export default {
             downloads: downloadsRes.results,
             timeline: mappedTimeline,
             gallery: galleryRes.results,
+            menus: menusRes.results,
           }),
           { headers: { ...headers, "Content-Type": "application/json" } },
         );
@@ -434,6 +454,17 @@ export default {
               data.fileSize,
               data.fileExtension,
               data.href,
+            )
+            .run();
+        } else if (type === "menus") {
+          await env.DB.prepare(
+            "INSERT INTO menus (id, label, href, sortOrder) VALUES (?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET label=excluded.label, href=excluded.href, sortOrder=excluded.sortOrder",
+          )
+            .bind(
+              data.id,
+              data.label,
+              data.href,
+              Number(data.sortOrder),
             )
             .run();
         } else {
