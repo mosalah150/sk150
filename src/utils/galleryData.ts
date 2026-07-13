@@ -1,0 +1,133 @@
+export interface GalleryImage {
+  id: string;
+  title: string;
+  description: string;
+  imageSrc: string;
+  album: "Visual Art" | "Athletics" | "Workspaces";
+  aspectRatio: "video" | "square" | "portrait" | "wide";
+  location?: string;
+  date?: string;
+}
+
+export const galleryImages: GalleryImage[] = [
+  {
+    id: "1",
+    title: "System Prototyping Analytics",
+    description: "Sleek glass holographic interface prototype displaying 3D graphs.",
+    imageSrc: "/assets/gallery_2.png",
+    album: "Workspaces",
+    aspectRatio: "video",
+    location: "Systems Lab",
+    date: "July 2026",
+  },
+  {
+    id: "2",
+    title: "Digital Forms & Shapes",
+    description: "Abstract glassmorphic elements showcasing glowing lines and soft reflections.",
+    imageSrc: "/assets/gallery_1.png",
+    album: "Visual Art",
+    aspectRatio: "portrait",
+    location: "Studio A",
+    date: "June 2026",
+  },
+  {
+    id: "3",
+    title: "V8 Isolation Layer",
+    description: "Graphic graphite background texture with neon violet lighting streaks.",
+    imageSrc: "/assets/hero_bg.png",
+    album: "Visual Art",
+    aspectRatio: "wide",
+    location: "Platform Node",
+    date: "May 2026",
+  },
+  {
+    id: "4",
+    title: "Edge Sprint Study",
+    description: "Sprinting athlete motion analysis using speed streaks and dynamic flares.",
+    imageSrc: "/assets/gallery_3.png",
+    album: "Athletics",
+    aspectRatio: "video",
+    location: "Track Field",
+    date: "July 2026",
+  },
+  {
+    id: "5",
+    title: "Core Infrastructure Hub",
+    description: "Maya Henderson compiling next configurations in a high-contrast code space.",
+    imageSrc: "/assets/spotlight.png",
+    album: "Workspaces",
+    aspectRatio: "portrait",
+    location: "Design Desk",
+    date: "July 2026",
+  },
+  {
+    id: "6",
+    title: "Holographic Glass Analysis",
+    description: "Interactive translucent tablets rendering computational graphs.",
+    imageSrc: "/assets/gallery_2.png",
+    album: "Workspaces",
+    aspectRatio: "square",
+    location: "Research Wing",
+    date: "June 2026",
+  },
+  {
+    id: "7",
+    title: "Glass Structures at Sunset",
+    description: "Futuristic architectural mockup showing complex glass geometric frames.",
+    imageSrc: "/assets/gallery_4.png",
+    album: "Visual Art",
+    aspectRatio: "video",
+    location: "Architecture Lab",
+    date: "July 2026",
+  },
+  {
+    id: "8",
+    title: "Collaborative Design Session",
+    description: "Student group coordinating whiteboard wireframes and interactive flows.",
+    imageSrc: "/assets/gallery_5.png",
+    album: "Workspaces",
+    aspectRatio: "square",
+    location: "Studio B",
+    date: "July 2026",
+  },
+  {
+    id: "9",
+    title: "Geometric Harmony",
+    description: "Floating dimensional translucent frames showcasing purple reflections.",
+    imageSrc: "/assets/gallery_1.png",
+    album: "Visual Art",
+    aspectRatio: "square",
+    location: "Studio A",
+    date: "June 2026",
+  },
+  {
+    id: "10",
+    title: "Speed Curve Study",
+    description: "Motion blur capture tracking sprints along neon lines.",
+    imageSrc: "/assets/gallery_3.png",
+    album: "Athletics",
+    aspectRatio: "portrait",
+    location: "Track Field",
+    date: "July 2026",
+  },
+  {
+    id: "11",
+    title: "Structural Glass Forms",
+    description: "Close-up rendering of geometric reflection layers on building prototypes.",
+    imageSrc: "/assets/gallery_4.png",
+    album: "Visual Art",
+    aspectRatio: "square",
+    location: "Architecture Lab",
+    date: "July 2026",
+  },
+  {
+    id: "12",
+    title: "Whiteboard Sprint Planning",
+    description: "Close-up on team layout mapping iterative user models.",
+    imageSrc: "/assets/gallery_5.png",
+    album: "Workspaces",
+    aspectRatio: "video",
+    location: "Studio B",
+    date: "July 2026",
+  },
+];

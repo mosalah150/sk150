@@ -1,0 +1,7 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "sk150"
+compatibility_date = "2024-11-01"
+compatibility_flags = [ "nodejs_compat" ]
+
+[assets]
+directory = "./out"

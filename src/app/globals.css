@@ -1,26 +1,134 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Color System Tokens */
+  --color-brand-light: oklch(0.55 0.22 281.3);
+  --color-brand-dark: oklch(0.72 0.16 281.3);
+  --color-brand: var(--color-brand-light);
+
+  --color-canvas-light: oklch(0.99 0.002 281.3);
+  --color-canvas-dark: oklch(0.12 0.008 281.3);
+  --color-canvas: var(--color-canvas-light);
+
+  --color-canvas-muted-light: oklch(0.96 0.003 281.3);
+  --color-canvas-muted-dark: oklch(0.16 0.01 281.3);
+  --color-canvas-muted: var(--color-canvas-muted-light);
+
+  --color-text-light: oklch(0.18 0.01 281.3);
+  --color-text-dark: oklch(0.93 0.005 281.3);
+  --color-text: var(--color-text-light);
+
+  --color-text-muted-light: oklch(0.52 0.01 281.3);
+  --color-text-muted-dark: oklch(0.68 0.008 281.3);
+  --color-text-muted: var(--color-text-muted-light);
+
+  --color-border-light: oklch(0.91 0.005 281.3);
+  --color-border-dark: oklch(0.22 0.01 281.3);
+  --color-border: var(--color-border-light);
+
+  --scrollbar-thumb-light: oklch(0.82 0.005 281.3);
+  --scrollbar-thumb-dark: oklch(0.32 0.01 281.3);
+  --scrollbar-thumb: var(--scrollbar-thumb-light);
+
+  --scrollbar-track-light: oklch(0.96 0.003 281.3);
+  --scrollbar-track-dark: oklch(0.16 0.01 281.3);
+  --scrollbar-track: var(--scrollbar-track-light);
+
+  /* Fallback for browsers without light-dark support */
+  @media (prefers-color-scheme: dark) {
+    --color-brand: var(--color-brand-dark);
+    --color-canvas: var(--color-canvas-dark);
+    --color-canvas-muted: var(--color-canvas-muted-dark);
+    --color-text: var(--color-text-dark);
+    --color-text-muted: var(--color-text-muted-dark);
+    --color-border: var(--color-border-dark);
+    --scrollbar-thumb: var(--scrollbar-thumb-dark);
+    --scrollbar-track: var(--scrollbar-track-dark);
+  }
+
+  /* Standard CSS light-dark() evaluation if supported */
+  @supports (color: light-dark(white, black)) {
+    --color-brand: light-dark(var(--color-brand-light), var(--color-brand-dark));
+    --color-canvas: light-dark(var(--color-canvas-light), var(--color-canvas-dark));
+    --color-canvas-muted: light-dark(
+      var(--color-canvas-muted-light),
+      var(--color-canvas-muted-dark)
+    );
+    --color-text: light-dark(var(--color-text-light), var(--color-text-dark));
+    --color-text-muted: light-dark(var(--color-text-muted-light), var(--color-text-muted-dark));
+    --color-border: light-dark(var(--color-border-light), var(--color-border-dark));
+    --scrollbar-thumb: light-dark(var(--scrollbar-thumb-light), var(--scrollbar-thumb-dark));
+    --scrollbar-track: light-dark(var(--scrollbar-track-light), var(--scrollbar-track-dark));
+  }
+
+  /* Automatically adapt native UI to user preferences */
+  color-scheme: light dark;
+  accent-color: var(--color-brand);
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+/* Force dark-mode selectors for HTML manual toggling if pinned */
+html.dark {
+  --color-brand: var(--color-brand-dark) !important;
+  --color-canvas: var(--color-canvas-dark) !important;
+  --color-canvas-muted: var(--color-canvas-muted-dark) !important;
+  --color-text: var(--color-text-dark) !important;
+  --color-text-muted: var(--color-text-muted-dark) !important;
+  --color-border: var(--color-border-dark) !important;
+  --scrollbar-thumb: var(--scrollbar-thumb-dark) !important;
+  --scrollbar-track: var(--scrollbar-track-dark) !important;
+}
+
+html.light {
+  --color-brand: var(--color-brand-light) !important;
+  --color-canvas: var(--color-canvas-light) !important;
+  --color-canvas-muted: var(--color-canvas-muted-light) !important;
+  --color-text: var(--color-text-light) !important;
+  --color-text-muted: var(--color-text-muted-light) !important;
+  --color-border: var(--color-border-light) !important;
+  --scrollbar-thumb: var(--scrollbar-thumb-light) !important;
+  --scrollbar-track: var(--scrollbar-track-light) !important;
+}
+
+/* Webkit Scrollbar Fallback */
+@supports not (scrollbar-color: auto) {
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+  }
+}
+
+/* Tailwind Theme Mapping */
+@theme {
+  --color-brand: var(--color-brand);
+  --color-canvas: var(--color-canvas);
+  --color-canvas-muted: var(--color-canvas-muted);
+  --color-text: var(--color-text);
+  --color-text-muted: var(--color-text-muted);
+  --color-border: var(--color-border);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* Base resets & layouts */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-canvas);
+  color: var(--color-text);
+  font-family:
+    var(--font-sans),
+    system-ui,
+    -apple-system,
+    sans-serif;
+  transition:
+    background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
