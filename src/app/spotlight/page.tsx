@@ -1,14 +1,23 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Container from "@/components/ui/Container";
 import { studentProfiles } from "@/utils/spotlightData";
+import { useDynamicData } from "@/providers/DynamicDataProvider";
 
 export default function SpotlightPage() {
-  const [activeStudentId, setActiveStudentId] = useState(studentProfiles[0].id);
+  const { students } = useDynamicData();
+  const [activeStudentId, setActiveStudentId] = useState(students[0]?.id || "");
 
-  const activeStudent = studentProfiles.find((s) => s.id === activeStudentId) || studentProfiles[0];
+  useEffect(() => {
+    if (students.length > 0 && !activeStudentId) {
+      setActiveStudentId(students[0].id);
+    }
+  }, [students, activeStudentId]);
+
+  const activeStudent =
+    students.find((s) => s.id === activeStudentId) || students[0] || studentProfiles[0];
 
   return (
     <div className="bg-canvas text-text flex-1 pb-24 transition-colors duration-200">
@@ -29,7 +38,7 @@ export default function SpotlightPage() {
 
           {/* Student Profile Selector Bar */}
           <div className="flex scrollbar-none items-center gap-2 overflow-x-auto pb-4">
-            {studentProfiles.map((student) => (
+            {students.map((student) => (
               <button
                 key={student.id}
                 onClick={() => setActiveStudentId(student.id)}

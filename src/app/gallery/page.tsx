@@ -4,7 +4,8 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import Container from "@/components/ui/Container";
 import SectionHeader from "@/components/ui/SectionHeader";
-import { galleryImages, GalleryImage } from "@/utils/galleryData";
+import { GalleryImage } from "@/utils/galleryData";
+import { useDynamicData } from "@/providers/DynamicDataProvider";
 
 type AlbumFilter =
   | "All"
@@ -26,10 +27,15 @@ const albumLabels: Record<AlbumFilter, string> = {
 };
 
 export default function GalleryPage() {
+  const { gallery } = useDynamicData();
   const [activeAlbum, setActiveAlbum] = useState<AlbumFilter>("All");
-  const [images, setImages] = useState<GalleryImage[]>(galleryImages);
+  const [images, setImages] = useState<GalleryImage[]>(gallery);
   const [loading, setLoading] = useState(false);
   const [loadCount, setLoadCount] = useState(0);
+
+  useEffect(() => {
+    setImages(gallery);
+  }, [gallery]);
 
   // Lightbox State
   const [activePhotoIndex, setActivePhotoIndex] = useState<number | null>(null);
@@ -46,7 +52,7 @@ export default function GalleryPage() {
     setLoading(true);
     setTimeout(() => {
       // Create duplicate copy of items with unique IDs
-      const nextBatch = galleryImages.map((img) => ({
+      const nextBatch = gallery.map((img) => ({
         ...img,
         id: `${img.id}-load-${loadCount}`,
       }));
@@ -55,7 +61,7 @@ export default function GalleryPage() {
       setLoadCount((prev) => prev + 1);
       setLoading(false);
     }, 1000);
-  }, [loading, loadCount]);
+  }, [loading, loadCount, gallery]);
 
   // Setup Intersection Observer on Sentinel element
   useEffect(() => {
@@ -121,9 +127,9 @@ export default function GalleryPage() {
 
   // Reset page catalog state when album filter changes
   useEffect(() => {
-    setImages(galleryImages);
+    setImages(gallery);
     setLoadCount(0);
-  }, [activeAlbum]);
+  }, [activeAlbum, gallery]);
 
   const activePhoto = activePhotoIndex !== null ? filteredImages[activePhotoIndex] : null;
   const albums: AlbumFilter[] = [

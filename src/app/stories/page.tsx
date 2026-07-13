@@ -7,7 +7,7 @@ import Container from "@/components/ui/Container";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
-import { articles } from "@/utils/blogData";
+import { useDynamicData } from "@/providers/DynamicDataProvider";
 
 type CategoryFilter = "All" | "วันจบการศึกษา" | "งานกีฬาสี" | "ค่ายดนตรี" | "วันแรกในโรงเรียน";
 
@@ -20,13 +20,14 @@ const filterLabels: Record<CategoryFilter, string> = {
 };
 
 export default function StoriesPage() {
+  const { posts } = useDynamicData();
   const [activeCategory, setActiveCategory] = useState<CategoryFilter>("All");
 
   // The first article is designated as the Featured Story
-  const featuredArticle = articles[0];
+  const featuredArticle = posts[0];
 
   // Filter articles based on active category selection (excluding the featured one if category is "All")
-  const filteredArticles = articles.filter((article) => {
+  const filteredArticles = posts.filter((article) => {
     const matchesCategory = activeCategory === "All" || article.category === activeCategory;
     return matchesCategory;
   });

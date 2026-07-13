@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Container from "@/components/ui/Container";
 import SectionHeader from "@/components/ui/SectionHeader";
-import { videos } from "@/utils/mediaData";
+import { useDynamicData } from "@/providers/DynamicDataProvider";
 
 type CategoryFilter =
   | "All"
@@ -24,12 +24,13 @@ const filterLabels: Record<CategoryFilter, string> = {
 };
 
 export default function MediaCenterPage() {
+  const { media } = useDynamicData();
   const [activeCategory, setActiveCategory] = useState<CategoryFilter>("All");
 
   // Track playing video IDs to swap placeholder cover cards with actual iframe players
   const [playingVideoIds, setPlayingVideoIds] = useState<Record<string, boolean>>({});
 
-  const featuredVideo = videos[0];
+  const featuredVideo = media[0];
 
   const handlePlayClick = (id: string) => {
     setPlayingVideoIds((prev) => ({
@@ -38,7 +39,7 @@ export default function MediaCenterPage() {
     }));
   };
 
-  const filteredVideos = videos.filter(
+  const filteredVideos = media.filter(
     (video) => activeCategory === "All" || video.category === activeCategory,
   );
 

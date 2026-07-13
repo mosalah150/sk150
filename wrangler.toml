@@ -1,7 +1,17 @@
 #:schema node_modules/wrangler/config-schema.json
 name = "sk150"
+main = "src/worker.ts"
 compatibility_date = "2024-11-01"
 compatibility_flags = [ "nodejs_compat" ]
 
 [assets]
 directory = "./out"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "sk150-db"
+database_id = "e53ae132-35b6-4898-b5c7-51fa2aabcff2"
+
+[[kv_namespaces]]
+binding = "ASSETS_KV"
+id = "2647cfe671f34a018703119cd3dbb9f1"

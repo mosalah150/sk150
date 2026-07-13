@@ -5,9 +5,10 @@ import Image from "next/image";
 import Container from "@/components/ui/Container";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Button from "@/components/ui/Button";
-import { events } from "@/utils/eventData";
+import { useDynamicData } from "@/providers/DynamicDataProvider";
 
 export default function EventsPage() {
+  const { events } = useDynamicData();
   const upcomingEvents = events.filter((e) => e.type === "upcoming");
   const pastEvents = events.filter((e) => e.type === "past");
   const nextEvent = upcomingEvents[0]; // Nearest upcoming event for countdown

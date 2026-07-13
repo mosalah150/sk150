@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -6,9 +8,40 @@ import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Breadcrumb from "@/components/ui/Breadcrumb";
+import { useDynamicData } from "@/providers/DynamicDataProvider";
 
 export default function Home() {
   const breadcrumbItems = [{ label: "หน้าแรก", href: "/" }, { label: "ภาพรวมโครงการ" }];
+  const { posts, events, media, students, gallery, timeline } = useDynamicData();
+
+  // Pick top items
+  const spotlightStudent = students[0] || {
+    name: "เมษา ศิริวัฒนา (เมย์)",
+    title: "ประธานรุ่น & ประธานสภานักเรียน รุ่น 150",
+    imageSrc: "/assets/spotlight.png",
+    highlightQuote:
+      "การทำทำเนียบรุ่นและหนังสือรุ่นครั้งนี้เป็นความร่วมมือร่วมใจของพวกเราทุกคน การพัฒนาหน้าเว็บนี้ทำให้เพื่อนๆ สามารถกลับมาเชื่อมต่อ ค้นหา และช่วยเหลือกันได้เสมอ ไม่ว่าหลังจากนี้พวกเราจะแยกย้ายไปทำอะไรที่ไหนในโลกก็ตาม",
+    description:
+      "เมย์ทำหน้าที่คอยประสานงานกิจกรรมรุ่นตลอดมัธยมศึกษาตอนปลาย และเป็นหัวเรือใหญ่รวบรวมรูปภาพบันทึกความทรงจำ ตั้งแต่งานกีฬาสี ค่ายทัศนศึกษา จนถึงนาทีจบการศึกษาปัจฉิมนิเทศ",
+  };
+
+  const topPosts = posts.slice(0, 3);
+  const upcomingEvents = events.filter((e) => e.type === "upcoming").slice(0, 2);
+  const topGallery = gallery.slice(0, 3);
+  const topVideos = media.slice(0, 3);
+  const topTimeline = timeline.slice(0, 3);
+
+  // Map bento classes
+  const getBentoClass = (idx: number) => {
+    if (idx === 0) return "md:col-span-2";
+    if (idx === 1) return "md:col-span-1";
+    return "md:col-span-3";
+  };
+
+  const getBentoAspect = (idx: number) => {
+    if (idx === 0 || idx === 2) return "wide";
+    return "portrait";
+  };
 
   return (
     <main
@@ -23,7 +56,7 @@ export default function Home() {
 
       {/* 1. Hero Section */}
       <section className="relative flex min-h-[90vh] items-center justify-center overflow-hidden py-24 sm:py-32">
-        {/* LCP Optimized Background Image */}
+        {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
             src="/assets/hero_bg.png"
@@ -34,7 +67,7 @@ export default function Home() {
             className="object-cover opacity-80 dark:opacity-60"
             sizes="100vw"
           />
-          {/* Subtle dark overlays for premium readability */}
+          {/* Subtle dark overlays */}
           <div className="from-canvas/90 via-canvas/30 absolute inset-0 bg-gradient-to-r to-transparent" />
         </div>
 
@@ -78,8 +111,8 @@ export default function Home() {
             {/* Left Col - Portrait */}
             <div className="border-border relative aspect-[3/4] w-full overflow-hidden rounded-3xl border shadow-xl lg:col-span-5">
               <Image
-                src="/assets/spotlight.png"
-                alt="Student developer portrait"
+                src={spotlightStudent.imageSrc}
+                alt={spotlightStudent.name}
                 fill
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 40vw"
@@ -93,22 +126,18 @@ export default function Home() {
                 แนะนำศิษย์เก่าเด่น
               </span>
               <h3 className="text-text mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
-                เมษา ศิริวัฒนา (เมย์)
+                {spotlightStudent.name}
               </h3>
-              <p className="text-text-muted mt-1 text-sm font-semibold">
-                ประธานรุ่น & ประธานสภานักเรียน รุ่น 150
-              </p>
+              <p className="text-text-muted mt-1 text-sm font-semibold">{spotlightStudent.title}</p>
 
               <blockquote className="border-brand text-text mt-8 border-l-4 pl-6 font-serif text-xl leading-relaxed italic">
-                &ldquo;การทำทำเนียบรุ่นและหนังสือรุ่นครั้งนี้เป็นความร่วมมือร่วมใจของพวกเราทุกคน
-                การพัฒนาหน้าเว็บนี้ทำให้เพื่อนๆ สามารถกลับมาเชื่อมต่อ ค้นหา และช่วยเหลือกันได้เสมอ
-                ไม่ว่าหลังจากนี้พวกเราจะแยกย้ายไปทำอะไรที่ไหนในโลกก็ตาม&rdquo;
+                &ldquo;{spotlightStudent.highlightQuote}&rdquo;
               </blockquote>
 
               <p className="text-text-muted mt-6 text-base leading-relaxed">
-                เมย์ทำหน้าที่คอยประสานงานกิจกรรมรุ่นตลอดมัธยมศึกษาตอนปลาย
-                และเป็นหัวเรือใหญ่รวบรวมรูปภาพบันทึกความทรงจำ ตั้งแต่งานกีฬาสี ค่ายทัศนศึกษา
-                จนถึงนาทีจบการศึกษาปัจฉิมนิเทศ
+                {spotlightStudent.achievement} &bull; {spotlightStudent.name}{" "}
+                ได้ช่วยรวบรวมรูปภาพบันทึกความทรงจำ ตั้งแต่งานกีฬาสี ค่ายทัศนศึกษา
+                จนถึงนาทีจบการศึกษาปัจฉิมนิเทศร่วมรุ่น 150
               </p>
 
               <div className="mt-8">
@@ -133,33 +162,18 @@ export default function Home() {
             ctaHref="/stories"
           />
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            <Card
-              title="บันทึกวันปัจฉิมนิเทศ รุ่น 150: เส้นทางและความทรงจำที่ไม่มีวันเลือนหาย"
-              description="สรุปภาพบรรยากาศพิธีมอบประกาศนียบัตร คำกล่าวตัวแทนรุ่น และก้าวเดินสุดท้ายในรั้วโรงเรียนร่วมกันของพวกเรา"
-              date="10 กรกฎาคม 2026"
-              readTime="อ่าน 5 นาที"
-              badge="วันสำเร็จการศึกษา"
-              href="/stories/class-of-150-graduation-day-recap"
-              aspectRatio="video"
-            />
-            <Card
-              title="ควันหลงงานกีฬาสีประจำปี: เมื่อสีแดงคว้าถ้วยรางวัลชนะเลิศ"
-              description="ย้อนชมภาพการแข่งขันวิ่งผลัดสุดดุเดือด ขบวนพาเหรดอันตระการตา และนาทีคว้าถ้วยรางวัลแชมป์ของกองเชียร์สีแดง"
-              date="08 กรกฎาคม 2026"
-              readTime="อ่าน 8 นาที"
-              badge="งานกีฬาสี"
-              href="/stories/sk150-annual-sports-day-highlights"
-              aspectRatio="video"
-            />
-            <Card
-              title="ย้อนรอยค่ายดนตรีฤดูร้อน: เบื้องหลังท่วงทำนองในหุบเขา"
-              description="บันทึกความทรงจำค่ายดนตรีและศิลปะ 3 วัน 2 คืนในหุบเขาอันเงียบสงบ กิจกรรมรอบกองไฟ และการแสดงดนตรีส่งท้ายฤดูร้อน"
-              date="05 กรกฎาคม 2026"
-              readTime="อ่าน 4 นาที"
-              badge="ค่ายดนตรี"
-              href="/stories/revisiting-our-summer-music-camp"
-              aspectRatio="video"
-            />
+            {topPosts.map((post) => (
+              <Card
+                key={post.id}
+                title={post.title}
+                description={post.description}
+                date={post.date}
+                readTime={post.readTime}
+                badge={post.category}
+                href={`/stories/${post.slug}`}
+                aspectRatio="video"
+              />
+            ))}
           </div>
         </Container>
       </section>
@@ -177,69 +191,43 @@ export default function Home() {
             ctaHref="/events"
           />
           <div className="grid gap-8 lg:grid-cols-2">
-            {/* Event Card 1 */}
-            <div className="border-border bg-canvas group hover:border-text-muted relative flex flex-col gap-6 overflow-hidden rounded-3xl border p-8 transition-all duration-300 sm:flex-row">
-              <div className="bg-brand/10 border-brand/20 text-brand flex h-20 w-20 flex-shrink-0 flex-col items-center justify-center rounded-2xl border">
-                <span className="text-2xl font-black">24</span>
-                <span className="text-xs font-bold tracking-widest uppercase">ก.ค.</span>
-              </div>
-              <div className="flex flex-1 flex-col justify-between">
-                <div>
-                  <span className="text-brand text-xs font-semibold tracking-wider uppercase">
-                    พบปะสังสรรค์
-                  </span>
-                  <h3 className="text-text mt-1 text-2xl font-bold tracking-tight">
-                    งานคืนสู่เหย้าศิษย์เก่า รุ่น 150
-                  </h3>
-                  <p className="text-text-muted mt-2 text-sm leading-relaxed">
-                    งานเลี้ยงสังสรรค์รวมรุ่นหลังจบการศึกษา ร่วมอัปเดตชีวิตการทำงานและมหาวิทยาลัย
-                    พร้อมรับประทานอาหารเย็นร่วมกันที่หอประชุมโรงเรียน
-                  </p>
+            {upcomingEvents.map((event) => {
+              const [day, month] = event.date.split(" ");
+              return (
+                <div
+                  key={event.id}
+                  className="border-border bg-canvas group hover:border-text-muted relative flex flex-col gap-6 overflow-hidden rounded-3xl border p-8 transition-all duration-300 sm:flex-row"
+                >
+                  <div className="bg-brand/10 border-brand/20 text-brand flex h-20 w-20 flex-shrink-0 flex-col items-center justify-center rounded-2xl border">
+                    <span className="text-2xl font-black">{day}</span>
+                    <span className="text-xs font-bold tracking-widest uppercase">{month}</span>
+                  </div>
+                  <div className="flex flex-1 flex-col justify-between">
+                    <div>
+                      <span className="text-brand text-xs font-semibold tracking-wider uppercase">
+                        {event.phase}
+                      </span>
+                      <h3 className="text-text mt-1 text-2xl font-bold tracking-tight">
+                        {event.title}
+                      </h3>
+                      <p className="text-text-muted mt-2 text-sm leading-relaxed">
+                        {event.description}
+                      </p>
+                    </div>
+                    <div className="mt-6 flex items-center justify-between">
+                      <span className="text-text-muted text-xs font-medium">
+                        {event.time} &bull; {event.location}
+                      </span>
+                      <Link href="/events">
+                        <Button variant="outline" size="sm">
+                          ลงทะเบียนร่วมงาน
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
                 </div>
-                <div className="mt-6 flex items-center justify-between">
-                  <span className="text-text-muted text-xs font-medium">
-                    18:00 น. &bull; หอประชุมใหญ่โรงเรียน
-                  </span>
-                  <Link href="/events">
-                    <Button variant="outline" size="sm">
-                      ลงทะเบียนร่วมงาน
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            </div>
-
-            {/* Event Card 2 */}
-            <div className="border-border bg-canvas group hover:border-text-muted relative flex flex-col gap-6 overflow-hidden rounded-3xl border p-8 transition-all duration-300 sm:flex-row">
-              <div className="bg-brand/10 border-brand/20 text-brand flex h-20 w-20 flex-shrink-0 flex-col items-center justify-center rounded-2xl border">
-                <span className="text-2xl font-black">12</span>
-                <span className="text-xs font-bold tracking-widest uppercase">ส.ค.</span>
-              </div>
-              <div className="flex flex-1 flex-col justify-between">
-                <div>
-                  <span className="text-brand text-xs font-semibold tracking-wider uppercase">
-                    เพื่อสังคม
-                  </span>
-                  <h3 className="text-text mt-1 text-2xl font-bold tracking-tight">
-                    กิจกรรมแนะแนวน้อง ม.ปลาย
-                  </h3>
-                  <p className="text-text-muted mt-2 text-sm leading-relaxed">
-                    พี่แบ่งปันเทคนิคการทำพอร์ตโฟลิโอ รีวิวคณะวิชาต่างๆ มหาวิทยาลัยยอดนิยม
-                    และการเตรียมตัวสอบเข้าให้แก่น้องๆ ในโรงเรียนปัจจุบัน
-                  </p>
-                </div>
-                <div className="mt-6 flex items-center justify-between">
-                  <span className="text-text-muted text-xs font-medium">
-                    13:00 - 16:30 น. &bull; หอประชุม อาคาร 3
-                  </span>
-                  <Link href="/events">
-                    <Button variant="outline" size="sm">
-                      ลงชื่อวิทยากร
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            </div>
+              );
+            })}
           </div>
         </Container>
       </section>
@@ -252,38 +240,18 @@ export default function Home() {
             subtitle="รวบรวมภาพบันทึกจังหวะชีวิตกิจกรรม วัยเรียน และความร่วมมือในผลงานรุ่นต่างๆ"
           />
           <div className="grid gap-8 md:grid-cols-3">
-            {/* Bento Card 1 - 2 cols */}
-            <Card
-              title="การเรียนการสอนและปฏิบัติการแล็บวิทย์"
-              description="ภาพจำลองบันทึกจังหวะการทดลองทางเคมีและปฏิบัติการวิชาการวิทยาร่วมห้องเรียน"
-              imageSrc="/assets/gallery_2.png"
-              imageAlt="Chemistry class lab workspace"
-              badge="วิชาการและวิจัย"
-              aspectRatio="wide"
-              className="md:col-span-2"
-            />
-
-            {/* Bento Card 2 - 1 col */}
-            <Card
-              title="นิทรรศการผลงานศิลปะทำมือ"
-              description="ภาพระบายสีน้ำและศิลปะออกแบบจากวิชาสุนทรียศาสตร์ประจำรุ่น 150"
-              imageSrc="/assets/gallery_1.png"
-              imageAlt="Abstract geometric art"
-              badge="นิทรรศการศิลปะ"
-              aspectRatio="portrait"
-              className="md:col-span-1"
-            />
-
-            {/* Bento Card 3 - 3 cols */}
-            <Card
-              title="การแข่งขันกรีฑาและกีฬาสีประจำปี"
-              description="บันทึกภาพแอคชั่นความเร็ว สปิริตเชียร์ และชัยชนะร่วมประวัติศาสตร์ของงานกีฬาสี"
-              imageSrc="/assets/gallery_3.png"
-              imageAlt="Athletes running on track field"
-              badge="การแข่งขันกีฬา"
-              aspectRatio="wide"
-              className="md:col-span-3"
-            />
+            {topGallery.map((item, idx) => (
+              <Card
+                key={item.id}
+                title={item.title}
+                description={item.description}
+                imageSrc={item.imageSrc}
+                imageAlt={item.title}
+                badge={item.album}
+                aspectRatio={getBentoAspect(idx)}
+                className={getBentoClass(idx)}
+              />
+            ))}
           </div>
         </Container>
       </section>
@@ -301,107 +269,40 @@ export default function Home() {
             ctaHref="/media"
           />
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {/* Video Card 1 */}
-            <div className="border-border bg-canvas group hover:border-text-muted flex flex-col overflow-hidden rounded-3xl border transition-all duration-300 hover:-translate-y-1">
-              <div className="relative flex aspect-video items-center justify-center overflow-hidden bg-neutral-900">
-                <Image
-                  src="/assets/gallery_2.png"
-                  alt="Video thumbnail"
-                  fill
-                  loading="lazy"
-                  className="object-cover opacity-70 transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                  <div className="bg-canvas/90 border-border text-text flex h-14 w-14 items-center justify-center rounded-full border shadow-md backdrop-blur-sm transition-transform duration-300 group-hover:scale-110">
-                    <svg className="ml-1 h-6 w-6 fill-current" viewBox="0 0 24 24">
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
+            {topVideos.map((video) => (
+              <div
+                key={video.id}
+                className="border-border bg-canvas group hover:border-text-muted flex flex-col overflow-hidden rounded-3xl border transition-all duration-300 hover:-translate-y-1"
+              >
+                <div className="relative flex aspect-video items-center justify-center overflow-hidden bg-neutral-900">
+                  <Image
+                    src={video.coverImage}
+                    alt={video.title}
+                    fill
+                    loading="lazy"
+                    className="object-cover opacity-70 transition-transform duration-500 group-hover:scale-105"
+                    sizes="(max-width: 640px) 100vw, 33vw"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                    <div className="bg-canvas/90 border-border text-text flex h-14 w-14 items-center justify-center rounded-full border shadow-md backdrop-blur-sm transition-transform duration-300 group-hover:scale-110">
+                      <svg className="ml-1 h-6 w-6 fill-current" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                    </div>
                   </div>
+                  <span className="absolute right-4 bottom-4 rounded bg-black/70 px-2 py-1 text-xs font-semibold text-white">
+                    {video.duration}
+                  </span>
                 </div>
-                <span className="absolute right-4 bottom-4 rounded bg-black/70 px-2 py-1 text-xs font-semibold text-white">
-                  12:45
-                </span>
-              </div>
-              <div className="p-6">
-                <span className="text-brand text-xs font-semibold tracking-wider uppercase">
-                  ปัจฉิมนิเทศ
-                </span>
-                <h4 className="text-text mt-1 line-clamp-2 text-lg font-bold">
-                  บันทึกเทปพิธีปัจฉิมนิเทศสำเร็จการศึกษา
-                </h4>
-                <p className="text-text-muted mt-2 line-clamp-2 text-sm">
-                  ชมความประทับใจ การรับประกาศนียบัตรอย่างเป็นทางการ และบูมอำลาเพื่อนของรุ่น 150
-                </p>
-              </div>
-            </div>
-
-            {/* Video Card 2 */}
-            <div className="border-border bg-canvas group hover:border-text-muted flex flex-col overflow-hidden rounded-3xl border transition-all duration-300 hover:-translate-y-1">
-              <div className="relative flex aspect-video items-center justify-center overflow-hidden bg-neutral-900">
-                <Image
-                  src="/assets/gallery_3.png"
-                  alt="Video thumbnail"
-                  fill
-                  loading="lazy"
-                  className="object-cover opacity-70 transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                  <div className="bg-canvas/90 border-border text-text flex h-14 w-14 items-center justify-center rounded-full border shadow-md backdrop-blur-sm transition-transform duration-300 group-hover:scale-110">
-                    <svg className="ml-1 h-6 w-6 fill-current" viewBox="0 0 24 24">
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                  </div>
+                <div className="p-6">
+                  <span className="text-brand text-xs font-semibold tracking-wider uppercase">
+                    {video.category}
+                  </span>
+                  <h4 className="text-text mt-1 line-clamp-2 text-lg font-bold">{video.title}</h4>
+                  <p className="text-text-muted mt-2 line-clamp-2 text-sm">{video.description}</p>
                 </div>
-                <span className="absolute right-4 bottom-4 rounded bg-black/70 px-2 py-1 text-xs font-semibold text-white">
-                  18:20
-                </span>
               </div>
-              <div className="p-6">
-                <span className="text-brand text-xs font-semibold tracking-wider uppercase">
-                  กีฬาสี
-                </span>
-                <h4 className="text-text mt-1 line-clamp-2 text-lg font-bold">
-                  คลิปไฮไลท์งานกีฬาสี: ชัยชนะสีแดง
-                </h4>
-                <p className="text-text-muted mt-2 line-clamp-2 text-sm">
-                  รวมช็อตเด็ดการแข่งวิ่งผลัด ขบวนพาเหรดตระการตา และเสียงกองเชียร์สปิริตดังกระหึ่ม
-                </p>
-              </div>
-            </div>
-
-            {/* Video Card 3 */}
-            <div className="border-border bg-canvas group hover:border-text-muted flex flex-col overflow-hidden rounded-3xl border transition-all duration-300 hover:-translate-y-1">
-              <div className="relative flex aspect-video items-center justify-center overflow-hidden bg-neutral-900">
-                <Image
-                  src="/assets/gallery_1.png"
-                  alt="Video thumbnail"
-                  fill
-                  loading="lazy"
-                  className="object-cover opacity-70 transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                  <div className="bg-canvas/90 border-border text-text flex h-14 w-14 items-center justify-center rounded-full border shadow-md backdrop-blur-sm transition-transform duration-300 group-hover:scale-110">
-                    <svg className="ml-1 h-6 w-6 fill-current" viewBox="0 0 24 24">
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                  </div>
-                </div>
-                <span className="absolute right-4 bottom-4 rounded bg-black/70 px-2 py-1 text-xs font-semibold text-white">
-                  14:10
-                </span>
-              </div>
-              <div className="p-6">
-                <span className="text-brand text-xs font-semibold tracking-wider uppercase">
-                  ค่ายเพลง
-                </span>
-                <h4 className="text-text mt-1 line-clamp-2 text-lg font-bold">
-                  สารคดีเบื้องหลังค่ายดนตรีหุบเขา
-                </h4>
-                <p className="text-text-muted mt-2 line-clamp-2 text-sm">
-                  บันทึกการเดินทาง ค้างแคมป์ และการซ้อมประสานเสียงดนตรีร่วมกันของเพื่อนๆ
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
         </Container>
       </section>
@@ -417,66 +318,40 @@ export default function Home() {
             subtitle="บันทึกก้าวเดินการทำกิจกรรมและการสำเร็จการศึกษารุ่น 150"
           />
           <div className="border-border relative ml-4 space-y-12 border-l pl-8 sm:ml-6 sm:pl-10 md:ml-8">
-            {/* Timeline Item 1 */}
-            <div className="relative">
-              <div className="bg-brand text-canvas ring-canvas-muted absolute top-1.5 -left-[41px] flex h-6 w-6 items-center justify-center rounded-full ring-8 sm:-left-[49px]">
-                <svg
-                  className="h-3.5 w-3.5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth="3"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
+            {topTimeline.map((item, idx) => (
+              <div key={item.id} className="relative">
+                {idx === 0 ? (
+                  <div className="bg-brand text-canvas ring-canvas-muted absolute top-1.5 -left-[41px] flex h-6 w-6 items-center justify-center rounded-full ring-8 sm:-left-[49px]">
+                    <svg
+                      className="h-3.5 w-3.5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                ) : idx === 1 ? (
+                  <div className="border-brand bg-canvas text-brand ring-canvas-muted absolute top-1.5 -left-[41px] flex h-6 w-6 items-center justify-center rounded-full border-2 ring-8 sm:-left-[49px]">
+                    <span className="bg-brand h-2 w-2 animate-ping rounded-full" />
+                  </div>
+                ) : (
+                  <div className="border-border bg-canvas text-text-muted ring-canvas-muted absolute top-1.5 -left-[41px] flex h-6 w-6 items-center justify-center rounded-full border ring-8 sm:-left-[49px]">
+                    <div className="bg-border h-2 w-2 rounded-full" />
+                  </div>
+                )}
+                <div>
+                  <span className="text-brand text-xs font-semibold tracking-wider uppercase">
+                    ก้าวที่ {idx + 1} &bull; {item.phase}
+                  </span>
+                  <h4 className="text-text mt-1 text-xl font-bold">{item.title}</h4>
+                  <p className="text-text-muted mt-2 max-w-xl text-sm leading-relaxed">
+                    {item.description}
+                  </p>
+                </div>
               </div>
-              <div>
-                <span className="text-brand text-xs font-semibold tracking-wider uppercase">
-                  ก้าวที่ 1 &bull; เสร็จสิ้น
-                </span>
-                <h4 className="text-text mt-1 text-xl font-bold">วันปฐมนิเทศนักเรียนใหม่</h4>
-                <p className="text-text-muted mt-2 max-w-xl text-sm leading-relaxed">
-                  วันต้อนรับศิษย์ใหม่ สานสัมพันธ์กิจกรรมกลุ่มละลายพฤติกรรม
-                  และพบปะครูอาจารย์ที่ปรึกษา เพื่อปรับตัวในรั้วโรงเรียน
-                </p>
-              </div>
-            </div>
-
-            {/* Timeline Item 2 */}
-            <div className="relative">
-              <div className="border-brand bg-canvas text-brand ring-canvas-muted absolute top-1.5 -left-[41px] flex h-6 w-6 items-center justify-center rounded-full border-2 ring-8 sm:-left-[49px]">
-                <span className="bg-brand h-2 w-2 animate-ping rounded-full" />
-              </div>
-              <div>
-                <span className="text-brand text-xs font-semibold tracking-wider uppercase">
-                  ก้าวที่ 2 &bull; เสร็จสิ้น
-                </span>
-                <h4 className="text-text mt-1 text-xl font-bold">
-                  มหกรรมกีฬาสีประจำปีและการประกวดเชียร์
-                </h4>
-                <p className="text-text-muted mt-2 max-w-xl text-sm leading-relaxed">
-                  ร่วมแรงแข่งขันกรีฑา กีฬา และประกวดขบวนพาเหรดสร้างสรรค์สุดยิ่งใหญ่ของกลุ่มสีต่างๆ
-                  สะท้อนพลังสามัคคี
-                </p>
-              </div>
-            </div>
-
-            {/* Timeline Item 3 */}
-            <div className="relative">
-              <div className="border-border bg-canvas text-text-muted ring-canvas-muted absolute top-1.5 -left-[41px] flex h-6 w-6 items-center justify-center rounded-full border ring-8 sm:-left-[49px]">
-                <div className="bg-border h-2 w-2 rounded-full" />
-              </div>
-              <div>
-                <span className="text-text-muted text-xs font-semibold tracking-wider uppercase">
-                  ก้าวที่ 5 &bull; เสร็จสิ้น
-                </span>
-                <h4 className="text-text mt-1 text-xl font-bold">วันปัจฉิมนิเทศและวันจบการศึกษา</h4>
-                <p className="text-text-muted mt-2 max-w-xl text-sm leading-relaxed">
-                  พิธีมอบใบประกาศนียบัตรจบการศึกษาอย่างเป็นทางการ กิจกรรมกราบอำลาครูบาอาจารย์
-                  และงานสังสรรค์ส่งท้ายรุ่น 150
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
         </Container>
       </section>

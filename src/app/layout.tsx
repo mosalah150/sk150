@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/providers/ThemeProvider";
+import { DynamicDataProvider } from "@/providers/DynamicDataProvider";
 import Navbar from "@/components/common/Navbar";
 import "./globals.css";
 
@@ -102,8 +103,10 @@ export default function RootLayout({
           Skip to content
         </a>
         <ThemeProvider>
-          <Navbar />
-          {children}
+          <DynamicDataProvider>
+            <Navbar />
+            {children}
+          </DynamicDataProvider>
         </ThemeProvider>
       </body>
     </html>

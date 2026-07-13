@@ -3,9 +3,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Container from "@/components/ui/Container";
-import { timelineEvents } from "@/utils/timelineData";
+import { useDynamicData } from "@/providers/DynamicDataProvider";
 
 export default function TimelinePage() {
+  const { timeline } = useDynamicData();
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const slideRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -19,7 +20,7 @@ export default function TimelinePage() {
 
     // Calculate which slide is currently closest to the center view
     const index = Math.round(scrollLeft / clientWidth);
-    if (index >= 0 && index < timelineEvents.length && index !== activeIndex) {
+    if (index >= 0 && index < timeline.length && index !== activeIndex) {
       setActiveIndex(index);
     }
   };
@@ -38,7 +39,7 @@ export default function TimelinePage() {
   };
 
   const handleNext = () => {
-    const nextIdx = Math.min(activeIndex + 1, timelineEvents.length - 1);
+    const nextIdx = Math.min(activeIndex + 1, timeline.length - 1);
     scrollToMilestone(nextIdx);
   };
 
@@ -47,10 +48,10 @@ export default function TimelinePage() {
     scrollToMilestone(prevIdx);
   };
 
-  // Adjust scroll slide refs list on mount
+  // Adjust scroll slide refs list on mount and when timeline data loads
   useEffect(() => {
-    slideRefs.current = slideRefs.current.slice(0, timelineEvents.length);
-  }, []);
+    slideRefs.current = slideRefs.current.slice(0, timeline.length);
+  }, [timeline]);
 
   return (
     <div className="bg-canvas text-text min-h-screen flex-1 pb-20 transition-colors duration-200 select-none">
@@ -83,11 +84,11 @@ export default function TimelinePage() {
             <div
               className="bg-brand absolute top-1/2 left-8 z-0 h-[2px] -translate-y-1/2 transition-all duration-300"
               style={{
-                width: `${(activeIndex / (timelineEvents.length - 1)) * 92}%`,
+                width: `${(activeIndex / (timeline.length - 1)) * 92}%`,
               }}
             />
 
-            {timelineEvents.map((event, index) => {
+            {timeline.map((event, index) => {
               const isActive = index === activeIndex;
               const isPassed = index < activeIndex;
 
@@ -147,7 +148,7 @@ export default function TimelinePage() {
               onScroll={handleScroll}
               className="flex w-full snap-x snap-mandatory scrollbar-none gap-6 overflow-x-auto scroll-smooth px-[6vw] pb-8 select-none sm:px-[8vw] lg:px-[10vw]"
             >
-              {timelineEvents.map((event, index) => (
+              {timeline.map((event, index) => (
                 <div
                   key={event.id}
                   ref={(el) => {
@@ -256,12 +257,12 @@ export default function TimelinePage() {
               </button>
 
               <span className="text-text-muted text-xs font-bold tracking-wider uppercase select-none">
-                {activeIndex + 1} / {timelineEvents.length}
+                {activeIndex + 1} / {timeline.length}
               </span>
 
               <button
                 onClick={handleNext}
-                disabled={activeIndex === timelineEvents.length - 1}
+                disabled={activeIndex === timeline.length - 1}
                 className="bg-canvas border-border text-text hover:border-text disabled:hover:border-border focus-visible:outline-brand cursor-pointer rounded-full border p-3 transition-all focus-visible:outline focus-visible:outline-2 disabled:opacity-40"
                 aria-label="Next Slide"
               >

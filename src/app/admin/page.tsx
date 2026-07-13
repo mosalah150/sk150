@@ -1,1034 +1,1956 @@
 "use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Button from "@/components/ui/Button";
+import Container from "@/components/ui/Container";
+import SectionHeader from "@/components/ui/SectionHeader";
+import { useDynamicData } from "@/providers/DynamicDataProvider";
 
-// Import core databases for CRUD state initialization
-import { articles as initialArticles } from "@/utils/blogData";
-import { events as initialEvents } from "@/utils/eventData";
-import { galleryImages as initialGallery } from "@/utils/galleryData";
-import { videos as initialVideos } from "@/utils/mediaData";
-import { downloadFiles as initialDownloads } from "@/utils/downloadData";
-import { studentProfiles as initialStudents } from "@/utils/spotlightData";
-
-type AdminTab = "Overview" | "News" | "Events" | "Gallery" | "Videos" | "Downloads" | "Students";
+type AdminTab = "Overview" | "Posts" | "Students" | "Events" | "Media" | "Downloads" | "Gallery";
 
 const tabLabels: Record<AdminTab, string> = {
   Overview: "ภาพรวมระบบ",
-  News: "บันทึกความทรงจำ",
-  Events: "กิจกรรมของรุ่น",
-  Gallery: "คลังภาพถ่าย",
-  Videos: "วิดีโอเด่น",
-  Downloads: "ดาวน์โหลดเอกสาร",
-  Students: "ทำเนียบศิษย์เก่า",
+  Posts: "บันทึกบทความ (Posts)",
+  Students: "ทำเนียบเพื่อน",
+  Events: "กิจกรรมรุ่น",
+  Media: "วิดีโอ & คลิปสั้น",
+  Downloads: "เอกสารดาวน์โหลด",
+  Gallery: "คลังสื่อรูปภาพ (R2/KV)",
 };
 
 export default function AdminDashboardPage() {
-  // 1. Auth States
+  const { posts, students, events, media, downloads, gallery, refreshData } = useDynamicData();
+
+  // Auth States
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [password, setPassword] = useState("");
+  const [authError, setAuthError] = useState("");
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-  // 2. Tab Navigation
+  // Tab Navigation
   const [activeTab, setActiveTab] = useState<AdminTab>("Overview");
 
-  // 3. Database State Collections (for CRUD actions)
-  const [articles, setArticles] = useState(initialArticles);
-  const [events, setEvents] = useState(initialEvents);
-  const [gallery, setGallery] = useState(initialGallery);
-  const [videos, setVideos] = useState(initialVideos);
-  const [downloads, setDownloads] = useState(initialDownloads);
-  const [students, setStudents] = useState(initialStudents);
-
-  // 4. Cloudflare D1 SQL & R2 Storage Telemetry Logs
-  const [telemetryLogs, setTelemetryLogs] = useState<string[]>([
-    "[SYSTEM] ระบบพร้อมทำงาน เริ่มต้นระบบยืนยันตัวตนแอดมิน",
-    "[D1] เชื่อมต่อฐานข้อมูลสำเร็จ: sk150_production.db",
-    "[R2] เชื่อมต่อคลังเก็บไฟล์สำเร็จ: sk150_assets_bucket",
+  // Logs for D1/KV actions
+  const [logs, setLogs] = useState<string[]>([
+    `[SYSTEM] ระบบริเริ่มเชื่อมต่อ API เครือข่าย Cloudflare`,
+    `[LOCAL] โหลดข้อมูลสแตติกสำรองสำเร็จ: ${posts.length} บทความ, ${students.length} นักเรียน`,
   ]);
 
-  // 5. Generic Form State
-  const [formInputs, setFormInputs] = useState({
-    title: "",
-    description: "",
-    category: "",
-    name: "",
-    role: "",
-  });
-  const [editingId, setEditingId] = useState<string | null>(null);
-
-  const addLog = (log: string) => {
-    setTelemetryLogs((prev) => [...prev, log]);
+  const addLog = (msg: string) => {
+    setLogs((prev) => [`[${new Date().toLocaleTimeString()}] ${msg}`, ...prev.slice(0, 49)]);
   };
 
-  // Google Authentication simulator
-  const handleGoogleLogin = () => {
-    setIsLoggingIn(true);
-    setTimeout(() => {
+  // Check login on mount
+  useEffect(() => {
+    const token = localStorage.getItem("admin_token");
+    if (token === "sk150password") {
       setIsLoggedIn(true);
+      addLog("[AUTH] ลงชื่อเข้าใช้สำเร็จจากเซสชันเก่า (LocalStorage Token)");
+    }
+  }, []);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoggingIn(true);
+    setAuthError("");
+
+    try {
+      const res = await fetch("/api/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+
+      if (res.ok) {
+        const json = await res.json();
+        localStorage.setItem("admin_token", json.token);
+        setIsLoggedIn(true);
+        addLog("[AUTH] ลงชื่อเข้าใช้ผ่านคลาวด์สำเร็จ: สิทธิ์แอดมินสูงสุด");
+        refreshData();
+      } else {
+        setAuthError("รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง");
+        addLog("[AUTH] ความพยายามเข้าสู่ระบบถูกปฏิเสธ: รหัสผ่านไม่ถูกต้อง");
+      }
+    } catch (err: any) {
+      setAuthError("ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Cloudflare ได้ (เข้าโหมดจำลอง?)");
+      // Fallback auth for local testing without worker running
+      if (password === "sk150password") {
+        localStorage.setItem("admin_token", "sk150password");
+        setIsLoggedIn(true);
+        addLog("[AUTH] ลงชื่อเข้าใช้โหมดจำลองสำเร็จ (พัฒนาเว็บภายใน)");
+      } else {
+        setAuthError("รหัสผ่านไม่ถูกต้อง");
+      }
+    } finally {
       setIsLoggingIn(false);
-      addLog("[AUTH] ลงชื่อเข้าใช้ผ่าน Google สำเร็จสำหรับ: admin@sk150.pages.dev");
-    }, 1200);
+    }
   };
 
   const handleLogout = () => {
+    localStorage.removeItem("admin_token");
     setIsLoggedIn(false);
     setActiveTab("Overview");
     addLog("[AUTH] ผู้ดูแลระบบออกจากระบบ.");
   };
 
-  // Helper clear inputs
-  const resetForm = () => {
-    setFormInputs({ title: "", description: "", category: "", name: "", role: "" });
-    setEditingId(null);
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormInputs((prev) => ({ ...prev, [name]: value }));
-  };
-
-  // --- CRUD HANDLERS ---
-
-  // Stories (News) CRUD
-  const handleSaveArticle = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formInputs.title || !formInputs.description) return;
-
-    if (editingId) {
-      setArticles((prev) =>
-        prev.map((a) =>
-          a.id === editingId
-            ? { ...a, title: formInputs.title, description: formInputs.description }
-            : a,
-        ),
-      );
-      addLog(
-        `[D1 SQL] UPDATE articles SET title='${formInputs.title}', description='${formInputs.description}' WHERE id='${editingId}';`,
-      );
-    } else {
-      const newArticle = {
-        id: (articles.length + 1).toString(),
-        slug: formInputs.title.toLowerCase().replace(/ /g, "-"),
-        title: formInputs.title,
-        description: formInputs.description,
-        content: ["ข้อมูลจำลองที่เพิ่มจากแดชบอร์ดแอดมิน"],
-        imageSrc: "/assets/gallery_2.png",
-        category: "กิจกรรมรุ่น",
-        tags: ["ระบบ"],
-        date: "วันนี้",
-        readTime: "อ่าน 3 นาที",
-        publishedTime: new Date().toISOString(),
-        author: { name: "แอดมิน", avatar: "/assets/spotlight.png", title: "ผู้ดูแลระบบ" },
-      };
-      setArticles((prev) => [newArticle, ...prev]);
-      addLog(
-        `[D1 SQL] INSERT INTO articles (id, slug, title, category) VALUES ('${newArticle.id}', '${newArticle.slug}', '${newArticle.title}', '${newArticle.category}');`,
-      );
-    }
-    resetForm();
-  };
-
-  // Events CRUD
-  const handleSaveEvent = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formInputs.title || !formInputs.description) return;
-
-    if (editingId) {
-      setEvents((prev) =>
-        prev.map((ev) =>
-          ev.id === editingId
-            ? { ...ev, title: formInputs.title, description: formInputs.description }
-            : ev,
-        ),
-      );
-      addLog(
-        `[D1 SQL] UPDATE events SET title='${formInputs.title}', description='${formInputs.description}' WHERE id='${editingId}';`,
-      );
-    } else {
-      const newEvent = {
-        id: (events.length + 1).toString(),
-        title: formInputs.title,
-        description: formInputs.description,
-        type: "upcoming" as const,
-        date: "เร็วๆ นี้",
-        time: "ระบุภายหลัง",
-        location: "หอประชุมใหญ่โรงเรียน",
-        locationType: "physical" as const,
-        coverImage: "/assets/gallery_1.png",
-        galleryImages: ["/assets/gallery_1.png"],
-        phase: "แอดมินสร้างใหม่",
-      };
-      setEvents((prev) => [newEvent, ...prev]);
-      addLog(
-        `[D1 SQL] INSERT INTO events (id, title, description, phase) VALUES ('${newEvent.id}', '${newEvent.title}', '${newEvent.description}', '${newEvent.phase}');`,
-      );
-    }
-    resetForm();
-  };
-
-  // Gallery CRUD & Cloudflare R2 Upload Simulation
-  const handleR2UploadSimulate = () => {
-    const mockFilename = `gallery_${Math.floor(Math.random() * 1000)}.png`;
-    const mockSize = `${(Math.random() * 5 + 1).toFixed(1)} MB`;
-
-    addLog(`[R2 OBJECT] PUT /r2/gallery/${mockFilename} HTTP/1.1 (Payload: ${mockSize})`);
-    setTimeout(() => {
-      const newImg = {
-        id: (gallery.length + 1).toString(),
-        title: `ไฟล์อัปโหลด: ${mockFilename}`,
-        description: "ไฟล์รูปภาพจำลองบันทึกบน Cloudflare R2",
-        imageSrc: "/assets/gallery_1.png",
-        album: "เบื้องหลังกิจกรรม",
-        aspectRatio: "video" as const,
-        location: "ลานอเนกประสงค์",
-        date: "กรกฎาคม 2026",
-      };
-      setGallery((prev) => [newImg, ...prev]);
-      addLog(`[R2 OBJECT] HTTP/1.1 200 OK. อัปโหลดเข้า R2 bucket สำเร็จ. ขนาดไฟล์: ${mockSize}`);
-      addLog(
-        `[D1 SQL] INSERT INTO gallery_images (id, title, imageSrc) VALUES ('${newImg.id}', '${newImg.title}', '${newImg.imageSrc}');`,
-      );
-    }, 800);
-  };
-
-  // Videos CRUD
-  const handleSaveVideo = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formInputs.title || !formInputs.description) return;
-
-    if (editingId) {
-      setVideos((prev) =>
-        prev.map((v) =>
-          v.id === editingId
-            ? { ...v, title: formInputs.title, description: formInputs.description }
-            : v,
-        ),
-      );
-      addLog(
-        `[D1 SQL] UPDATE videos SET title='${formInputs.title}', description='${formInputs.description}' WHERE id='${editingId}';`,
-      );
-    } else {
-      const newVideo = {
-        id: (videos.length + 1).toString(),
-        title: formInputs.title,
-        description: formInputs.description,
-        platform: "youtube" as const,
-        videoId: "dQw4w9WgXcQ",
-        category: "วิดีโอทั่วไป",
-        duration: "05:00",
-        date: "วันนี้",
-        coverImage: "/assets/gallery_3.png",
-      };
-      setVideos((prev) => [newVideo, ...prev]);
-      addLog(
-        `[D1 SQL] INSERT INTO videos (id, title, videoId, category) VALUES ('${newVideo.id}', '${newVideo.title}', '${newVideo.videoId}', '${newVideo.category}');`,
-      );
-    }
-    resetForm();
-  };
-
-  // Downloads CRUD
-  const handleSaveDownload = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formInputs.title || !formInputs.description) return;
-
-    if (editingId) {
-      setDownloads((prev) =>
-        prev.map((d) =>
-          d.id === editingId
-            ? { ...d, title: formInputs.title, description: formInputs.description }
-            : d,
-        ),
-      );
-      addLog(
-        `[D1 SQL] UPDATE downloads SET title='${formInputs.title}', description='${formInputs.description}' WHERE id='${editingId}';`,
-      );
-    } else {
-      const newDl = {
-        id: (downloads.length + 1).toString(),
-        title: formInputs.title,
-        description: formInputs.description,
-        category: "PDF",
-        fileSize: "1.5 MB",
-        fileExtension: "PDF",
-        href: "#",
-      };
-      setDownloads((prev) => [newDl, ...prev]);
-      addLog(
-        `[D1 SQL] INSERT INTO downloads (id, title, fileSize) VALUES ('${newDl.id}', '${newDl.title}', '${newDl.fileSize}');`,
-      );
-    }
-    resetForm();
-  };
-
-  // Students CRUD
-  const handleSaveStudent = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formInputs.name || !formInputs.role) return;
-
-    if (editingId) {
-      setStudents((prev) =>
-        prev.map((s) =>
-          s.id === editingId ? { ...s, name: formInputs.name, title: formInputs.role } : s,
-        ),
-      );
-      addLog(
-        `[D1 SQL] UPDATE students SET name='${formInputs.name}', title='${formInputs.role}' WHERE id='${editingId}';`,
-      );
-    } else {
-      const newStudent = {
-        id: (students.length + 1).toString(),
-        name: formInputs.name,
-        title: formInputs.role,
-        achievement: "ศิษย์เก่าแนะนำ",
-        bioParagraphs: ["ประวัติศิษย์เก่าเพิ่มเติมโดยแอดมิน"],
-        imageSrc: "/assets/spotlight.png",
-        instagram: "#",
-        tiktok: "#",
-        youtube: "#",
-        metrics: [{ label: "เข้าร่วม", value: "วันนี้" }],
-        highlightQuote: "ความทรงจำและมิตรภาพที่เติบโตไปด้วยกัน",
-      };
-      setStudents((prev) => [newStudent, ...prev]);
-      addLog(
-        `[D1 SQL] INSERT INTO students (id, name, title, achievement) VALUES ('${newStudent.id}', '${newStudent.name}', '${newStudent.title}', '${newStudent.achievement}');`,
-      );
-    }
-    resetForm();
-  };
-
-  // Global Delete Handler
-  const handleDeleteItem = (id: string, type: AdminTab) => {
-    if (!confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบรายการรหัส: ${id}?`)) return;
-
-    switch (type) {
-      case "News":
-        setArticles((prev) => prev.filter((a) => a.id !== id));
-        addLog(`[D1 SQL] DELETE FROM articles WHERE id='${id}';`);
-        break;
-      case "Events":
-        setEvents((prev) => prev.filter((e) => e.id !== id));
-        addLog(`[D1 SQL] DELETE FROM events WHERE id='${id}';`);
-        break;
-      case "Gallery":
-        setGallery((prev) => prev.filter((g) => g.id !== id));
-        addLog(`[D1 SQL] DELETE FROM gallery_images WHERE id='${id}';`);
-        break;
-      case "Videos":
-        setVideos((prev) => prev.filter((v) => v.id !== id));
-        addLog(`[D1 SQL] DELETE FROM videos WHERE id='${id}';`);
-        break;
-      case "Downloads":
-        setDownloads((prev) => prev.filter((d) => d.id !== id));
-        addLog(`[D1 SQL] DELETE FROM downloads WHERE id='${id}';`);
-        break;
-      case "Students":
-        setStudents((prev) => prev.filter((s) => s.id !== id));
-        addLog(`[D1 SQL] DELETE FROM students WHERE id='${id}';`);
-        break;
-      default:
-        break;
-    }
-  };
-
-  const handleEditTrigger = (
-    item: {
-      id: string;
-      name?: string;
-      title?: string;
-      description?: string;
-      category?: string;
-    },
-    type: AdminTab,
+  // Image Upload handler
+  const [uploading, setUploading] = useState(false);
+  const handleImageUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    onComplete: (url: string) => void,
   ) => {
-    setEditingId(item.id);
-    if (type === "Students") {
-      setFormInputs({
-        title: "",
-        description: "",
-        category: "",
-        name: item.name || "",
-        role: item.title || "",
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    addLog(
+      `[KV STORAGE] กำลังเริ่มอัปโหลดรูปภาพ: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`,
+    );
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const token = localStorage.getItem("admin_token") || "";
+
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
       });
-    } else {
-      setFormInputs({
-        title: item.title || "",
-        description: item.description || "",
-        category: item.category || "",
-        name: "",
-        role: "",
-      });
+
+      if (res.ok) {
+        const json = await res.json();
+        onComplete(json.url);
+        addLog(`[KV STORAGE] อัปโหลดสำเร็จ! URL: ${json.url}`);
+
+        // Insert uploaded image into gallery database tracker automatically
+        const newGalleryItem = {
+          id: `gal-${Date.now()}`,
+          title: file.name.split(".")[0],
+          description: `รูปภาพอัปโหลดแอดมิน: ${file.name}`,
+          imageSrc: json.url,
+          album: "เบื้องหลังกิจกรรม",
+          aspectRatio: "video",
+          location: "อัปโหลดทางคอมพิวเตอร์",
+          date: new Date().toLocaleDateString("th-TH", { month: "long", year: "numeric" }),
+        };
+
+        await handleSaveData("gallery", newGalleryItem);
+      } else {
+        addLog("[ERROR] อัปโหลดไฟล์ล้มเหลว (คุณอาจไม่มีสิทธิ์แอดมินจริง)");
+        alert("อัปโหลดล้มเหลว: กรุณาตรวจสอบสิทธิ์แอดมิน");
+      }
+    } catch (err: any) {
+      addLog(`[ERROR] การเชื่อมต่ออัปโหลดผิดพลาด: ${err.message}`);
+      // Simulated upload fallback for local dev
+      const fakeUrl = `/assets/gallery_1.png`;
+      onComplete(fakeUrl);
+      addLog(`[DEV MODE] จำลองอัปโหลดสำเร็จ (Fallback): ${fakeUrl}`);
+    } finally {
+      setUploading(false);
     }
   };
+
+  // Generic Save handler
+  const handleSaveData = async (type: string, data: any) => {
+    addLog(`[D1 SQL] กำลังบันทึกข้อมูลประเภท ${type} (ID: ${data.id})`);
+    const token = localStorage.getItem("admin_token") || "";
+
+    try {
+      const res = await fetch("/api/save", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ type, data }),
+      });
+
+      if (res.ok) {
+        addLog(`[D1 SQL] บันทึกสำเร็จ! ตาราง: ${type}, แถว: ${data.id}`);
+        refreshData();
+        return true;
+      } else {
+        addLog(`[ERROR] บันทึกตาราง ${type} ล้มเหลว (401 Unauthorized?)`);
+        alert("บันทึกไม่สำเร็จ: สิทธิ์เข้าถึงถูกปฏิเสธ");
+        return false;
+      }
+    } catch (err: any) {
+      addLog(`[ERROR] บันทึกลงฐานข้อมูลผิดพลาด: ${err.message}`);
+      return false;
+    }
+  };
+
+  // Form States for Editors
+  const [postForm, setPostForm] = useState({
+    id: "",
+    slug: "",
+    title: "",
+    description: "",
+    imageSrc: "",
+    category: "วันแรกในโรงเรียน",
+    tags: "",
+    date: "",
+    readTime: "อ่าน 5 นาที",
+    publishedTime: "",
+    authorName: "แอดมินรุ่น",
+    authorAvatar: "/assets/spotlight.png",
+    authorTitle: "คณะกรรมการรุ่น 150",
+    content: "",
+  });
+
+  const [studentForm, setStudentForm] = useState({
+    id: "",
+    name: "",
+    title: "",
+    achievement: "",
+    instagram: "",
+    tiktok: "",
+    youtube: "",
+    imageSrc: "",
+    metrics: "", // JSON string or comma-separated label:value pairs
+    bioParagraphs: "",
+    highlightQuote: "",
+  });
+
+  const [eventForm, setEventForm] = useState({
+    id: "",
+    title: "",
+    description: "",
+    type: "upcoming", // upcoming or past
+    date: "",
+    time: "",
+    location: "",
+    locationType: "physical",
+    countdownTarget: "",
+    coverImage: "",
+    galleryImages: "", // comma separated image URLs
+    videoUrl: "",
+    phase: "พบปะสังสรรค์",
+  });
+
+  const [mediaForm, setMediaForm] = useState({
+    id: "",
+    title: "",
+    description: "",
+    platform: "youtube",
+    videoId: "",
+    category: "ความทรงจำสั้นๆ",
+    duration: "",
+    date: "",
+    coverImage: "",
+  });
+
+  const [downloadForm, setDownloadForm] = useState({
+    id: "",
+    title: "",
+    description: "",
+    category: "Documents",
+    fileSize: "",
+    fileExtension: "PDF",
+    href: "",
+  });
 
   return (
-    <div className="bg-canvas text-text min-h-screen flex-1 transition-colors duration-200">
-      {/* CASE A: Guest Sign-In Screen */}
+    <div className="bg-canvas text-text flex-1 pb-24 transition-colors duration-200 select-none">
+      {/* 1. Login Guard View */}
       {!isLoggedIn ? (
-        <section className="flex min-h-[80vh] items-center justify-center py-24 sm:py-32">
-          <div className="border-border bg-canvas-muted w-[90%] max-w-md rounded-[32px] border p-8 text-center shadow-2xl backdrop-blur-md sm:p-12">
-            <span className="text-brand block text-xs font-bold tracking-widest uppercase">
-              SK150 Platform
-            </span>
-            <h1 className="text-text mt-3 text-3xl font-black tracking-tight">ระบบจัดการแอดมิน</h1>
-            <p className="text-text-muted mt-4 text-xs leading-relaxed sm:text-sm">
-              กรุณาเข้าสู่ระบบผ่านบัญชี Google Workspace ของคุณเพื่อจัดการประวัตินักเรียน คลังรูปภาพ
-              และไฟล์ดาวน์โหลดหนังสือรุ่น
-            </p>
+        <section className="flex min-h-[80vh] items-center justify-center py-20">
+          <Container className="max-w-md">
+            <div className="border-border bg-canvas-muted rounded-[32px] border p-8 text-center shadow-2xl">
+              <div className="bg-brand/10 text-brand mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full">
+                <svg
+                  className="h-8 w-8"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  />
+                </svg>
+              </div>
 
-            <button
-              onClick={handleGoogleLogin}
-              disabled={isLoggingIn}
-              className="bg-canvas text-text border-border hover:border-text-muted mt-10 flex w-full cursor-pointer items-center justify-center gap-3 rounded-full border py-3.5 text-sm font-bold shadow-sm transition-all hover:scale-101 active:scale-99"
-            >
-              {isLoggingIn ? (
-                <>
-                  <div className="border-text-muted h-4 w-4 animate-spin rounded-full border-2 border-t-transparent" />
-                  กำลังลงชื่อเข้าใช้...
-                </>
-              ) : (
-                <>
-                  <svg className="h-5 w-5" viewBox="0 0 24 24">
-                    <path
-                      fill="#4285F4"
-                      d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v3.92h6.69c-.29 1.5-.14 3.01-1.07 4.02l3.12 2.42c1.83-1.69 3-4.17 3-7.29z"
-                    />
-                    <path
-                      fill="#34A853"
-                      d="M12 24c3.24 0 5.97-1.09 7.96-2.96l-3.12-2.42c-.9.6-2.06.96-3.34.96-2.57 0-4.75-1.74-5.53-4.07L4.75 18.03C6.72 21.94 10.74 24 12 24z"
-                    />
-                    <path
-                      fill="#FBBC05"
-                      d="M6.47 15.51c-.2-.6-.31-1.24-.31-1.9 0-.66.11-1.3.31-1.9L3.38 9.29C2.49 11.09 2 13.08 2 15.2s.49 4.11 1.38 5.91l3.09-2.4c-.11-.4-.2-.8-.2-1.2z"
-                    />
-                    <path
-                      fill="#EA4335"
-                      d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.96 1.19 15.24 0 12 0 10.74 0 6.72 2.06 4.75 5.97L7.84 8.37c.78-2.33 2.96-4.07 5.53-4.07z"
-                    />
-                  </svg>
-                  ลงชื่อเข้าใช้ด้วย Google
-                </>
-              )}
-            </button>
-          </div>
+              <h1 className="text-2xl font-black tracking-tight">ระบบแอดมินศิษย์เก่า SK150</h1>
+              <p className="text-text-muted mt-2 text-sm leading-relaxed">
+                กรุณาป้อนรหัสผ่านผู้ดูแลระบบหลังบ้านเพื่ออัปเดตบทความ รูปภาพแกลเลอรี และประวัติรุ่น
+              </p>
+
+              <form onSubmit={handleLogin} className="mt-8 space-y-4">
+                <div>
+                  <label className="text-text-muted block text-left text-xs font-bold tracking-wider uppercase">
+                    รหัสผ่านแอดมิน (Admin Password)
+                  </label>
+                  <input
+                    type="password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="รหัสผ่านระบบหลังบ้าน..."
+                    className="border-border bg-canvas text-text focus:ring-brand mt-2 w-full rounded-2xl border px-4 py-3.5 text-sm focus:ring-2 focus:outline-none"
+                  />
+                  {authError && (
+                    <p className="mt-2 text-xs font-semibold text-rose-500">{authError}</p>
+                  )}
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isLoggingIn}
+                  className="bg-brand text-canvas hover:bg-brand/90 focus-visible:outline-brand flex w-full justify-center rounded-2xl py-3.5 text-sm font-bold transition-all disabled:opacity-40"
+                >
+                  {isLoggingIn ? "กำลังตรวจสอบระบบ..." : "เข้าสู่ระบบหลังบ้าน"}
+                </button>
+              </form>
+            </div>
+          </Container>
         </section>
       ) : (
-        /* CASE B: Authenticated Admin Dashboard */
-        <div className="flex min-h-screen flex-col lg:flex-row">
-          {/* Sidebar Controller Drawer */}
-          <aside className="border-border bg-canvas-muted flex w-full shrink-0 flex-col justify-between border-r p-6 text-left lg:w-64">
-            <div>
-              <div className="border-border mb-10 flex items-center gap-3 border-b pb-4">
-                <div className="bg-brand text-canvas flex h-9 w-9 items-center justify-center rounded-full text-sm font-black">
-                  A
-                </div>
-                <div>
-                  <h4 className="text-text text-sm font-bold">คอนโซลแอดมิน</h4>
-                  <p className="text-text-muted text-[10px] font-medium">sk150.pages.dev</p>
-                </div>
+        /* 2. Admin Workspace Dashboard */
+        <section className="py-12">
+          <Container clean className="max-w-[1400px] px-4">
+            <div className="border-border mb-8 flex items-center justify-between border-b pb-6">
+              <div>
+                <h1 className="text-3xl font-black tracking-tight">
+                  แผงควบคุมระบบ CMS (WordPress-Style)
+                </h1>
+                <p className="text-text-muted mt-1 text-sm">
+                  จัดการประวัติเพื่อนในทำเนียบรุ่น, วิดีโอความประทับใจ, กิจกรรม, คลังรูปถ่าย
+                  และบทความ
+                </p>
               </div>
-
-              {/* Sidebar Menu items */}
-              <nav className="flex flex-col space-y-1.5">
-                {(
-                  [
-                    "Overview",
-                    "News",
-                    "Events",
-                    "Gallery",
-                    "Videos",
-                    "Downloads",
-                    "Students",
-                  ] as AdminTab[]
-                ).map((tab) => (
-                  <button
-                    key={tab}
-                    onClick={() => {
-                      setActiveTab(tab);
-                      resetForm();
-                    }}
-                    className={`w-full cursor-pointer rounded-xl px-4 py-2.5 text-left text-sm font-bold transition-all ${
-                      activeTab === tab
-                        ? "bg-text text-canvas"
-                        : "text-text-muted hover:bg-canvas hover:text-text"
-                    }`}
-                  >
-                    {tabLabels[tab]}
-                  </button>
-                ))}
-              </nav>
+              <Button variant="outline" size="sm" onClick={handleLogout}>
+                ออกจากระบบ (Logout)
+              </Button>
             </div>
 
-            <div className="border-border mt-10 flex items-center justify-between border-t pt-4">
-              <span className="text-text-muted text-[10px] font-bold uppercase">
-                ยืนยันสิทธิ์แล้ว
-              </span>
-              <button
-                onClick={handleLogout}
-                className="cursor-pointer text-xs font-bold text-rose-500 hover:text-rose-600"
-              >
-                ออกจากระบบ
-              </button>
-            </div>
-          </aside>
-
-          {/* Main Working Stage */}
-          <main className="flex flex-1 flex-col justify-between p-6 text-left sm:p-10">
-            {/* Top Area: Active Segment CRUD */}
-            <div>
-              <div className="border-border mb-8 flex items-center justify-between border-b pb-4">
-                <h1 className="text-2xl font-black tracking-tight">จัดการ{tabLabels[activeTab]}</h1>
-                <span className="text-text-muted text-xs font-bold uppercase">
-                  ฐานข้อมูลหลัก (D1)
-                </span>
-              </div>
-
-              {/* 1. OVERVIEW SCREEN */}
-              {activeTab === "Overview" && (
-                <div className="animate-in fade-in space-y-8 duration-200">
-                  <div className="grid gap-6 sm:grid-cols-3">
-                    <div className="border-border bg-canvas rounded-3xl border p-6">
-                      <span className="text-text-muted block text-xs font-bold tracking-wider uppercase">
-                        ตาราง D1 SQL Database
-                      </span>
-                      <span className="mt-2 block text-3xl font-black">6 ตารางออนไลน์</span>
-                    </div>
-                    <div className="border-border bg-canvas rounded-3xl border p-6">
-                      <span className="text-text-muted block text-xs font-bold tracking-wider uppercase">
-                        คลังไฟล์ R2 Storage
-                      </span>
-                      <span className="mt-2 block text-3xl font-black">24 รายการ</span>
-                    </div>
-                    <div className="border-border bg-canvas rounded-3xl border p-6">
-                      <span className="text-text-muted block text-xs font-bold tracking-wider uppercase">
-                        ความเร็วสืบค้นเฉลี่ย (TTFB)
-                      </span>
-                      <span className="text-brand mt-2 block text-3xl font-black">
-                        8 มิลลิวินาที
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="border-border bg-canvas rounded-3xl border p-6 sm:p-8">
-                    <h3 className="text-lg font-bold">ข้อมูลสถิติตาราง SQL</h3>
-                    <div className="text-text-muted mt-4 grid gap-2 text-xs font-semibold">
-                      <div className="border-border flex justify-between border-b py-2">
-                        <span>articles (ความทรงจำ)</span>
-                        <span>{articles.length} แถว</span>
-                      </div>
-                      <div className="border-border flex justify-between border-b py-2">
-                        <span>events (กิจกรรม)</span>
-                        <span>{events.length} แถว</span>
-                      </div>
-                      <div className="border-border flex justify-between border-b py-2">
-                        <span>gallery_images (รูปถ่าย)</span>
-                        <span>{gallery.length} แถว</span>
-                      </div>
-                      <div className="border-border flex justify-between border-b py-2">
-                        <span>videos (วิดีโอ)</span>
-                        <span>{videos.length} แถว</span>
-                      </div>
-                      <div className="border-border flex justify-between border-b py-2">
-                        <span>downloads (ดาวน์โหลด)</span>
-                        <span>{downloads.length} แถว</span>
-                      </div>
-                      <div className="flex justify-between py-2">
-                        <span>students (ศิษย์เก่า)</span>
-                        <span>{students.length} แถว</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* 2. NEWS/STORIES CRUD */}
-              {activeTab === "News" && (
-                <div className="animate-in fade-in space-y-8 duration-200">
-                  {/* Article Form */}
-                  <form
-                    onSubmit={handleSaveArticle}
-                    className="bg-canvas-muted border-border space-y-4 rounded-3xl border p-6"
-                  >
-                    <h4 className="text-sm font-bold">
-                      {editingId ? "แก้ไขบันทึกความทรงจำ" : "เขียนบันทึกความทรงจำใหม่"}
-                    </h4>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <div>
-                        <span className="text-text-muted mb-1 block text-[10px]">
-                          ตัวอย่าง: บันทึกวันปัจฉิมนิเทศ รุ่น 150
-                        </span>
-                        <input
-                          type="text"
-                          name="title"
-                          placeholder="หัวข้อเรื่องราว"
-                          value={formInputs.title}
-                          onChange={handleInputChange}
-                          className="bg-canvas border-border focus:border-brand w-full rounded-xl border px-4 py-2.5 text-sm focus:outline-none"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <span className="text-text-muted mb-1 block text-[10px]">
-                          ตัวอย่าง: สรุปบรรยากาศแห่งความประทับใจร่วมรุ่น
-                        </span>
-                        <input
-                          type="text"
-                          name="description"
-                          placeholder="คำอธิบายสรุปสั้นๆ"
-                          value={formInputs.description}
-                          onChange={handleInputChange}
-                          className="bg-canvas border-border focus:border-brand w-full rounded-xl border px-4 py-2.5 text-sm focus:outline-none"
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="flex justify-end gap-2">
-                      <Button variant="outline" size="sm" onClick={resetForm}>
-                        ยกเลิก
-                      </Button>
-                      <Button variant="primary" size="sm" type="submit">
-                        บันทึกข้อมูล (D1 COMMIT)
-                      </Button>
-                    </div>
-                  </form>
-
-                  {/* Articles Grid list */}
-                  <div className="space-y-3">
-                    {articles.map((item) => (
-                      <div
-                        key={item.id}
-                        className="border-border bg-canvas hover:border-text-muted flex items-center justify-between rounded-2xl border p-4 transition-colors"
+            <div className="grid gap-8 lg:grid-cols-12">
+              {/* Left Column Sidebar */}
+              <div className="lg:col-span-3">
+                <nav className="border-border bg-canvas-muted space-y-2 rounded-[24px] border p-4">
+                  {Object.keys(tabLabels).map((tabKey) => {
+                    const isActive = activeTab === tabKey;
+                    return (
+                      <button
+                        key={tabKey}
+                        onClick={() => setActiveTab(tabKey as AdminTab)}
+                        className={`w-full rounded-xl px-4 py-3 text-left text-sm font-bold transition-all ${
+                          isActive
+                            ? "bg-brand text-canvas"
+                            : "text-text-muted hover:bg-canvas hover:text-text"
+                        }`}
                       >
-                        <div>
-                          <h5 className="text-sm font-bold">{item.title}</h5>
-                          <p className="text-text-muted mt-1 text-xs">{item.description}</p>
-                        </div>
-                        <div className="flex shrink-0 gap-2">
-                          <button
-                            onClick={() => handleEditTrigger(item, "News")}
-                            className="text-brand cursor-pointer text-xs font-bold hover:underline"
-                          >
-                            แก้ไข
-                          </button>
-                          <button
-                            onClick={() => handleDeleteItem(item.id, "News")}
-                            className="cursor-pointer text-xs font-bold text-rose-500 hover:underline"
-                          >
-                            ลบ
-                          </button>
-                        </div>
+                        {tabLabels[tabKey as AdminTab]}
+                      </button>
+                    );
+                  })}
+                </nav>
+
+                {/* Telemetry Logs Terminal */}
+                <div className="border-border mt-6 rounded-[24px] border bg-black p-4 font-mono text-[10px] leading-relaxed text-emerald-400 shadow-inner">
+                  <div className="mb-2 flex items-center justify-between border-b border-emerald-900 pb-2">
+                    <span>TELEMETRY LOGS (D1/KV)</span>
+                    <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />
+                  </div>
+                  <div className="h-44 scrollbar-none space-y-1.5 overflow-y-auto">
+                    {logs.map((log, idx) => (
+                      <div key={idx} className="break-all whitespace-pre-wrap">
+                        {log}
                       </div>
                     ))}
                   </div>
                 </div>
-              )}
+              </div>
 
-              {/* 3. EVENTS CRUD */}
-              {activeTab === "Events" && (
-                <div className="animate-in fade-in space-y-8 duration-200">
-                  <form
-                    onSubmit={handleSaveEvent}
-                    className="bg-canvas-muted border-border space-y-4 rounded-3xl border p-6"
-                  >
-                    <h4 className="text-sm font-bold">
-                      {editingId ? "แก้ไขกิจกรรมรุ่น" : "สร้างกิจกรรมรุ่นใหม่"}
-                    </h4>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <div>
-                        <span className="text-text-muted mb-1 block text-[10px]">
-                          ตัวอย่าง: งานเลี้ยงคืนสู่เหย้าประจำปี
-                        </span>
-                        <input
-                          type="text"
-                          name="title"
-                          placeholder="ชื่อกิจกรรม"
-                          value={formInputs.title}
-                          onChange={handleInputChange}
-                          className="bg-canvas border-border focus:border-brand w-full rounded-xl border px-4 py-2.5 text-sm focus:outline-none"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <span className="text-text-muted mb-1 block text-[10px]">
-                          ตัวอย่าง: พบปะคุยชีวิตเรียนต่อและร่วมทานข้าวกลางวัน
-                        </span>
-                        <input
-                          type="text"
-                          name="description"
-                          placeholder="รายละเอียดกิจกรรม"
-                          value={formInputs.description}
-                          onChange={handleInputChange}
-                          className="bg-canvas border-border focus:border-brand w-full rounded-xl border px-4 py-2.5 text-sm focus:outline-none"
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="flex justify-end gap-2">
-                      <Button variant="outline" size="sm" onClick={resetForm}>
-                        ยกเลิก
-                      </Button>
-                      <Button variant="primary" size="sm" type="submit">
-                        บันทึกข้อมูล (D1 COMMIT)
-                      </Button>
-                    </div>
-                  </form>
+              {/* Right Column: Dynamic Form Editors */}
+              <div className="lg:col-span-9">
+                {/* 1. OVERVIEW CONTROL PANEL */}
+                {activeTab === "Overview" && (
+                  <div className="border-border bg-canvas-muted space-y-8 rounded-[32px] border p-8">
+                    <SectionHeader
+                      title="ยินดีต้อนรับผู้ดูแลระบบ SK150"
+                      subtitle="แผงควบคุมหลักสำหรับบริหารคลังความทรงจำประจำรุ่นและศิษย์เก่า"
+                    />
 
-                  <div className="space-y-3">
-                    {events.map((item) => (
-                      <div
-                        key={item.id}
-                        className="border-border bg-canvas hover:border-text-muted flex items-center justify-between rounded-2xl border p-4 transition-colors"
-                      >
-                        <div>
-                          <h5 className="text-sm font-bold">{item.title}</h5>
-                          <p className="text-text-muted mt-1 text-xs">{item.description}</p>
-                        </div>
-                        <div className="flex shrink-0 gap-2">
-                          <button
-                            onClick={() => handleEditTrigger(item, "Events")}
-                            className="text-brand cursor-pointer text-xs font-bold hover:underline"
-                          >
-                            แก้ไข
-                          </button>
-                          <button
-                            onClick={() => handleDeleteItem(item.id, "Events")}
-                            className="cursor-pointer text-xs font-bold text-rose-500 hover:underline"
-                          >
-                            ลบ
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* 4. GALLERY CRUD & CLOUDFLARE R2 OBJECT UPLOADER */}
-              {activeTab === "Gallery" && (
-                <div className="animate-in fade-in space-y-8 duration-200">
-                  {/* Drop zone uploader simulation */}
-                  <div
-                    onClick={handleR2UploadSimulate}
-                    className="border-border hover:border-brand bg-canvas-muted group cursor-pointer rounded-3xl border-2 border-dashed p-10 text-center transition-colors duration-200"
-                  >
-                    <svg
-                      className="text-text-muted group-hover:text-brand mx-auto h-10 w-10 transition-colors"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
-                      />
-                    </svg>
-                    <h4 className="mt-4 text-sm font-bold">
-                      จำลองการอัปโหลดไฟล์เข้าระบบ Cloudflare R2
-                    </h4>
-                    <p className="text-text-muted mt-1 text-xs">
-                      คลิกตรงนี้เพื่อจำลองการเลือกและอัปโหลดรูปภาพบันทึกความทรงจำของเพื่อนร่วมรุ่น
-                    </p>
-                  </div>
-
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    {gallery.map((item) => (
-                      <div
-                        key={item.id}
-                        className="border-border bg-canvas hover:border-text-muted flex items-center justify-between rounded-2xl border p-4 transition-colors"
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="border-border relative h-10 w-12 overflow-hidden rounded-lg border">
-                            <Image src={item.imageSrc} alt="" fill className="object-cover" />
-                          </div>
-                          <div>
-                            <h5 className="line-clamp-1 text-xs font-bold">{item.title}</h5>
-                            <span className="text-brand text-[9px] font-bold tracking-wider uppercase">
-                              {item.album}
-                            </span>
-                          </div>
-                        </div>
-                        <button
-                          onClick={() => handleDeleteItem(item.id, "Gallery")}
-                          className="cursor-pointer text-xs font-bold text-rose-500 hover:underline"
+                    <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
+                      {[
+                        {
+                          label: "ประวัติศิษย์เก่าใน D1",
+                          val: students.length,
+                          color: "text-indigo-500",
+                        },
+                        { label: "บันทึกบทความรุ่น", val: posts.length, color: "text-rose-500" },
+                        { label: "กิจกรรมทั้งหมด", val: events.length, color: "text-amber-500" },
+                        { label: "วิดีโอ & คลิปสั้น", val: media.length, color: "text-sky-500" },
+                        {
+                          label: "ไฟล์ในแกลเลอรี (KV)",
+                          val: gallery.length,
+                          color: "text-emerald-500",
+                        },
+                        {
+                          label: "คลังไฟล์ดาวน์โหลด",
+                          val: downloads.length,
+                          color: "text-teal-500",
+                        },
+                      ].map((card, idx) => (
+                        <div
+                          key={idx}
+                          className="bg-canvas border-border rounded-2xl border p-5 shadow-sm"
                         >
-                          ลบ
+                          <span className={`block text-3xl font-black ${card.color}`}>
+                            {card.val}
+                          </span>
+                          <span className="text-text-muted mt-1 block text-xs font-semibold">
+                            {card.label}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="border-border text-text-muted border-t pt-6 text-sm leading-relaxed">
+                      💡 **คำแนะนำผู้ใช้คนเดียว (Webmaster Guidelines)**:
+                      คุณสามารถจัดการและเปลี่ยนรูปภาพได้ทันที เพียงไปที่แท็บ **"คลังสื่อรูปภาพ"**
+                      เพื่อลากรูปภาพคอมพิวเตอร์ของคุณโยนขึ้นคลาวด์ ระบบจะมอบลิงก์รูปถ่าย (เช่น
+                      `/api/media/filename.png`) ให้คุณก๊อปปี้ไปวางในบทความ
+                      หรือประวัติเพื่อนร่วมชั้นเรียนได้สะดวกทันทีครับ!
+                    </div>
+                  </div>
+                )}
+
+                {/* 2. POSTS EDITOR (เขียนบทความ) */}
+                {activeTab === "Posts" && (
+                  <div className="border-border bg-canvas-muted space-y-8 rounded-[32px] border p-8">
+                    <SectionHeader
+                      title="เขียน & แก้ไขบันทึกความทรงจำ"
+                      subtitle="เพิ่มบทความใหม่ หรือเลือกแก้ไขเรื่องราวประทับใจร่วมรุ่นลงบนเว็บไซต์หลัก"
+                    />
+
+                    {/* New Post Form */}
+                    <form
+                      onSubmit={async (e) => {
+                        e.preventDefault();
+                        if (!postForm.id || !postForm.title || !postForm.slug) {
+                          alert("กรุณากรอก ID, ชื่อเรื่อง และ Slug ลิงก์");
+                          return;
+                        }
+                        const tagsArr = postForm.tags
+                          .split(",")
+                          .map((t) => t.trim())
+                          .filter(Boolean);
+                        const contentArr = postForm.content
+                          .split("\n\n")
+                          .map((c) => c.trim())
+                          .filter(Boolean);
+
+                        const success = await handleSaveData("posts", {
+                          ...postForm,
+                          tags: tagsArr,
+                          content: contentArr,
+                          publishedTime: postForm.publishedTime || new Date().toISOString(),
+                        });
+
+                        if (success) {
+                          alert("บันทึกบทความสำเร็จ!");
+                          setPostForm({
+                            id: "",
+                            slug: "",
+                            title: "",
+                            description: "",
+                            imageSrc: "",
+                            category: "วันแรกในโรงเรียน",
+                            tags: "",
+                            date: "",
+                            readTime: "อ่าน 5 นาที",
+                            publishedTime: "",
+                            authorName: "แอดมินรุ่น",
+                            authorAvatar: "/assets/spotlight.png",
+                            authorTitle: "คณะกรรมการรุ่น 150",
+                            content: "",
+                          });
+                        }
+                      }}
+                      className="bg-canvas border-border space-y-4 rounded-2xl border p-6"
+                    >
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            ID บทความ (ห้ามซ้ำ เช่น post-5)
+                          </label>
+                          <input
+                            type="text"
+                            value={postForm.id}
+                            onChange={(e) => setPostForm({ ...postForm, id: e.target.value })}
+                            placeholder="ตัวอย่าง: post-5"
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            ลิงก์บทความ (Slug - อังกฤษเท่านั้น เช่น my-class-trip)
+                          </label>
+                          <input
+                            type="text"
+                            value={postForm.slug}
+                            onChange={(e) => setPostForm({ ...postForm, slug: e.target.value })}
+                            placeholder="ตัวอย่าง: trip-to-mountain"
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            หัวข้อบทความ (ภาษาไทย)
+                          </label>
+                          <input
+                            type="text"
+                            value={postForm.title}
+                            onChange={(e) => setPostForm({ ...postForm, title: e.target.value })}
+                            placeholder="ตัวอย่าง: ย้อนเวลาไปแคมป์วิทยาศาสตร์..."
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            หมวดหมู่บทความ
+                          </label>
+                          <select
+                            value={postForm.category}
+                            onChange={(e) => setPostForm({ ...postForm, category: e.target.value })}
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          >
+                            <option value="วันแรกในโรงเรียน">วันแรกในโรงเรียน</option>
+                            <option value="งานกีฬาสี">งานกีฬาสี</option>
+                            <option value="ค่ายดนตรี">ค่ายดนตรี</option>
+                            <option value="วันจบการศึกษา">วันจบการศึกษา</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            สรุปสั้นๆ (Description)
+                          </label>
+                          <input
+                            type="text"
+                            value={postForm.description}
+                            onChange={(e) =>
+                              setPostForm({ ...postForm, description: e.target.value })
+                            }
+                            placeholder="สรุปเรื่องราวประมาณ 1 ประโยค..."
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            รูปภาพหน้าปกบทความ (ก๊อปปี้มาจากคลังสื่อ/รูปที่มีอยู่)
+                          </label>
+                          <div className="mt-1.5 flex gap-2">
+                            <input
+                              type="text"
+                              value={postForm.imageSrc}
+                              onChange={(e) =>
+                                setPostForm({ ...postForm, imageSrc: e.target.value })
+                              }
+                              placeholder="ตัวอย่าง: /api/media/filename.png"
+                              className="border-border bg-canvas-muted text-text flex-1 rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                            />
+                            <div className="relative">
+                              <input
+                                type="file"
+                                accept="image/*"
+                                disabled={uploading}
+                                onChange={(e) =>
+                                  handleImageUpload(e, (url) =>
+                                    setPostForm({ ...postForm, imageSrc: url }),
+                                  )
+                                }
+                                className="absolute inset-0 cursor-pointer opacity-0"
+                              />
+                              <button
+                                type="button"
+                                className="bg-text text-canvas h-full rounded-xl px-3 py-2.5 text-xs font-bold"
+                              >
+                                {uploading ? "กำลังโหลด..." : "อัปโหลดรูปปก"}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            แท็กคำค้นหา (คั่นด้วยเครื่องหมายจุลภาค , )
+                          </label>
+                          <input
+                            type="text"
+                            value={postForm.tags}
+                            onChange={(e) => setPostForm({ ...postForm, tags: e.target.value })}
+                            placeholder="ตัวอย่าง: กิจกรรมห้อง, ครูวิทย์, ประทับใจ"
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            วันที่ลง / ระยะเวลาการอ่าน
+                          </label>
+                          <div className="mt-1.5 grid grid-cols-2 gap-2">
+                            <input
+                              type="text"
+                              value={postForm.date}
+                              onChange={(e) => setPostForm({ ...postForm, date: e.target.value })}
+                              placeholder="ตัวอย่าง: 13 กรกฎาคม 2026"
+                              className="border-border bg-canvas-muted text-text w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                            />
+                            <input
+                              type="text"
+                              value={postForm.readTime}
+                              onChange={(e) =>
+                                setPostForm({ ...postForm, readTime: e.target.value })
+                              }
+                              placeholder="ตัวอย่าง: อ่าน 4 นาที"
+                              className="border-border bg-canvas-muted text-text w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="text-text-muted text-xs font-bold">
+                          เนื้อหาบทความแบบยาว (แยกย่อหน้าใหม่โดยการกดปุ่ม Enter เว้นบรรทัด 2 ครั้ง)
+                        </label>
+                        <textarea
+                          rows={6}
+                          value={postForm.content}
+                          onChange={(e) => setPostForm({ ...postForm, content: e.target.value })}
+                          placeholder="พิมพ์เล่าเรื่องราวความทรงจำของคุณที่นี่..."
+                          className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                        />
+                      </div>
+
+                      <div className="flex justify-end gap-3 pt-2">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setPostForm({
+                              id: "",
+                              slug: "",
+                              title: "",
+                              description: "",
+                              imageSrc: "",
+                              category: "วันแรกในโรงเรียน",
+                              tags: "",
+                              date: "",
+                              readTime: "อ่าน 5 นาที",
+                              publishedTime: "",
+                              authorName: "แอดมินรุ่น",
+                              authorAvatar: "/assets/spotlight.png",
+                              authorTitle: "คณะกรรมการรุ่น 150",
+                              content: "",
+                            })
+                          }
+                          className="text-text-muted rounded-xl border px-4 py-2 text-xs font-bold"
+                        >
+                          ล้างแบบฟอร์ม
+                        </button>
+                        <button
+                          type="submit"
+                          className="bg-brand text-canvas rounded-xl px-6 py-2.5 text-xs font-bold"
+                        >
+                          บันทึกบทความขึ้นเว็บ
                         </button>
                       </div>
-                    ))}
+                    </form>
+
+                    {/* Posts List */}
+                    <div className="space-y-3">
+                      <h4 className="text-text-muted text-sm font-bold">
+                        บทความที่มีอยู่ทั้งหมด ({posts.length})
+                      </h4>
+                      <div className="border-border bg-canvas divide-y overflow-hidden rounded-2xl border">
+                        {posts.map((post) => (
+                          <div
+                            key={post.id}
+                            className="flex items-center justify-between gap-4 p-4"
+                          >
+                            <div>
+                              <span className="rounded bg-rose-500/10 px-2 py-0.5 text-[10px] font-black text-rose-500 uppercase">
+                                {post.category}
+                              </span>
+                              <h5 className="mt-1 text-sm font-bold">{post.title}</h5>
+                              <p className="text-text-muted mt-0.5 text-xs">{post.description}</p>
+                            </div>
+                            <button
+                              onClick={() => {
+                                setPostForm({
+                                  id: post.id,
+                                  slug: post.slug,
+                                  title: post.title,
+                                  description: post.description,
+                                  imageSrc: post.imageSrc,
+                                  category: post.category,
+                                  tags: post.tags.join(", "),
+                                  date: post.date,
+                                  readTime: post.readTime,
+                                  publishedTime: post.publishedTime,
+                                  authorName: post.author.name,
+                                  authorAvatar: post.author.avatar,
+                                  authorTitle: post.author.title,
+                                  content: post.content.join("\n\n"),
+                                });
+                                addLog(`[FORM] ดึงข้อมูลบทความเพื่อแก้ไข: ${post.title}`);
+                              }}
+                              className="text-brand border-brand/20 rounded-lg border px-3 py-1.5 text-xs font-bold"
+                            >
+                              แก้ไข (Edit)
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* 5. VIDEOS CRUD */}
-              {activeTab === "Videos" && (
-                <div className="animate-in fade-in space-y-8 duration-200">
-                  <form
-                    onSubmit={handleSaveVideo}
-                    className="bg-canvas-muted border-border space-y-4 rounded-3xl border p-6"
-                  >
-                    <h4 className="text-sm font-bold">
-                      {editingId ? "แก้ไขวิดีโอเด่น" : "เพิ่มวิดีโอเด่นความทรงจำใหม่"}
-                    </h4>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <div>
-                        <span className="text-text-muted mb-1 block text-[10px]">
-                          ตัวอย่าง: วิดีโอไฮไลท์งานกีฬาสี รุ่น 150
-                        </span>
-                        <input
-                          type="text"
-                          name="title"
-                          placeholder="ชื่อวิดีโอ"
-                          value={formInputs.title}
-                          onChange={handleInputChange}
-                          className="bg-canvas border-border focus:border-brand w-full rounded-xl border px-4 py-2.5 text-sm focus:outline-none"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <span className="text-text-muted mb-1 block text-[10px]">
-                          ตัวอย่าง: บันทึกภาพกล้องระดับสายตาวิ่งผลัดและกองเชียร์
-                        </span>
-                        <input
-                          type="text"
-                          name="description"
-                          placeholder="คำอธิบายวิดีโอ"
-                          value={formInputs.description}
-                          onChange={handleInputChange}
-                          className="bg-canvas border-border focus:border-brand w-full rounded-xl border px-4 py-2.5 text-sm focus:outline-none"
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="flex justify-end gap-2">
-                      <Button variant="outline" size="sm" onClick={resetForm}>
-                        ยกเลิก
-                      </Button>
-                      <Button variant="primary" size="sm" type="submit">
-                        บันทึกข้อมูล (D1 COMMIT)
-                      </Button>
-                    </div>
-                  </form>
+                {/* 3. STUDENTS EDITOR (ทำเนียบเพื่อน) */}
+                {activeTab === "Students" && (
+                  <div className="border-border bg-canvas-muted space-y-8 rounded-[32px] border p-8">
+                    <SectionHeader
+                      title="จัดการทำเนียบเพื่อนร่วมรุ่น"
+                      subtitle="เพิ่มหรือปรับปรุงประวัติ ช่องทางติดต่อ IG/TikTok และคำคมเพื่อนๆ ในรุ่น 150"
+                    />
 
-                  <div className="space-y-3">
-                    {videos.map((item) => (
-                      <div
-                        key={item.id}
-                        className="border-border bg-canvas hover:border-text-muted flex items-center justify-between rounded-2xl border p-4 transition-colors"
-                      >
+                    {/* Student Form */}
+                    <form
+                      onSubmit={async (e) => {
+                        e.preventDefault();
+                        if (!studentForm.id || !studentForm.name) {
+                          alert("กรุณากรอก ID และชื่อเล่นเพื่อนร่วมรุ่น");
+                          return;
+                        }
+
+                        // Parse metrics
+                        let metricsArr = [];
+                        try {
+                          metricsArr = studentForm.metrics
+                            ? JSON.parse(studentForm.metrics)
+                            : [
+                                { label: "ระดับการเรียน", value: "GPA 4.00" },
+                                { label: "ความเชี่ยวชาญ", value: "วิทยาศาสตร์" },
+                              ];
+                        } catch (e) {
+                          metricsArr = studentForm.metrics
+                            .split(",")
+                            .map((item) => {
+                              const [label, value] = item.split(":");
+                              return { label: label?.trim(), value: value?.trim() };
+                            })
+                            .filter((m) => m.label && m.value);
+                        }
+
+                        // Parse bio paragraphs
+                        const bioArr = studentForm.bioParagraphs
+                          .split("\n\n")
+                          .map((b) => b.trim())
+                          .filter(Boolean);
+
+                        const success = await handleSaveData("students", {
+                          ...studentForm,
+                          metrics: metricsArr,
+                          bioParagraphs: bioArr,
+                        });
+
+                        if (success) {
+                          alert("บันทึกประวัติสำเร็จ!");
+                          setStudentForm({
+                            id: "",
+                            name: "",
+                            title: "",
+                            achievement: "",
+                            instagram: "",
+                            tiktok: "",
+                            youtube: "",
+                            imageSrc: "",
+                            metrics: "",
+                            bioParagraphs: "",
+                            highlightQuote: "",
+                          });
+                        }
+                      }}
+                      className="bg-canvas border-border space-y-4 rounded-2xl border p-6"
+                    >
+                      <div className="grid gap-4 sm:grid-cols-3">
                         <div>
-                          <h5 className="text-sm font-bold">{item.title}</h5>
-                          <p className="text-text-muted mt-1 text-xs">{item.description}</p>
+                          <label className="text-text-muted text-xs font-bold">
+                            ID ประวัตินักเรียน (ห้ามซ้ำ เช่น student-3)
+                          </label>
+                          <input
+                            type="text"
+                            value={studentForm.id}
+                            onChange={(e) => setStudentForm({ ...studentForm, id: e.target.value })}
+                            placeholder="ตัวอย่าง: student-3"
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
                         </div>
-                        <div className="flex shrink-0 gap-2">
-                          <button
-                            onClick={() => handleEditTrigger(item, "Videos")}
-                            className="text-brand cursor-pointer text-xs font-bold hover:underline"
-                          >
-                            แก้ไข
-                          </button>
-                          <button
-                            onClick={() => handleDeleteItem(item.id, "Videos")}
-                            className="cursor-pointer text-xs font-bold text-rose-500 hover:underline"
-                          >
-                            ลบ
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* 6. DOWNLOADS CRUD */}
-              {activeTab === "Downloads" && (
-                <div className="animate-in fade-in space-y-8 duration-200">
-                  <form
-                    onSubmit={handleSaveDownload}
-                    className="bg-canvas-muted border-border space-y-4 rounded-3xl border p-6"
-                  >
-                    <h4 className="text-sm font-bold">
-                      {editingId ? "แก้ไขเอกสารดาวน์โหลด" : "สร้างไฟล์ดาวน์โหลดใหม่"}
-                    </h4>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <div>
-                        <span className="text-text-muted mb-1 block text-[10px]">
-                          ตัวอย่าง: หนังสือทำเนียบรุ่น 150 (.PDF)
-                        </span>
-                        <input
-                          type="text"
-                          name="title"
-                          placeholder="ชื่อหัวข้อดาวน์โหลด"
-                          value={formInputs.title}
-                          onChange={handleInputChange}
-                          className="bg-canvas border-border focus:border-brand w-full rounded-xl border px-4 py-2.5 text-sm focus:outline-none"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <span className="text-text-muted mb-1 block text-[10px]">
-                          ตัวอย่าง: เอกสารรวมเบอร์โทรศัพท์และที่อยู่เพื่อนๆ
-                        </span>
-                        <input
-                          type="text"
-                          name="description"
-                          placeholder="คำอธิบายเนื้อหาไฟล์"
-                          value={formInputs.description}
-                          onChange={handleInputChange}
-                          className="bg-canvas border-border focus:border-brand w-full rounded-xl border px-4 py-2.5 text-sm focus:outline-none"
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="flex justify-end gap-2">
-                      <Button variant="outline" size="sm" onClick={resetForm}>
-                        ยกเลิก
-                      </Button>
-                      <Button variant="primary" size="sm" type="submit">
-                        บันทึกข้อมูล (D1 COMMIT)
-                      </Button>
-                    </div>
-                  </form>
-
-                  <div className="space-y-3">
-                    {downloads.map((item) => (
-                      <div
-                        key={item.id}
-                        className="border-border bg-canvas hover:border-text-muted flex items-center justify-between rounded-2xl border p-4 transition-colors"
-                      >
                         <div>
-                          <h5 className="text-sm font-bold">{item.title}</h5>
-                          <p className="text-text-muted mt-1 text-xs">{item.description}</p>
+                          <label className="text-text-muted text-xs font-bold">
+                            ชื่อ-นามสกุลจริง (ชื่อเล่นในวงเล็บ)
+                          </label>
+                          <input
+                            type="text"
+                            value={studentForm.name}
+                            onChange={(e) =>
+                              setStudentForm({ ...studentForm, name: e.target.value })
+                            }
+                            placeholder="ตัวอย่าง: เมษา ศิริวัฒนา (เมย์)"
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
                         </div>
-                        <div className="flex shrink-0 gap-2">
-                          <button
-                            onClick={() => handleEditTrigger(item, "Downloads")}
-                            className="text-brand cursor-pointer text-xs font-bold hover:underline"
-                          >
-                            แก้ไข
-                          </button>
-                          <button
-                            onClick={() => handleDeleteItem(item.id, "Downloads")}
-                            className="cursor-pointer text-xs font-bold text-rose-500 hover:underline"
-                          >
-                            ลบ
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* 7. STUDENTS/SPOTLIGHT CRUD */}
-              {activeTab === "Students" && (
-                <div className="animate-in fade-in space-y-8 duration-200">
-                  <form
-                    onSubmit={handleSaveStudent}
-                    className="bg-canvas-muted border-border space-y-4 rounded-3xl border p-6"
-                  >
-                    <h4 className="text-sm font-bold">
-                      {editingId ? "แก้ไขประวัติศิษย์เก่า" : "เพิ่มประวัติศิษย์เก่าใหม่"}
-                    </h4>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <div>
-                        <span className="text-text-muted mb-1 block text-[10px]">
-                          ตัวอย่าง: นายณัฐพล สมดี (พล)
-                        </span>
-                        <input
-                          type="text"
-                          name="name"
-                          placeholder="ชื่อ-นามสกุล (ชื่อเล่น)"
-                          value={formInputs.name}
-                          onChange={handleInputChange}
-                          className="bg-canvas border-border focus:border-brand w-full rounded-xl border px-4 py-2.5 text-sm focus:outline-none"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <span className="text-text-muted mb-1 block text-[10px]">
-                          ตัวอย่าง: ประธานชมรมวิศวกรรมไอทีรุ่น 150
-                        </span>
-                        <input
-                          type="text"
-                          name="role"
-                          placeholder="ตำแหน่งหรือผลงานสำคัญประจำรุ่น"
-                          value={formInputs.role}
-                          onChange={handleInputChange}
-                          className="bg-canvas border-border focus:border-brand w-full rounded-xl border px-4 py-2.5 text-sm focus:outline-none"
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="flex justify-end gap-2">
-                      <Button variant="outline" size="sm" onClick={resetForm}>
-                        ยกเลิก
-                      </Button>
-                      <Button variant="primary" size="sm" type="submit">
-                        บันทึกข้อมูล (D1 COMMIT)
-                      </Button>
-                    </div>
-                  </form>
-
-                  <div className="space-y-3">
-                    {students.map((item) => (
-                      <div
-                        key={item.id}
-                        className="border-border bg-canvas hover:border-text-muted flex items-center justify-between rounded-2xl border p-4 transition-colors"
-                      >
                         <div>
-                          <h5 className="text-sm font-bold">{item.name}</h5>
-                          <p className="text-text-muted mt-1 text-xs">{item.title}</p>
-                        </div>
-                        <div className="flex shrink-0 gap-2">
-                          <button
-                            onClick={() => handleEditTrigger(item, "Students")}
-                            className="text-brand cursor-pointer text-xs font-bold hover:underline"
-                          >
-                            แก้ไข
-                          </button>
-                          <button
-                            onClick={() => handleDeleteItem(item.id, "Students")}
-                            className="cursor-pointer text-xs font-bold text-rose-500 hover:underline"
-                          >
-                            ลบ
-                          </button>
+                          <label className="text-text-muted text-xs font-bold">
+                            ตำแหน่ง/บทบาทในรุ่น
+                          </label>
+                          <input
+                            type="text"
+                            value={studentForm.title}
+                            onChange={(e) =>
+                              setStudentForm({ ...studentForm, title: e.target.value })
+                            }
+                            placeholder="ตัวอย่าง: ประธานสภานักเรียน"
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
                         </div>
                       </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
 
-            {/* Bottom Status Terminal */}
-            <div className="mt-12 rounded-3xl border border-neutral-800 bg-black p-6 text-left select-text">
-              <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
-                <span className="block font-mono text-[10px] font-bold tracking-widest text-neutral-400 uppercase">
-                  บันทึกสถานะ Cloudflare SQL & R2 Storage (ระบบจำลอง)
-                </span>
-                <span className="h-2 w-2 animate-ping rounded-full bg-green-500" />
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            ผลงานเด่น/ความสำเร็จ
+                          </label>
+                          <input
+                            type="text"
+                            value={studentForm.achievement}
+                            onChange={(e) =>
+                              setStudentForm({ ...studentForm, achievement: e.target.value })
+                            }
+                            placeholder="ตัวอย่าง: ชนะเลิศโครงงานคณิตศาสตร์..."
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            รูปโปรไฟล์เพื่อนร่วมรุ่น (ขนาด 1:1 หรือ 3:4)
+                          </label>
+                          <div className="mt-1.5 flex gap-2">
+                            <input
+                              type="text"
+                              value={studentForm.imageSrc}
+                              onChange={(e) =>
+                                setStudentForm({ ...studentForm, imageSrc: e.target.value })
+                              }
+                              placeholder="/api/media/filename.png"
+                              className="border-border bg-canvas-muted text-text flex-1 rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                            />
+                            <div className="relative">
+                              <input
+                                type="file"
+                                accept="image/*"
+                                disabled={uploading}
+                                onChange={(e) =>
+                                  handleImageUpload(e, (url) =>
+                                    setStudentForm({ ...studentForm, imageSrc: url }),
+                                  )
+                                }
+                                className="absolute inset-0 cursor-pointer opacity-0"
+                              />
+                              <button
+                                type="button"
+                                className="bg-text text-canvas h-full rounded-xl px-3 py-2.5 text-xs font-bold"
+                              >
+                                {uploading ? "..." : "อัปโหลด"}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid gap-4 sm:grid-cols-3">
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            ลิงก์ Instagram
+                          </label>
+                          <input
+                            type="text"
+                            value={studentForm.instagram}
+                            onChange={(e) =>
+                              setStudentForm({ ...studentForm, instagram: e.target.value })
+                            }
+                            placeholder="ลิงก์ IG เต็ม..."
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">ลิงก์ TikTok</label>
+                          <input
+                            type="text"
+                            value={studentForm.tiktok}
+                            onChange={(e) =>
+                              setStudentForm({ ...studentForm, tiktok: e.target.value })
+                            }
+                            placeholder="ลิงก์ TikTok เต็ม..."
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">ลิงก์ YouTube</label>
+                          <input
+                            type="text"
+                            value={studentForm.youtube}
+                            onChange={(e) =>
+                              setStudentForm({ ...studentForm, youtube: e.target.value })
+                            }
+                            placeholder="ลิงก์ YouTube เต็ม..."
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            สถิติ/ตัวชี้วัดความชอบ (คั่นด้วยจุลภาค เช่น หัวข้อ:คะแนน)
+                          </label>
+                          <input
+                            type="text"
+                            value={studentForm.metrics}
+                            onChange={(e) =>
+                              setStudentForm({ ...studentForm, metrics: e.target.value })
+                            }
+                            placeholder="ตัวอย่าง: วิชาที่รัก:ฟิสิกส์, กิฟต์การ์ด:10,000"
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            คำพูดประจำใจ / คำคม (Quotes)
+                          </label>
+                          <input
+                            type="text"
+                            value={studentForm.highlightQuote}
+                            onChange={(e) =>
+                              setStudentForm({ ...studentForm, highlightQuote: e.target.value })
+                            }
+                            placeholder="คำพูดติดตลก หรือคำคมเท่ๆ..."
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="text-text-muted text-xs font-bold">
+                          ประวัตินักเรียนและเรื่องราวยาว (แยกย่อหน้าโดยการเว้นบรรทัด 2 ครั้ง)
+                        </label>
+                        <textarea
+                          rows={4}
+                          value={studentForm.bioParagraphs}
+                          onChange={(e) =>
+                            setStudentForm({ ...studentForm, bioParagraphs: e.target.value })
+                          }
+                          placeholder="เรื่องราวส่วนตัว ประสบการณ์ และความสำเร็จในโรงเรียน..."
+                          className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                        />
+                      </div>
+
+                      <div className="flex justify-end gap-3 pt-2">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setStudentForm({
+                              id: "",
+                              name: "",
+                              title: "",
+                              achievement: "",
+                              instagram: "",
+                              tiktok: "",
+                              youtube: "",
+                              imageSrc: "",
+                              metrics: "",
+                              bioParagraphs: "",
+                              highlightQuote: "",
+                            })
+                          }
+                          className="text-text-muted rounded-xl border px-4 py-2 text-xs font-bold"
+                        >
+                          ล้างแบบฟอร์ม
+                        </button>
+                        <button
+                          type="submit"
+                          className="bg-brand text-canvas rounded-xl px-6 py-2.5 text-xs font-bold"
+                        >
+                          บันทึกทำเนียบรุ่น
+                        </button>
+                      </div>
+                    </form>
+
+                    {/* Students list */}
+                    <div className="space-y-3">
+                      <h4 className="text-text-muted text-sm font-bold">
+                        รายชื่อเพื่อนทั้งหมด ({students.length})
+                      </h4>
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        {students.map((student) => (
+                          <div
+                            key={student.id}
+                            className="border-border bg-canvas flex items-center justify-between gap-3 rounded-2xl border p-4 shadow-sm"
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className="border-border relative h-12 w-12 overflow-hidden rounded-full border">
+                                <Image
+                                  src={student.imageSrc}
+                                  alt={student.name}
+                                  fill
+                                  className="object-cover"
+                                />
+                              </div>
+                              <div>
+                                <h5 className="text-sm font-bold">{student.name}</h5>
+                                <p className="text-text-muted mt-0.5 text-xs">{student.title}</p>
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => {
+                                setStudentForm({
+                                  id: student.id,
+                                  name: student.name,
+                                  title: student.title,
+                                  achievement: student.achievement,
+                                  instagram: student.instagram || "",
+                                  tiktok: student.tiktok || "",
+                                  youtube: student.youtube || "",
+                                  imageSrc: student.imageSrc,
+                                  metrics: JSON.stringify(student.metrics),
+                                  bioParagraphs: student.bioParagraphs.join("\n\n"),
+                                  highlightQuote: student.highlightQuote,
+                                });
+                                addLog(`[FORM] ดึงข้อมูลเพื่อนเพื่อแก้ไข: ${student.name}`);
+                              }}
+                              className="text-brand border-brand/20 rounded-lg border px-3 py-1.5 text-xs font-bold"
+                            >
+                              แก้ไข
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. EVENTS EDITOR (กิจกรรมรุ่น) */}
+                {activeTab === "Events" && (
+                  <div className="border-border bg-canvas-muted space-y-8 rounded-[32px] border p-8">
+                    <SectionHeader
+                      title="กิจกรรม & ตารางสังสรรค์ศิษย์เก่า"
+                      subtitle="ตั้งกิจกรรมใหม่ ค่ายดนตรี งานคืนสู่เหย้า หรือแก้ไขสถานะเหตุการณ์"
+                    />
+
+                    <form
+                      onSubmit={async (e) => {
+                        e.preventDefault();
+                        if (!eventForm.id || !eventForm.title) {
+                          alert("กรุณากรอก ID และชื่อกิจกรรม");
+                          return;
+                        }
+                        const gallArr = eventForm.galleryImages
+                          .split(",")
+                          .map((i) => i.trim())
+                          .filter(Boolean);
+
+                        const success = await handleSaveData("events", {
+                          ...eventForm,
+                          galleryImages: gallArr,
+                        });
+
+                        if (success) {
+                          alert("บันทึกกิจกรรมเรียบร้อย!");
+                          setEventForm({
+                            id: "",
+                            title: "",
+                            description: "",
+                            type: "upcoming",
+                            date: "",
+                            time: "",
+                            location: "",
+                            locationType: "physical",
+                            countdownTarget: "",
+                            coverImage: "",
+                            galleryImages: "",
+                            videoUrl: "",
+                            phase: "พบปะสังสรรค์",
+                          });
+                        }
+                      }}
+                      className="bg-canvas border-border space-y-4 rounded-2xl border p-6"
+                    >
+                      <div className="grid gap-4 sm:grid-cols-3">
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            ID กิจกรรม (ห้ามซ้ำ เช่น event-3)
+                          </label>
+                          <input
+                            type="text"
+                            value={eventForm.id}
+                            onChange={(e) => setEventForm({ ...eventForm, id: e.target.value })}
+                            placeholder="ตัวอย่าง: event-3"
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            ชื่อหัวข้อกิจกรรม
+                          </label>
+                          <input
+                            type="text"
+                            value={eventForm.title}
+                            onChange={(e) => setEventForm({ ...eventForm, title: e.target.value })}
+                            placeholder="ตัวอย่าง: เลี้ยงต้อนรับเพื่อนกลับไทย..."
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">ประเภทกิจกรรม</label>
+                          <select
+                            value={eventForm.type}
+                            onChange={(e) => setEventForm({ ...eventForm, type: e.target.value })}
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          >
+                            <option value="upcoming">กิจกรรมที่กำลังจะเกิด (Upcoming)</option>
+                            <option value="past">ผ่านพ้นไปแล้ว (Past Event)</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="grid gap-4 sm:grid-cols-3">
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            วันที่จัดงาน (ภาษาไทย)
+                          </label>
+                          <input
+                            type="text"
+                            value={eventForm.date}
+                            onChange={(e) => setEventForm({ ...eventForm, date: e.target.value })}
+                            placeholder="ตัวอย่าง: 24 กรกฎาคม 2026"
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">เวลาจัดงาน</label>
+                          <input
+                            type="text"
+                            value={eventForm.time}
+                            onChange={(e) => setEventForm({ ...eventForm, time: e.target.value })}
+                            placeholder="ตัวอย่าง: 18:00 น. เป็นต้นไป"
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            หมวดหมู่/ประเภทสังสรรค์
+                          </label>
+                          <input
+                            type="text"
+                            value={eventForm.phase}
+                            onChange={(e) => setEventForm({ ...eventForm, phase: e.target.value })}
+                            placeholder="ตัวอย่าง: กิจกรรมศิษย์เก่า"
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">สถานที่จัดงาน</label>
+                          <input
+                            type="text"
+                            value={eventForm.location}
+                            onChange={(e) =>
+                              setEventForm({ ...eventForm, location: e.target.value })
+                            }
+                            placeholder="ตัวอย่าง: หอประชุมโรงเรียน"
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">รูปปกกิจกรรม</label>
+                          <div className="mt-1.5 flex gap-2">
+                            <input
+                              type="text"
+                              value={eventForm.coverImage}
+                              onChange={(e) =>
+                                setEventForm({ ...eventForm, coverImage: e.target.value })
+                              }
+                              placeholder="/api/media/filename.png"
+                              className="border-border bg-canvas-muted text-text flex-1 rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                            />
+                            <div className="relative">
+                              <input
+                                type="file"
+                                accept="image/*"
+                                disabled={uploading}
+                                onChange={(e) =>
+                                  handleImageUpload(e, (url) =>
+                                    setEventForm({ ...eventForm, coverImage: url }),
+                                  )
+                                }
+                                className="absolute inset-0 cursor-pointer opacity-0"
+                              />
+                              <button
+                                type="button"
+                                className="bg-text text-canvas h-full rounded-xl px-3 py-2.5 text-xs font-bold"
+                              >
+                                อัปโหลด
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid gap-4 sm:grid-cols-3">
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">รูปแบบพิกัด</label>
+                          <select
+                            value={eventForm.locationType}
+                            onChange={(e) =>
+                              setEventForm({ ...eventForm, locationType: e.target.value })
+                            }
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          >
+                            <option value="physical">จัดในพื้นที่จริง (Physical)</option>
+                            <option value="virtual">จัดออนไลน์ (Virtual)</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            เวลานับถอยหลัง (ISO target - สำหรับกิจกรรมใหม่)
+                          </label>
+                          <input
+                            type="text"
+                            value={eventForm.countdownTarget}
+                            onChange={(e) =>
+                              setEventForm({ ...eventForm, countdownTarget: e.target.value })
+                            }
+                            placeholder="ตัวอย่าง: 2026-07-24T18:00:00"
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            รหัสยูทูปสรุปกิจกรรม (สำหรับงานอดีต)
+                          </label>
+                          <input
+                            type="text"
+                            value={eventForm.videoUrl}
+                            onChange={(e) =>
+                              setEventForm({ ...eventForm, videoUrl: e.target.value })
+                            }
+                            placeholder="ตัวอย่าง: dQw4w9WgXcQ"
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="text-text-muted text-xs font-bold">
+                          คลังอัลบั้มรูปย้อนหลัง (คั่นด้วยจุลภาค , )
+                        </label>
+                        <input
+                          type="text"
+                          value={eventForm.galleryImages}
+                          onChange={(e) =>
+                            setEventForm({ ...eventForm, galleryImages: e.target.value })
+                          }
+                          placeholder="/api/media/pic1.png, /api/media/pic2.png"
+                          className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-text-muted text-xs font-bold">
+                          คำอธิบายรายละเอียดงาน
+                        </label>
+                        <textarea
+                          rows={3}
+                          value={eventForm.description}
+                          onChange={(e) =>
+                            setEventForm({ ...eventForm, description: e.target.value })
+                          }
+                          placeholder="กำหนดการ กิจกรรม และรายละเอียดร่วมงาน..."
+                          className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                        />
+                      </div>
+
+                      <div className="flex justify-end gap-3 pt-2">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setEventForm({
+                              id: "",
+                              title: "",
+                              description: "",
+                              type: "upcoming",
+                              date: "",
+                              time: "",
+                              location: "",
+                              locationType: "physical",
+                              countdownTarget: "",
+                              coverImage: "",
+                              galleryImages: "",
+                              videoUrl: "",
+                              phase: "พบปะสังสรรค์",
+                            })
+                          }
+                          className="text-text-muted rounded-xl border px-4 py-2 text-xs font-bold"
+                        >
+                          ล้าง
+                        </button>
+                        <button
+                          type="submit"
+                          className="bg-brand text-canvas rounded-xl px-6 py-2.5 text-xs font-bold"
+                        >
+                          บันทึกกิจกรรม
+                        </button>
+                      </div>
+                    </form>
+
+                    {/* Events list */}
+                    <div className="space-y-3">
+                      <h4 className="text-text-muted text-sm font-bold">
+                        กิจกรรมในระบบทั้งหมด ({events.length})
+                      </h4>
+                      <div className="border-border bg-canvas divide-y overflow-hidden rounded-2xl border">
+                        {events.map((event) => (
+                          <div
+                            key={event.id}
+                            className="flex items-center justify-between gap-4 p-4"
+                          >
+                            <div>
+                              <span
+                                className={`rounded px-2 py-0.5 text-[10px] font-black uppercase ${
+                                  event.type === "upcoming"
+                                    ? "bg-emerald-500/10 text-emerald-500"
+                                    : "bg-neutral-500/10 text-neutral-500"
+                                }`}
+                              >
+                                {event.type}
+                              </span>
+                              <h5 className="mt-1 text-sm font-bold">{event.title}</h5>
+                              <p className="text-text-muted mt-0.5 text-xs">
+                                {event.date} &bull; {event.location}
+                              </p>
+                            </div>
+                            <button
+                              onClick={() => {
+                                setEventForm({
+                                  id: event.id,
+                                  title: event.title,
+                                  description: event.description,
+                                  type: event.type,
+                                  date: event.date,
+                                  time: event.time,
+                                  location: event.location,
+                                  locationType: event.locationType,
+                                  countdownTarget: event.countdownTarget || "",
+                                  coverImage: event.coverImage,
+                                  galleryImages: event.galleryImages.join(", "),
+                                  videoUrl: event.videoUrl || "",
+                                  phase: event.phase,
+                                });
+                                addLog(`[FORM] ดึงข้อมูลกิจกรรมเพื่อแก้ไข: ${event.title}`);
+                              }}
+                              className="text-brand border-brand/20 rounded-lg border px-3 py-1.5 text-xs font-bold"
+                            >
+                              แก้ไข
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. MEDIA EDITOR (วิดีโอเด่น) */}
+                {activeTab === "Media" && (
+                  <div className="border-border bg-canvas-muted space-y-8 rounded-[32px] border p-8">
+                    <SectionHeader
+                      title="วิดีโอ & คลิปสั้นความทรงจำ"
+                      subtitle="แปะคลิป YouTube/TikTok กิจกรรม กีฬาสี หรือสัมภาษณ์ลงคลังสื่อวิดีโอ"
+                    />
+
+                    <form
+                      onSubmit={async (e) => {
+                        e.preventDefault();
+                        if (!mediaForm.id || !mediaForm.title || !mediaForm.videoId) {
+                          alert("กรุณากรอกข้อมูลวิดีโอให้ครบถ้วน");
+                          return;
+                        }
+
+                        const success = await handleSaveData("media", mediaForm);
+                        if (success) {
+                          alert("บันทึกวิดีโอสำเร็จ!");
+                          setMediaForm({
+                            id: "",
+                            title: "",
+                            description: "",
+                            platform: "youtube",
+                            videoId: "",
+                            category: "ความทรงจำสั้นๆ",
+                            duration: "",
+                            date: "",
+                            coverImage: "",
+                          });
+                        }
+                      }}
+                      className="bg-canvas border-border space-y-4 rounded-2xl border p-6"
+                    >
+                      <div className="grid gap-4 sm:grid-cols-3">
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            ID คลิปวิดีโอ (ห้ามซ้ำ เช่น video-4)
+                          </label>
+                          <input
+                            type="text"
+                            value={mediaForm.id}
+                            onChange={(e) => setMediaForm({ ...mediaForm, id: e.target.value })}
+                            placeholder="ตัวอย่าง: video-4"
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            ชื่อเรื่องวิดีโอ
+                          </label>
+                          <input
+                            type="text"
+                            value={mediaForm.title}
+                            onChange={(e) => setMediaForm({ ...mediaForm, title: e.target.value })}
+                            placeholder="ตัวอย่าง: วิดีโอสรุปภาพประทับใจค่าย..."
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            ค่าย/แพลตฟอร์ม
+                          </label>
+                          <select
+                            value={mediaForm.platform}
+                            onChange={(e) =>
+                              setMediaForm({
+                                ...mediaForm,
+                                platform: e.target.value as "youtube" | "tiktok",
+                              })
+                            }
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          >
+                            <option value="youtube">YouTube</option>
+                            <option value="tiktok">TikTok</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="grid gap-4 sm:grid-cols-3">
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            รหัสวิดีโอ (Video ID เท่านั้น)
+                          </label>
+                          <input
+                            type="text"
+                            value={mediaForm.videoId}
+                            onChange={(e) =>
+                              setMediaForm({ ...mediaForm, videoId: e.target.value })
+                            }
+                            placeholder="ตัวอย่าง: dQw4w9WgXcQ"
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            ความยาวคลิป (เช่น 12:45)
+                          </label>
+                          <input
+                            type="text"
+                            value={mediaForm.duration}
+                            onChange={(e) =>
+                              setMediaForm({ ...mediaForm, duration: e.target.value })
+                            }
+                            placeholder="ตัวอย่าง: 03:50"
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            หมวดหมู่วิดีโอ
+                          </label>
+                          <select
+                            value={mediaForm.category}
+                            onChange={(e) =>
+                              setMediaForm({ ...mediaForm, category: e.target.value })
+                            }
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          >
+                            <option value="งานจบการศึกษา">งานจบการศึกษา</option>
+                            <option value="กีฬาสีและกิจกรรม">กีฬาสีและกิจกรรม</option>
+                            <option value="แคมป์ปิ้งดนตรี">แคมป์ปิ้งดนตรี</option>
+                            <option value="ความทรงจำสั้นๆ">ความทรงจำสั้นๆ</option>
+                            <option value="กีฬาโรงเรียน">กีฬาโรงเรียน</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            วันที่ลงวิดีโอ
+                          </label>
+                          <input
+                            type="text"
+                            value={mediaForm.date}
+                            onChange={(e) => setMediaForm({ ...mediaForm, date: e.target.value })}
+                            placeholder="ตัวอย่าง: 13 กรกฎาคม 2026"
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            รูปภาพหน้าปกวิดีโอ (Cover Image)
+                          </label>
+                          <div className="mt-1.5 flex gap-2">
+                            <input
+                              type="text"
+                              value={mediaForm.coverImage}
+                              onChange={(e) =>
+                                setMediaForm({ ...mediaForm, coverImage: e.target.value })
+                              }
+                              placeholder="/api/media/cover.png"
+                              className="border-border bg-canvas-muted text-text flex-1 rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                            />
+                            <div className="relative">
+                              <input
+                                type="file"
+                                accept="image/*"
+                                disabled={uploading}
+                                onChange={(e) =>
+                                  handleImageUpload(e, (url) =>
+                                    setMediaForm({ ...mediaForm, coverImage: url }),
+                                  )
+                                }
+                                className="absolute inset-0 cursor-pointer opacity-0"
+                              />
+                              <button
+                                type="button"
+                                className="bg-text text-canvas h-full rounded-xl px-3 py-2.5 text-xs font-bold"
+                              >
+                                อัปโหลด
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="text-text-muted text-xs font-bold">คำอธิบายวิดีโอ</label>
+                        <textarea
+                          rows={2}
+                          value={mediaForm.description}
+                          onChange={(e) =>
+                            setMediaForm({ ...mediaForm, description: e.target.value })
+                          }
+                          placeholder="เนื้อหาสำคัญของคลิปวิดีโอนี้..."
+                          className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                        />
+                      </div>
+
+                      <div className="flex justify-end gap-3 pt-2">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setMediaForm({
+                              id: "",
+                              title: "",
+                              description: "",
+                              platform: "youtube",
+                              videoId: "",
+                              category: "ความทรงจำสั้นๆ",
+                              duration: "",
+                              date: "",
+                              coverImage: "",
+                            })
+                          }
+                          className="text-text-muted rounded-xl border px-4 py-2 text-xs font-bold"
+                        >
+                          ล้าง
+                        </button>
+                        <button
+                          type="submit"
+                          className="bg-brand text-canvas rounded-xl px-6 py-2.5 text-xs font-bold"
+                        >
+                          บันทึกวิดีโอ
+                        </button>
+                      </div>
+                    </form>
+
+                    {/* Media list */}
+                    <div className="space-y-3">
+                      <h4 className="text-text-muted text-sm font-bold">
+                        วิดีโอในคลังสื่อทั้งหมด ({media.length})
+                      </h4>
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        {media.map((v) => (
+                          <div
+                            key={v.id}
+                            className="border-border bg-canvas flex items-center justify-between gap-3 rounded-2xl border p-4 shadow-sm"
+                          >
+                            <div>
+                              <span className="rounded bg-sky-500/10 px-2 py-0.5 text-[10px] font-black text-sky-500 uppercase">
+                                {v.platform} &bull; {v.category}
+                              </span>
+                              <h5 className="mt-1 line-clamp-1 text-sm font-bold">{v.title}</h5>
+                            </div>
+                            <button
+                              onClick={() => {
+                                setMediaForm(v);
+                                addLog(`[FORM] ดึงข้อมูลวิดีโอเพื่อแก้ไข: ${v.title}`);
+                              }}
+                              className="text-brand border-brand/20 rounded-lg border px-3 py-1.5 text-xs font-bold"
+                            >
+                              แก้ไข
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. DOWNLOADS EDITOR (เอกสารดาวน์โหลด) */}
+                {activeTab === "Downloads" && (
+                  <div className="border-border bg-canvas-muted space-y-8 rounded-[32px] border p-8">
+                    <SectionHeader
+                      title="คลังไฟล์ & เอกสารประจำรุ่น"
+                      subtitle="อัปโหลดหนังสือรุ่นฉบับย่อ ไฟล์คู่มือ หรือภาพพื้นหลังความละเอียดสูง"
+                    />
+
+                    <form
+                      onSubmit={async (e) => {
+                        e.preventDefault();
+                        if (!downloadForm.id || !downloadForm.title) {
+                          alert("กรุณากรอก ID และชื่อไฟล์ให้ครบถ้วน");
+                          return;
+                        }
+
+                        const success = await handleSaveData("downloads", downloadForm);
+                        if (success) {
+                          alert("บันทึกไฟล์ดาวน์โหลดสำเร็จ!");
+                          setDownloadForm({
+                            id: "",
+                            title: "",
+                            description: "",
+                            category: "Documents",
+                            fileSize: "",
+                            fileExtension: "PDF",
+                            href: "",
+                          });
+                        }
+                      }}
+                      className="bg-canvas border-border space-y-4 rounded-2xl border p-6"
+                    >
+                      <div className="grid gap-4 sm:grid-cols-3">
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            ID ไฟล์ (ห้ามซ้ำ เช่น file-5)
+                          </label>
+                          <input
+                            type="text"
+                            value={downloadForm.id}
+                            onChange={(e) =>
+                              setDownloadForm({ ...downloadForm, id: e.target.value })
+                            }
+                            placeholder="ตัวอย่าง: file-5"
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            ชื่อไฟล์ภาษาไทย
+                          </label>
+                          <input
+                            type="text"
+                            value={downloadForm.title}
+                            onChange={(e) =>
+                              setDownloadForm({ ...downloadForm, title: e.target.value })
+                            }
+                            placeholder="ตัวอย่าง: ตราสัญลักษณ์เวกเตอร์..."
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            หมวดหมู่เอกสาร
+                          </label>
+                          <select
+                            value={downloadForm.category}
+                            onChange={(e) =>
+                              setDownloadForm({ ...downloadForm, category: e.target.value })
+                            }
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          >
+                            <option value="PDF">เอกสาร PDF</option>
+                            <option value="Wallpaper">ภาพพื้นหลัง</option>
+                            <option value="Logo">ตราสัญลักษณ์</option>
+                            <option value="Documents">เอกสารรุ่น</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="grid gap-4 sm:grid-cols-3">
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            ขนาดไฟล์ (เช่น 12.5 MB)
+                          </label>
+                          <input
+                            type="text"
+                            value={downloadForm.fileSize}
+                            onChange={(e) =>
+                              setDownloadForm({ ...downloadForm, fileSize: e.target.value })
+                            }
+                            placeholder="ตัวอย่าง: 4.8 MB"
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            นามสกุลไฟล์ (เช่น PDF, PNG, SVG)
+                          </label>
+                          <input
+                            type="text"
+                            value={downloadForm.fileExtension}
+                            onChange={(e) =>
+                              setDownloadForm({ ...downloadForm, fileExtension: e.target.value })
+                            }
+                            placeholder="ตัวอย่าง: PDF"
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-text-muted text-xs font-bold">
+                            ที่อยู่ดาวน์โหลด (Link หรือ อัปโหลดตรง)
+                          </label>
+                          <div className="mt-1.5 flex gap-2">
+                            <input
+                              type="text"
+                              value={downloadForm.href}
+                              onChange={(e) =>
+                                setDownloadForm({ ...downloadForm, href: e.target.value })
+                              }
+                              placeholder="ลิงก์ดาวน์โหลด..."
+                              className="border-border bg-canvas-muted text-text flex-1 rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                            />
+                            <div className="relative">
+                              <input
+                                type="file"
+                                disabled={uploading}
+                                onChange={(e) =>
+                                  handleImageUpload(e, (url) =>
+                                    setDownloadForm({ ...downloadForm, href: url }),
+                                  )
+                                }
+                                className="absolute inset-0 cursor-pointer opacity-0"
+                              />
+                              <button
+                                type="button"
+                                className="bg-text text-canvas h-full rounded-xl px-3 py-2.5 text-xs font-bold"
+                              >
+                                อัปโหลด
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="text-text-muted text-xs font-bold">
+                          คำอธิบายรายละเอียดเอกสาร
+                        </label>
+                        <textarea
+                          rows={2}
+                          value={downloadForm.description}
+                          onChange={(e) =>
+                            setDownloadForm({ ...downloadForm, description: e.target.value })
+                          }
+                          placeholder="รายละเอียด วิธีการเปิด หรือการนำเอกสารไปใช้งาน..."
+                          className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                        />
+                      </div>
+
+                      <div className="flex justify-end gap-3 pt-2">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setDownloadForm({
+                              id: "",
+                              title: "",
+                              description: "",
+                              category: "Documents",
+                              fileSize: "",
+                              fileExtension: "PDF",
+                              href: "",
+                            })
+                          }
+                          className="text-text-muted rounded-xl border px-4 py-2 text-xs font-bold"
+                        >
+                          ล้าง
+                        </button>
+                        <button
+                          type="submit"
+                          className="bg-brand text-canvas rounded-xl px-6 py-2.5 text-xs font-bold"
+                        >
+                          บันทึกไฟล์ดาวน์โหลด
+                        </button>
+                      </div>
+                    </form>
+
+                    {/* Downloads List */}
+                    <div className="space-y-3">
+                      <h4 className="text-text-muted text-sm font-bold">
+                        เอกสารที่มีอยู่ทั้งหมด ({downloads.length})
+                      </h4>
+                      <div className="border-border bg-canvas divide-y overflow-hidden rounded-2xl border">
+                        {downloads.map((d) => (
+                          <div key={d.id} className="flex items-center justify-between gap-4 p-4">
+                            <div>
+                              <span className="rounded bg-rose-500/10 px-2 py-0.5 text-[10px] font-black text-rose-500 uppercase">
+                                {d.fileExtension} &bull; {d.category}
+                              </span>
+                              <h5 className="mt-1 text-sm font-bold">{d.title}</h5>
+                              <p className="text-text-muted mt-0.5 text-xs">{d.fileSize}</p>
+                            </div>
+                            <button
+                              onClick={() => {
+                                setDownloadForm(d);
+                                addLog(`[FORM] ดึงข้อมูลไฟล์ดาวน์โหลดเพื่อแก้ไข: ${d.title}`);
+                              }}
+                              className="text-brand border-brand/20 rounded-lg border px-3 py-1.5 text-xs font-bold"
+                            >
+                              แก้ไข
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 7. GALLERY MEDIA LIBRARY (คลังรูปภาพหลัก) */}
+                {activeTab === "Gallery" && (
+                  <div className="border-border bg-canvas-muted space-y-8 rounded-[32px] border p-8">
+                    <SectionHeader
+                      title="คลังรูปภาพแบบมีเดียแล็บ (Media Library)"
+                      subtitle="ลากรูปภาพมาวางหรือเลือกไฟล์ภาพประกอบจากคอมพิวเตอร์เพื่อโยนขึ้นคลาวด์รับที่อยู่ลิงก์อ้างอิง"
+                    />
+
+                    {/* Drag & Drop uploader zone */}
+                    <div className="border-border hover:border-brand bg-canvas relative rounded-2xl border-2 border-dashed p-12 text-center transition-all">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        disabled={uploading}
+                        onChange={(e) => handleImageUpload(e, () => {})}
+                        className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                      />
+                      <div className="flex flex-col items-center gap-3">
+                        <div className="bg-brand/10 text-brand flex h-12 w-12 items-center justify-center rounded-full">
+                          <svg
+                            className="h-6 w-6"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth="2.5"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                            />
+                          </svg>
+                        </div>
+                        <span className="text-text text-sm font-bold">
+                          {uploading
+                            ? "กำลังอัปโหลดไฟล์เข้าระบบ..."
+                            : "คลิกเลือกรูปภาพ หรือลากไฟล์ภาพมาปล่อยที่นี่"}
+                        </span>
+                        <span className="text-text-muted text-xs">
+                          รูปจะถูกส่งเข้าระบบจัดเก็บข้อมูลของ Cloudflare ทันที
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Grid of uploaded images in KV */}
+                    <div className="space-y-3">
+                      <h4 className="text-text-muted text-sm font-bold">
+                        รูปภาพทั้งหมดในระบบคลาวด์ ({gallery.length})
+                      </h4>
+                      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+                        {gallery.map((img) => (
+                          <div
+                            key={img.id}
+                            className="border-border bg-canvas group overflow-hidden rounded-2xl border shadow-sm"
+                          >
+                            <div className="border-border relative aspect-video w-full overflow-hidden border-b bg-black/5">
+                              <Image
+                                src={img.imageSrc}
+                                alt={img.title}
+                                fill
+                                className="object-cover"
+                                sizes="200px"
+                              />
+                            </div>
+                            <div className="p-3">
+                              <h5 className="line-clamp-1 text-xs font-bold">{img.title}</h5>
+                              <p className="text-text-muted mt-0.5 line-clamp-1 text-[10px]">
+                                {img.imageSrc}
+                              </p>
+
+                              <button
+                                onClick={() => {
+                                  navigator.clipboard.writeText(img.imageSrc);
+                                  alert(`คัดลอกลิงก์สำเร็จ:\n${img.imageSrc}`);
+                                  addLog(`[CLIPBOARD] คัดลอกลิงก์รูปสำเร็จ: ${img.imageSrc}`);
+                                }}
+                                className="bg-brand/5 border-brand/10 text-brand mt-3 w-full rounded-lg border py-1.5 text-[10px] font-bold transition-all active:scale-95"
+                              >
+                                ก๊อปปี้ลิงก์รูป
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
-
-              <div className="mt-4 max-h-[140px] space-y-2 overflow-y-auto font-mono text-[11px] leading-relaxed text-green-400">
-                {telemetryLogs.map((log, logIdx) => {
-                  let colorClass = "text-green-400";
-                  if (log.startsWith("[D1 SQL]")) colorClass = "text-indigo-400";
-                  if (log.startsWith("[R2 OBJECT]")) colorClass = "text-yellow-400";
-                  if (log.startsWith("[AUTH]")) colorClass = "text-emerald-400";
-
-                  return (
-                    <div key={logIdx} className={colorClass}>
-                      {log}
-                    </div>
-                  );
-                })}
-              </div>
             </div>
-          </main>
-        </div>
+          </Container>
+        </section>
       )}
     </div>
   );
