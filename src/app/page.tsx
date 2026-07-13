@@ -12,24 +12,29 @@ import { useDynamicData } from "@/providers/DynamicDataProvider";
 
 export default function Home() {
   const breadcrumbItems = [{ label: "หน้าแรก", href: "/" }, { label: "ภาพรวมโครงการ" }];
-  const { posts, events, media, students, gallery, timeline } = useDynamicData();
+  const { posts, events, media, students, gallery } = useDynamicData();
 
   // Pick top items
   const spotlightStudent = students[0] || {
+    id: "student-1",
     name: "เมษา ศิริวัฒนา (เมย์)",
     title: "ประธานรุ่น & ประธานสภานักเรียน รุ่น 150",
     imageSrc: "/assets/spotlight.png",
     highlightQuote:
       "การทำทำเนียบรุ่นและหนังสือรุ่นครั้งนี้เป็นความร่วมมือร่วมใจของพวกเราทุกคน การพัฒนาหน้าเว็บนี้ทำให้เพื่อนๆ สามารถกลับมาเชื่อมต่อ ค้นหา และช่วยเหลือกันได้เสมอ ไม่ว่าหลังจากนี้พวกเราจะแยกย้ายไปทำอะไรที่ไหนในโลกก็ตาม",
-    description:
+    achievement:
       "เมย์ทำหน้าที่คอยประสานงานกิจกรรมรุ่นตลอดมัธยมศึกษาตอนปลาย และเป็นหัวเรือใหญ่รวบรวมรูปภาพบันทึกความทรงจำ ตั้งแต่งานกีฬาสี ค่ายทัศนศึกษา จนถึงนาทีจบการศึกษาปัจฉิมนิเทศ",
+    bioParagraphs: [],
+    instagram: "",
+    tiktok: "",
+    youtube: "",
+    metrics: [],
   };
 
   const topPosts = posts.slice(0, 3);
   const upcomingEvents = events.filter((e) => e.type === "upcoming").slice(0, 2);
   const topGallery = gallery.slice(0, 3);
   const topVideos = media.slice(0, 3);
-  const topTimeline = timeline.slice(0, 3);
 
   // Map bento classes
   const getBentoClass = (idx: number) => {
@@ -55,7 +60,7 @@ export default function Home() {
       </Container>
 
       {/* 1. Hero Section */}
-      <section className="relative flex min-h-[90vh] items-center justify-center overflow-hidden py-24 sm:py-32">
+      <section className="relative flex min-h-[85vh] items-center justify-center overflow-hidden py-24 sm:py-32">
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
@@ -64,23 +69,24 @@ export default function Home() {
             fill
             priority
             fetchPriority="high"
-            className="object-cover opacity-80 dark:opacity-60"
+            className="object-cover opacity-60 dark:opacity-40"
             sizes="100vw"
           />
           {/* Subtle dark overlays */}
-          <div className="from-canvas/90 via-canvas/30 absolute inset-0 bg-gradient-to-r to-transparent" />
+          <div className="from-canvas/95 via-canvas/40 absolute inset-0 bg-gradient-to-r to-transparent" />
         </div>
 
         <Container className="relative z-10 w-full">
           <div className="max-w-3xl">
-            <div className="border-brand/30 bg-brand/10 text-brand mb-8 inline-flex items-center rounded-full border px-4 py-1.5 text-xs font-semibold tracking-wide uppercase backdrop-blur-sm">
+            <div className="border-brand/20 bg-brand/5 text-brand mb-8 inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-semibold tracking-wide uppercase backdrop-blur-sm">
+              <span className="h-1.5 w-1.5 rounded-full bg-brand animate-pulse" />
               ทำเนียบรุ่นศิษย์เก่า &bull; รุ่น 150
             </div>
             <h1 className="text-text text-5xl leading-[1.05] font-black tracking-tighter uppercase sm:text-6xl md:text-7xl lg:text-8xl">
               รุ่น <span className="bg-gradient-to-r from-brand to-brand-secondary bg-clip-text text-transparent">150</span>.<br />
               เรื่องราวของเรา.
             </h1>
-            <p className="text-text-muted mt-8 max-w-xl text-lg leading-relaxed font-normal sm:text-xl">
+            <p className="text-text-muted mt-6 max-w-xl text-lg leading-relaxed font-normal sm:text-xl">
               ร่วมระลึกถึงการเดินทาง มิตรภาพเพื่อนร่วมชั้นเรียน และความทรงจำอันล้ำค่าในรั้วโรงเรียน
               ทำเนียบรุ่นดิจิทัลสำหรับนักเรียนรุ่น 150
             </p>
@@ -90,9 +96,9 @@ export default function Home() {
                   ค้นหาเพื่อนร่วมรุ่น
                 </Button>
               </Link>
-              <Link href="/timeline">
-                <Button variant="glass" size="lg">
-                  ประวัติกิจกรรมรุ่น
+              <Link href="/about">
+                <Button variant="outline" size="lg">
+                  เกี่ยวกับพวกเรา
                 </Button>
               </Link>
             </div>
@@ -100,60 +106,101 @@ export default function Home() {
         </Container>
       </section>
 
-      {/* 2. Student Spotlight Section */}
+      {/* 2. Minimal Portal Navigation Grid */}
+      <section className="border-border border-t border-b bg-canvas-muted/50 py-16">
+        <Container>
+          <div className="grid gap-6 md:grid-cols-3">
+            {[
+              {
+                title: "คลังภาพความทรงจำ",
+                desc: "รวบรวมรูปภาพกิจกรรมประทับใจ วันเรียน และแกลเลอรีภาพถ่ายรุ่น",
+                link: "/gallery",
+                color: "from-brand/10 to-brand/5",
+                actionText: "เปิดคลังรูปถ่าย",
+              },
+              {
+                title: "บทความ & เรื่องราวดีๆ",
+                desc: "อ่านไดอารี่ บันทึกความทรงจำ และเรื่องราวพิเศษของพวกเรา",
+                link: "/stories",
+                color: "from-canvas to-canvas-muted",
+                actionText: "อ่านเรื่องราวรุ่น",
+              },
+              {
+                title: "วิดีโอ & คลิปสั้น",
+                desc: "เทปบันทึกกิจกรรมค่ายดนตรี กีฬาสี และคลิปความสนุกสนานย้อนหลัง",
+                link: "/media",
+                color: "from-brand-secondary/10 to-brand-secondary/5",
+                actionText: "ชมวิดีโอดีๆ",
+              },
+            ].map((portal, idx) => (
+              <Link
+                key={idx}
+                href={portal.link}
+                className="border-border hover:border-text-muted bg-canvas group flex flex-col justify-between rounded-3xl border p-8 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+              >
+                <div>
+                  <h3 className="text-xl font-bold tracking-tight">{portal.title}</h3>
+                  <p className="text-text-muted mt-2 text-sm leading-relaxed">{portal.desc}</p>
+                </div>
+                <div className="mt-8 flex items-center gap-2 text-xs font-bold tracking-wide uppercase text-brand group-hover:text-brand-secondary transition-colors">
+                  <span>{portal.actionText}</span>
+                  <svg
+                    className="h-4 w-4 transform transition-transform group-hover:translate-x-1"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </Container>
+      </section>
+
+      {/* 3. Spotlight Banner */}
       <section id="spotlight" className="py-24 sm:py-32">
         <Container>
-          <SectionHeader
-            title="นักเรียนเด่นประจำรุ่น"
-            subtitle="ทำความรู้จักผู้นำรุ่น กัปตันทีมกีฬา และผู้สร้างผลงานขับเคลื่อนกิจกรรมรุ่น 150"
-          />
-          <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
-            {/* Left Col - Portrait */}
-            <div className="border-border relative aspect-[3/4] w-full overflow-hidden rounded-3xl border shadow-xl lg:col-span-5">
-              <Image
-                src={spotlightStudent.imageSrc}
-                alt={spotlightStudent.name}
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 40vw"
-                loading="lazy"
-              />
-            </div>
-
-            {/* Right Col - Story */}
-            <div className="flex flex-col justify-center lg:col-span-7">
-              <span className="text-brand text-xs font-bold tracking-widest uppercase">
-                แนะนำศิษย์เก่าเด่น
-              </span>
-              <h3 className="text-text mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
-                {spotlightStudent.name}
-              </h3>
-              <p className="text-text-muted mt-1 text-sm font-semibold">{spotlightStudent.title}</p>
-
-              <blockquote className="border-brand text-text mt-8 border-l-4 pl-6 font-serif text-xl leading-relaxed italic">
-                &ldquo;{spotlightStudent.highlightQuote}&rdquo;
-              </blockquote>
-
-              <p className="text-text-muted mt-6 text-base leading-relaxed">
-                {spotlightStudent.achievement} &bull; {spotlightStudent.name}{" "}
-                ได้ช่วยรวบรวมรูปภาพบันทึกความทรงจำ ตั้งแต่งานกีฬาสี ค่ายทัศนศึกษา
-                จนถึงนาทีจบการศึกษาปัจฉิมนิเทศร่วมรุ่น 150
-              </p>
-
-              <div className="mt-8">
-                <Link href="/spotlight">
-                  <Button variant="outline" size="md">
-                    อ่านประวัติฉบับเต็ม
-                  </Button>
-                </Link>
+          <div className="border-border bg-canvas-muted rounded-[32px] border p-8 sm:p-12 md:p-16">
+            <div className="grid gap-8 md:grid-cols-2 md:items-center">
+              <div>
+                <span className="bg-brand/10 border-brand/20 text-brand rounded-full border px-3.5 py-1 text-xs font-bold tracking-wider uppercase">
+                  นักเรียนเด่นประจำรุ่น
+                </span>
+                <h2 className="text-text mt-6 text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl">
+                  {spotlightStudent.name}
+                </h2>
+                <p className="text-brand text-sm font-semibold mt-2">{spotlightStudent.title}</p>
+                <p className="text-text-muted mt-6 text-base leading-relaxed">
+                  {spotlightStudent.achievement || spotlightStudent.bioParagraphs[0]}
+                </p>
+                <div className="mt-8">
+                  <Link href="/spotlight">
+                    <Button variant="outline" size="sm">
+                      อ่านประวัติสัมภาษณ์เพิ่มเติม
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+              <div className="relative aspect-square w-full overflow-hidden rounded-3xl border border-border shadow-lg">
+                <Image
+                  src={spotlightStudent.imageSrc}
+                  alt={spotlightStudent.name}
+                  fill
+                  loading="lazy"
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
               </div>
             </div>
           </div>
         </Container>
       </section>
 
-      {/* 3. Class Memories Section */}
-      <section id="stories" className="border-border border-t py-24 sm:py-32">
+      {/* 4. Class Memories Section */}
+      <section id="stories" className="border-border border-t py-24 sm:py-32 bg-canvas-muted/30">
         <Container>
           <SectionHeader
             title="บันทึกความทรงจำ"
@@ -178,68 +225,16 @@ export default function Home() {
         </Container>
       </section>
 
-      {/* 4. Upcoming Events Section */}
-      <section
-        id="events"
-        className="bg-canvas-muted border-border border-t border-b py-24 sm:py-32"
-      >
-        <Container>
-          <SectionHeader
-            title="กิจกรรมของรุ่น"
-            subtitle="พบปะพูดคุยและสร้างสรรค์กิจกรรมดีๆ ร่วมกันระหว่างเพื่อนและน้องๆ รุ่นปัจจุบัน"
-            ctaText="ดูกิจกรรมทั้งหมด"
-            ctaHref="/events"
-          />
-          <div className="grid gap-8 lg:grid-cols-2">
-            {upcomingEvents.map((event) => {
-              const [day, month] = event.date.split(" ");
-              return (
-                <div
-                  key={event.id}
-                  className="border-border bg-canvas group hover:border-text-muted relative flex flex-col gap-6 overflow-hidden rounded-3xl border p-8 transition-all duration-300 sm:flex-row"
-                >
-                  <div className="bg-brand/10 border-brand/20 text-brand flex h-20 w-20 flex-shrink-0 flex-col items-center justify-center rounded-2xl border">
-                    <span className="text-2xl font-black">{day}</span>
-                    <span className="text-xs font-bold tracking-widest uppercase">{month}</span>
-                  </div>
-                  <div className="flex flex-1 flex-col justify-between">
-                    <div>
-                      <span className="text-brand text-xs font-semibold tracking-wider uppercase">
-                        {event.phase}
-                      </span>
-                      <h3 className="text-text mt-1 text-2xl font-bold tracking-tight">
-                        {event.title}
-                      </h3>
-                      <p className="text-text-muted mt-2 text-sm leading-relaxed">
-                        {event.description}
-                      </p>
-                    </div>
-                    <div className="mt-6 flex items-center justify-between">
-                      <span className="text-text-muted text-xs font-medium">
-                        {event.time} &bull; {event.location}
-                      </span>
-                      <Link href="/events">
-                        <Button variant="outline" size="sm">
-                          ลงทะเบียนร่วมงาน
-                        </Button>
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </Container>
-      </section>
-
       {/* 5. Featured Gallery (Bento Style) */}
       <section id="gallery" className="py-24 sm:py-32">
         <Container>
           <SectionHeader
             title="ภาพความทรงจำประทับใจ"
             subtitle="รวบรวมภาพบันทึกจังหวะชีวิตกิจกรรม วัยเรียน และความร่วมมือในผลงานรุ่นต่างๆ"
+            ctaText="เปิดคลังภาพทั้งหมด"
+            ctaHref="/gallery"
           />
-          <div className="grid gap-8 md:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-3">
             {topGallery.map((item, idx) => (
               <Card
                 key={item.id}
@@ -259,7 +254,7 @@ export default function Home() {
       {/* 6. Latest Videos Section */}
       <section
         id="videos"
-        className="bg-canvas-muted border-border border-t border-b py-24 sm:py-32"
+        className="bg-canvas-muted/40 border-border border-t border-b py-24 sm:py-32"
       >
         <Container>
           <SectionHeader
@@ -307,51 +302,53 @@ export default function Home() {
         </Container>
       </section>
 
-      {/* 7. Timeline Preview Section */}
-      <section
-        id="timeline"
-        className="bg-canvas-muted border-border border-t border-b py-24 sm:py-32"
-      >
+      {/* 7. Upcoming Events Section */}
+      <section id="events" className="py-24 sm:py-32">
         <Container>
           <SectionHeader
-            title="ไทม์ไลน์กิจกรรมรุ่น"
-            subtitle="บันทึกก้าวเดินการทำกิจกรรมและการสำเร็จการศึกษารุ่น 150"
+            title="กิจกรรมของรุ่น"
+            subtitle="พบปะพูดคุยและสร้างสรรค์กิจกรรมดีๆ ร่วมกันระหว่างเพื่อนร่วมชั้นเรียน"
+            ctaText="ดูกิจกรรมทั้งหมด"
+            ctaHref="/events"
           />
-          <div className="border-border relative ml-4 space-y-12 border-l pl-8 sm:ml-6 sm:pl-10 md:ml-8">
-            {topTimeline.map((item, idx) => (
-              <div key={item.id} className="relative">
-                {idx === 0 ? (
-                  <div className="bg-brand text-canvas ring-canvas-muted absolute top-1.5 -left-[41px] flex h-6 w-6 items-center justify-center rounded-full ring-8 sm:-left-[49px]">
-                    <svg
-                      className="h-3.5 w-3.5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth="3"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
+          <div className="grid gap-8 lg:grid-cols-2">
+            {upcomingEvents.map((event) => {
+              const [day, month] = event.date.split(" ");
+              return (
+                <div
+                  key={event.id}
+                  className="border-border bg-canvas group hover:border-text-muted relative flex flex-col gap-6 overflow-hidden rounded-3xl border p-8 transition-all duration-300 sm:flex-row"
+                >
+                  <div className="bg-brand/10 border-brand/20 text-brand flex h-20 w-20 flex-shrink-0 flex-col items-center justify-center rounded-2xl border">
+                    <span className="text-2xl font-black">{day}</span>
+                    <span className="text-xs font-bold tracking-widest uppercase">{month}</span>
                   </div>
-                ) : idx === 1 ? (
-                  <div className="border-brand bg-canvas text-brand ring-canvas-muted absolute top-1.5 -left-[41px] flex h-6 w-6 items-center justify-center rounded-full border-2 ring-8 sm:-left-[49px]">
-                    <span className="bg-brand h-2 w-2 animate-ping rounded-full" />
+                  <div className="flex flex-1 flex-col justify-between">
+                    <div>
+                      <span className="text-brand text-xs font-semibold tracking-wider uppercase">
+                        {event.phase}
+                      </span>
+                      <h3 className="text-text mt-1 text-2xl font-bold tracking-tight">
+                        {event.title}
+                      </h3>
+                      <p className="text-text-muted mt-2 text-sm leading-relaxed">
+                        {event.description}
+                      </p>
+                    </div>
+                    <div className="mt-6 flex items-center justify-between">
+                      <span className="text-text-muted text-xs font-medium">
+                        {event.time} &bull; {event.location}
+                      </span>
+                      <Link href="/events">
+                        <Button variant="outline" size="sm">
+                          ลงทะเบียนร่วมงาน
+                        </Button>
+                      </Link>
+                    </div>
                   </div>
-                ) : (
-                  <div className="border-border bg-canvas text-text-muted ring-canvas-muted absolute top-1.5 -left-[41px] flex h-6 w-6 items-center justify-center rounded-full border ring-8 sm:-left-[49px]">
-                    <div className="bg-border h-2 w-2 rounded-full" />
-                  </div>
-                )}
-                <div>
-                  <span className="text-brand text-xs font-semibold tracking-wider uppercase">
-                    ก้าวที่ {idx + 1} &bull; {item.phase}
-                  </span>
-                  <h4 className="text-text mt-1 text-xl font-bold">{item.title}</h4>
-                  <p className="text-text-muted mt-2 max-w-xl text-sm leading-relaxed">
-                    {item.description}
-                  </p>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </Container>
       </section>
@@ -485,8 +482,10 @@ export default function Home() {
                 การตั้งค่าคุกกี้
               </a>
             </div>
-            <div className="text-text-muted text-xs">
-              ทำเนียบรุ่นศิษย์เก่าโรงเรียน &bull; พัฒนาโดยศิษย์เก่า รุ่น 150
+            <div className="text-text-muted text-xs flex items-center gap-1.5">
+              <span>Future Leaders</span>
+              <span>&bull;</span>
+              <span>พัฒนาโดยศิษย์เก่า รุ่น 150</span>
             </div>
           </div>
         </Container>

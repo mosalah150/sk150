@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import Container from "@/components/ui/Container";
 import ThemeToggle from "@/components/common/ThemeToggle";
 import MegaMenu from "@/components/common/MegaMenu";
@@ -192,8 +193,23 @@ export default function Navbar() {
       <header className="border-border bg-canvas/80 sticky top-0 w-full border-b backdrop-blur-md">
         <Container clean className="flex items-center justify-between py-4">
           <div className="flex items-center gap-8">
-            <Link href="/" className="text-brand text-xl font-black tracking-tight">
-              SK150
+            <Link href="/" className="flex items-center gap-2.5 group">
+              <div className="relative h-8 w-8 overflow-hidden rounded-lg border border-border">
+                <Image
+                  src="/assets/logo.jpg"
+                  alt="SK150 Logo"
+                  fill
+                  className="object-cover transition-transform group-hover:scale-110"
+                />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-brand text-sm font-black tracking-tight leading-none">
+                  SK150
+                </span>
+                <span className="text-text-muted text-[8px] font-bold tracking-widest uppercase leading-none mt-1 group-hover:text-brand transition-colors">
+                  Future Leaders
+                </span>
+              </div>
             </Link>
 
             {/* Desktop Navigation */}
