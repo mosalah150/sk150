@@ -186,6 +186,8 @@ export default function Home() {
                   key={post.id}
                   title={post.title}
                   description={post.description}
+                  imageSrc={post.imageSrc}
+                  imageAlt={post.title}
                   date={post.date}
                   readTime={post.readTime}
                   badge={post.category}
