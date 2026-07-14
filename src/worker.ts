@@ -432,6 +432,32 @@ export default {
             )
             .run();
         } else if (type === "media") {
+          let resolvedCover = data.coverImage || "";
+          
+          // Auto resolve cover image if empty or generic
+          if (data.platform === "youtube") {
+            resolvedCover = `https://img.youtube.com/vi/${data.videoId}/hqdefault.jpg`;
+          } else if (data.platform === "tiktok") {
+            if (!resolvedCover || resolvedCover.includes("placeholder") || resolvedCover === "") {
+              try {
+                // Fetch oEmbed from TikTok to fetch the video details dynamically
+                const oembedRes = await fetch(`https://www.tiktok.com/oembed?url=https://www.tiktok.com/@tiktok/video/${data.videoId}`);
+                if (oembedRes.ok) {
+                  const oembedData: any = await oembedRes.json();
+                  if (oembedData && oembedData.thumbnail_url) {
+                    resolvedCover = oembedData.thumbnail_url;
+                  }
+                }
+              } catch (e) {
+                console.error("Error fetching TikTok thumbnail:", e);
+              }
+            }
+          }
+
+          if (!resolvedCover) {
+            resolvedCover = "/assets/hero_bg.png"; // final fallback
+          }
+
           await env.DB.prepare(
             "INSERT INTO media (id, title, description, platform, videoId, category, duration, date, coverImage) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET title=excluded.title, description=excluded.description, platform=excluded.platform, videoId=excluded.videoId, category=excluded.category, duration=excluded.duration, date=excluded.date, coverImage=excluded.coverImage",
           )
@@ -444,7 +470,7 @@ export default {
               data.category,
               data.duration,
               data.date,
-              data.coverImage,
+              resolvedCover,
             )
             .run();
         } else if (type === "gallery") {

@@ -1493,11 +1493,45 @@ export default function AdminDashboardPage() {
                           <input
                             type="text"
                             value={mediaForm.videoId}
-                            onChange={(e) =>
-                              setMediaForm({ ...mediaForm, videoId: e.target.value })
-                            }
-                            placeholder="ตัวอย่าง: dQw4w9WgXcQ"
-                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              let id = val.trim();
+                              let platform = mediaForm.platform;
+
+                              // Auto-extract ID from YouTube/TikTok URL
+                              if (val.includes("youtube.com") || val.includes("youtu.be")) {
+                                platform = "youtube";
+                                const ytRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+                                const match = val.match(ytRegex);
+                                if (match && match[1]) {
+                                  id = match[1];
+                                }
+                              } else if (val.includes("tiktok.com")) {
+                                platform = "tiktok";
+                                const ttRegex = /\/video\/(\d+)/;
+                                const match = val.match(ttRegex);
+                                if (match && match[1]) {
+                                  id = match[1];
+                                }
+                              }
+
+                              // Auto-generate cover image if YouTube
+                              let cover = mediaForm.coverImage;
+                              if (platform === "youtube" && id && !id.startsWith("http")) {
+                                cover = `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+                              } else if (platform === "tiktok" && id && !id.startsWith("http")) {
+                                cover = ""; // Let the backend Worker fetch it via oEmbed automatically
+                              }
+
+                              setMediaForm({
+                                ...mediaForm,
+                                videoId: id,
+                                platform: platform,
+                                coverImage: cover,
+                              });
+                            }}
+                            placeholder="วางลิงก์ YouTube/TikTok หรือพิมพ์เฉพาะ ID"
+                            className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none font-mono"
                           />
                         </div>
                         <div>

@@ -74,7 +74,9 @@ export default function MediaCenterPage() {
             <div className="border-border bg-canvas hover:border-text-muted relative overflow-hidden rounded-3xl border shadow-xl transition-all duration-300">
               <div className="grid lg:grid-cols-12">
                 {/* Image Cover / Interactive Iframe Player */}
-                <div className="relative flex aspect-video min-h-[360px] w-full items-center justify-center overflow-hidden bg-black lg:col-span-8">
+                <div className={`relative flex w-full items-center justify-center overflow-hidden bg-black transition-all duration-300 lg:col-span-8 ${
+                  featuredVideo.platform === "tiktok" ? "aspect-[9/16] max-w-[340px] mx-auto my-6 rounded-3xl" : "aspect-video min-h-[360px]"
+                }`}>
                   {playingVideoIds[featuredVideo.id] ? (
                     featuredVideo.platform === "youtube" ? (
                       <iframe
@@ -181,7 +183,9 @@ export default function MediaCenterPage() {
                   className="border-border bg-canvas group hover:border-text-muted flex flex-col overflow-hidden rounded-3xl border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
                 >
                   {/* Player Frame / Image Cover */}
-                  <div className="relative flex aspect-video w-full items-center justify-center overflow-hidden bg-black">
+                  <div className={`relative flex w-full items-center justify-center overflow-hidden bg-black transition-all duration-300 ${
+                    video.platform === "tiktok" ? "aspect-[9/16] max-w-[340px] mx-auto my-4 rounded-2xl" : "aspect-video"
+                  }`}>
                     {playingVideoIds[video.id] ? (
                       video.platform === "youtube" ? (
                         <iframe
