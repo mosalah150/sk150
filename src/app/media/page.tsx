@@ -76,13 +76,22 @@ export default function MediaCenterPage() {
                 {/* Image Cover / Interactive Iframe Player */}
                 <div className="relative flex aspect-video min-h-[360px] w-full items-center justify-center overflow-hidden bg-black lg:col-span-8">
                   {playingVideoIds[featuredVideo.id] ? (
-                    <iframe
-                      className="absolute inset-0 h-full w-full border-0"
-                      src={`https://www.youtube.com/embed/${featuredVideo.videoId}?autoplay=1`}
-                      title={featuredVideo.title}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      allowFullScreen
-                    />
+                    featuredVideo.platform === "youtube" ? (
+                      <iframe
+                        className="absolute inset-0 h-full w-full border-0"
+                        src={`https://www.youtube.com/embed/${featuredVideo.videoId}?autoplay=1`}
+                        title={featuredVideo.title}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                      />
+                    ) : (
+                      <iframe
+                        className="absolute inset-0 h-full w-full border-0"
+                        src={`https://www.tiktok.com/player/v1/${featuredVideo.videoId}`}
+                        title={featuredVideo.title}
+                        allowFullScreen
+                      />
+                    )
                   ) : (
                     <>
                       <Image
@@ -185,7 +194,7 @@ export default function MediaCenterPage() {
                       ) : (
                         <iframe
                           className="absolute inset-0 h-full w-full border-0"
-                          src={`https://www.tiktok.com/embed/v2/${video.videoId}`}
+                          src={`https://www.tiktok.com/player/v1/${video.videoId}`}
                           title={video.title}
                           allowFullScreen
                         />
