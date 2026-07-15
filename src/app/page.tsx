@@ -379,9 +379,9 @@ export default function Home() {
                 <span className="h-1.5 w-1.5 rounded-full bg-brand animate-pulse" />
                 สวนกุหลาบวิทยาลัย &bull; ม.1 รุ่น 150
               </div>
-              <h1 className="text-text text-4xl leading-[1.1] font-black tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+              <h1 className="text-text text-4xl leading-[1.1] font-black sm:text-5xl md:text-6xl lg:text-7xl">
                 ก้าวแรกของ<br />
-                สุภาพบุรุษ<span className="bg-gradient-to-r from-[#ed69ad] to-[#009ee4] bg-clip-text text-transparent">ชมพู-ฟ้า</span><br />
+                สุภาพบุรุษ<span className="bg-gradient-to-r from-[#ed69ad] to-[#009ee4] bg-clip-text text-transparent pl-1">ชมพู-ฟ้า</span><br />
                 รุ่น 150 ผู้นำแห่งอนาคต.
               </h1>
               <div className="border-l-2 border-brand/50 pl-4 mt-6 max-w-xl">
