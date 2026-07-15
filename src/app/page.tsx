@@ -486,7 +486,7 @@ export default function Home() {
             <div className="text-text-muted text-xs flex items-center gap-1.5">
               <span>Future Leaders</span>
               <span>&bull;</span>
-              <span>พัฒนาโดยเครือข่ายผู้ปกครองโรงเรียนสวนกุหลาบวิทยาลัย รุ่น 150</span>
+              <span>พัฒนาโดยผู้ปกครองโรงเรียนสวนกุหลาบวิทยาลัย รุ่น 150 (MoSalah 👑)</span>
             </div>
           </div>
         </Container>
