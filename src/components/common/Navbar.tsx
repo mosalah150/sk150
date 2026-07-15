@@ -168,7 +168,7 @@ export default function Navbar() {
         <Container clean className="flex items-center justify-between py-4">
           <div className="flex items-center gap-8">
             <Link href="/" className="flex items-center group">
-              <div className="relative h-16 w-44 transition-transform duration-300 group-hover:scale-105">
+              <div className="relative h-16 w-52 transition-transform duration-300 group-hover:scale-105">
                 <Image
                   src="/assets/logo.png"
                   alt="SK150 Logo"
