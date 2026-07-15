@@ -377,16 +377,18 @@ export default function Home() {
             <div className="lg:col-span-7">
               <div className="border-brand/20 bg-brand/5 text-brand mb-8 inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-semibold tracking-wide uppercase backdrop-blur-sm">
                 <span className="h-1.5 w-1.5 rounded-full bg-brand animate-pulse" />
-                โรงเรียนสวนกุหลาบวิทยาลัย &bull; รุ่น 150
+                สวนกุหลาบวิทยาลัย &bull; ม.1 รุ่น 150
               </div>
-              <h1 className="text-text text-5xl leading-[1.05] font-black tracking-tighter uppercase sm:text-6xl md:text-7xl lg:text-8xl">
-                สวนกุหลาบฯ รุ่น <span className="bg-gradient-to-r from-brand to-brand-secondary bg-clip-text text-transparent">150</span>.<br />
-                ผู้นำแห่งอนาคต.
+              <h1 className="text-text text-4xl leading-[1.1] font-black tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+                ก้าวแรกของ<br />
+                สุภาพบุรุษ<span className="bg-gradient-to-r from-[#ed69ad] to-[#009ee4] bg-clip-text text-transparent">ชมพู-ฟ้า</span><br />
+                รุ่น 150 ผู้นำแห่งอนาคต.
               </h1>
-              <p className="text-text-muted mt-6 max-w-xl text-lg leading-relaxed font-normal sm:text-xl">
-                ทำเนียบรุ่นดิจิทัลสำหรับนักเรียน ม.1 โรงเรียนสวนกุหลาบวิทยาลัย รุ่น 150
-                (ชื่อรุ่น: ผู้นำแห่งอนาคต Future Leaders) เพื่อร่วมบันทึกก้าวแรกและมิตรภาพอันล้ำค่า
-              </p>
+              <div className="border-l-2 border-brand/50 pl-4 mt-6 max-w-xl">
+                <p className="text-text-muted text-base leading-relaxed sm:text-lg">
+                  บันทึกก้าวแรกแห่งความภาคภูมิใจ จากเด็กชายละอ่อนสู่วิถีสุภาพบุรุษในตึกยาวประวัติศาสตร์ ร่วมเก็บรักษาเรื่องราว มิตรภาพ และความทรงจำวันแรกเริ่มของนักเรียน ม.1 สวนกุหลาบวิทยาลัย รุ่น 150 โดยเครือข่ายผู้ปกครอง
+                </p>
+              </div>
             </div>
 
             {/* Right Column: Class Memories Slider (Carousel) */}
