@@ -384,21 +384,9 @@ export default function Home() {
                 ผู้นำแห่งอนาคต.
               </h1>
               <p className="text-text-muted mt-6 max-w-xl text-lg leading-relaxed font-normal sm:text-xl">
-                ทำเนียบรุ่นดิจิทัลสำหรับนักเรียนศิษย์เก่าโรงเรียนสวนกุหลาบวิทยาลัย รุ่น 150
-                (ชื่อรุ่น: ผู้นำแห่งอนาคต Future Leaders) เพื่อสืบสานสายสัมพันธ์และมิตรภาพอันล้ำค่า
+                ทำเนียบรุ่นดิจิทัลสำหรับนักเรียน ม.1 โรงเรียนสวนกุหลาบวิทยาลัย รุ่น 150
+                (ชื่อรุ่น: ผู้นำแห่งอนาคต Future Leaders) เพื่อร่วมบันทึกก้าวแรกและมิตรภาพอันล้ำค่า
               </p>
-              <div className="mt-10 flex flex-wrap gap-4">
-                <Link href="/spotlight">
-                  <Button variant="primary" size="lg">
-                    ค้นหาเพื่อนร่วมรุ่น
-                  </Button>
-                </Link>
-                <Link href="/about">
-                  <Button variant="outline" size="lg">
-                    เกี่ยวกับพวกเรา
-                  </Button>
-                </Link>
-              </div>
             </div>
 
             {/* Right Column: Class Memories Slider (Carousel) */}
@@ -479,123 +467,9 @@ export default function Home() {
       {visibleSections.map((sec) => sec.component)}
 
       {/* 8. Apple-Style Footer */}
-      <footer className="bg-canvas text-text border-border border-t py-16">
+      <footer className="bg-canvas text-text border-border border-t py-8">
         <Container clean>
-          <div className="grid gap-12 sm:grid-cols-2 md:grid-cols-4">
-            {/* Col 1 */}
-            <div>
-              <h5 className="text-text-muted text-xs font-bold tracking-wider uppercase">
-                แพลตฟอร์มรุ่น
-              </h5>
-              <ul className="mt-4 space-y-2.5 text-sm">
-                <li>
-                  <Link href="/about" className="text-text-muted hover:text-text transition-colors">
-                    ภาพรวมโปรเจกต์
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/gallery"
-                    className="text-text-muted hover:text-text transition-colors"
-                  >
-                    แกลเลอรีรูปภาพ
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/spotlight"
-                    className="text-text-muted hover:text-text transition-colors"
-                  >
-                    ทำเนียบเพื่อน ม.1
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/timeline"
-                    className="text-text-muted hover:text-text transition-colors"
-                  >
-                    ไทม์ไลน์กิจกรรม
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Col 2 */}
-            <div>
-              <h5 className="text-text-muted text-xs font-bold tracking-wider uppercase">
-                ชุมชนรุ่น 150
-              </h5>
-              <ul className="mt-4 space-y-2.5 text-sm">
-                <li>
-                  <Link
-                    href="/events"
-                    className="text-text-muted hover:text-text transition-colors"
-                  >
-                    งานคืนสู่เหย้า
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/stories"
-                    className="text-text-muted hover:text-text transition-colors"
-                  >
-                    บันทึกความทรงจำ
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/media" className="text-text-muted hover:text-text transition-colors">
-                    คลังวิดีโอรุ่น
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Col 3 */}
-            <div>
-              <h5 className="text-text-muted text-xs font-bold tracking-wider uppercase">
-                คลังทรัพยากร
-              </h5>
-              <ul className="mt-4 space-y-2.5 text-sm">
-                <li>
-                  <Link
-                    href="/downloads"
-                    className="text-text-muted hover:text-text transition-colors"
-                  >
-                    ดาวน์โหลดเอกสาร
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/downloads"
-                    className="text-text-muted hover:text-text transition-colors"
-                  >
-                    ภาพพื้นหลัง & โลโก้รุ่น
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Col 4 */}
-            <div>
-              <h5 className="text-text-muted text-xs font-bold tracking-wider uppercase">
-                เกี่ยวกับระบบ
-              </h5>
-              <ul className="mt-4 space-y-2.5 text-sm">
-                <li>
-                  <Link href="/about" className="text-text-muted hover:text-text transition-colors">
-                    เกี่ยวกับพวกเรา
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/admin" className="text-text-muted hover:text-text transition-colors">
-                    ผู้ดูแลระบบ (Admin)
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-border mt-16 flex flex-col items-center justify-between gap-6 border-t pt-8 sm:flex-row">
+          <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
             <div className="text-text-muted flex flex-col items-center gap-4 text-xs sm:flex-row">
               <span>&copy; {new Date().getFullYear()} SK150. สงวนลิขสิทธิ์ทั้งหมด.</span>
               <span className="hidden sm:inline">|</span>

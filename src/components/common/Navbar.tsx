@@ -5,7 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import Container from "@/components/ui/Container";
 import ThemeToggle from "@/components/common/ThemeToggle";
-import MegaMenu from "@/components/common/MegaMenu";
 import useKeyboardShortcut from "@/hooks/useKeyboardShortcut";
 import { articles } from "@/utils/blogData";
 import { galleryImages } from "@/utils/galleryData";
@@ -15,7 +14,6 @@ import { useDynamicData } from "@/providers/DynamicDataProvider";
 
 export default function Navbar() {
   const { menus } = useDynamicData();
-  const [activeMenu, setActiveMenu] = useState<"platform" | "resources" | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const navRef = useRef<HTMLDivElement>(null);
@@ -115,9 +113,6 @@ export default function Navbar() {
     matchedDownloads.length > 0;
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const platformTriggerRef = useRef<HTMLButtonElement>(null);
-  const resourcesTriggerRef = useRef<HTMLButtonElement>(null);
-
   const openSearch = () => {
     if (searchDialogRef.current) {
       searchDialogRef.current.showModal();
@@ -131,25 +126,7 @@ export default function Navbar() {
     setSearchQuery("");
   };
 
-  // Toggle specific mega menu tab
-  const handleMenuToggle = (menu: "platform" | "resources") => {
-    if (activeMenu === menu) {
-      setActiveMenu(null);
-    } else {
-      setActiveMenu(menu);
-    }
-  };
 
-  // Close menus on click outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (navRef.current && !navRef.current.contains(event.target as Node)) {
-        setActiveMenu(null);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   // Keyboard navigation & shortcuts (⌘K or / to open Search Dialog)
   useKeyboardShortcut("k", openSearch, { metaKey: true });
@@ -166,11 +143,6 @@ export default function Navbar() {
     const handleKeyDown = (event: KeyboardEvent) => {
       // Escape key handler
       if (event.key === "Escape") {
-        if (activeMenu) {
-          const triggerRef = activeMenu === "platform" ? platformTriggerRef : resourcesTriggerRef;
-          setActiveMenu(null);
-          triggerRef.current?.focus();
-        }
         if (mobileMenuOpen) {
           setMobileMenuOpen(false);
         }
@@ -179,7 +151,7 @@ export default function Navbar() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [activeMenu, mobileMenuOpen]);
+  }, [mobileMenuOpen]);
 
   return (
     <div ref={navRef} className="relative z-50">
@@ -209,57 +181,7 @@ export default function Navbar() {
 
             {/* Desktop Navigation */}
             <nav className="text-text-muted hidden items-center gap-1 text-base font-semibold md:flex">
-              {/* Platform Button Trigger */}
-              <div className="relative">
-                <button
-                  ref={platformTriggerRef}
-                  onClick={() => handleMenuToggle("platform")}
-                  aria-haspopup="true"
-                  aria-expanded={activeMenu === "platform"}
-                  className={`hover:bg-canvas-muted hover:text-text focus-visible:outline-brand flex cursor-pointer items-center gap-1.5 rounded-full px-4 py-2 transition-all duration-150 focus-visible:outline focus-visible:outline-2 ${
-                    activeMenu === "platform" ? "bg-canvas-muted text-text" : ""
-                  }`}
-                >
-                  แพลตฟอร์ม
-                  <svg
-                    className={`h-4 w-4 transform transition-transform duration-200 ${
-                      activeMenu === "platform" ? "rotate-180" : ""
-                    }`}
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-              </div>
 
-              {/* Resources Button Trigger */}
-              <div className="relative">
-                <button
-                  ref={resourcesTriggerRef}
-                  onClick={() => handleMenuToggle("resources")}
-                  aria-haspopup="true"
-                  aria-expanded={activeMenu === "resources"}
-                  className={`hover:bg-canvas-muted hover:text-text focus-visible:outline-brand flex cursor-pointer items-center gap-1.5 rounded-full px-4 py-2 transition-all duration-150 focus-visible:outline focus-visible:outline-2 ${
-                    activeMenu === "resources" ? "bg-canvas-muted text-text" : ""
-                  }`}
-                >
-                  คลังข้อมูล
-                  <svg
-                    className={`h-4 w-4 transform transition-transform duration-200 ${
-                      activeMenu === "resources" ? "rotate-180" : ""
-                    }`}
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-              </div>
 
               {menus.map((item) => (
                 <Link
@@ -328,12 +250,7 @@ export default function Navbar() {
           </div>
         </Container>
 
-        {/* Mega Menu Dropdown */}
-        <MegaMenu
-          isOpen={activeMenu !== null}
-          menuType={activeMenu}
-          onClose={() => setActiveMenu(null)}
-        />
+
       </header>
 
       {/* Mobile Drawer Overlay */}
@@ -348,90 +265,23 @@ export default function Navbar() {
           </div>
 
           <nav className="text-text flex flex-col space-y-6 p-6 text-lg font-bold">
-            <div>
-              <span className="text-brand mb-3 block text-xs font-black tracking-widest uppercase">
-                Platform
-              </span>
-              <div className="border-border mt-2 grid gap-4 border-l pl-4">
-                <Link
-                  href="/about"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="text-text-muted hover:text-text text-base"
-                >
-                  Overview
-                </Link>
-                <Link
-                  href="#design"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="text-text-muted hover:text-text text-base"
-                >
-                  Design System
-                </Link>
-                <Link
-                  href="/admin"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="text-text-muted hover:text-text text-base"
-                >
-                  Developer Tools
-                </Link>
-              </div>
-            </div>
-            <div>
-              <span className="text-brand mb-3 block text-xs font-black tracking-widest uppercase">
-                Resources
-              </span>
-              <div className="border-border mt-2 grid gap-4 border-l pl-4">
-                <Link
-                  href="#docs"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="text-text-muted hover:text-text text-base"
-                >
-                  Documentation
-                </Link>
-                <Link
-                  href="#tutorials"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="text-text-muted hover:text-text text-base"
-                >
-                  Tutorials
-                </Link>
-                <Link
-                  href="#community"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="text-text-muted hover:text-text text-base"
-                >
-                  Discord Community
-                </Link>
-                <Link
-                  href="/downloads"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="text-text-muted hover:text-text text-base"
-                >
-                  Downloads Center
-                </Link>
-              </div>
-            </div>
-            <Link
-              href="/stories"
-              onClick={() => setMobileMenuOpen(false)}
-              className="border-border border-t pt-2"
-            >
-              Stories
+            <Link href="/stories" onClick={() => setMobileMenuOpen(false)}>
+              บันทึกความทรงจำ
             </Link>
             <Link href="/gallery" onClick={() => setMobileMenuOpen(false)}>
-              Gallery
+              แกลเลอรี
             </Link>
             <Link href="/media" onClick={() => setMobileMenuOpen(false)}>
-              Videos
+              วิดีโอ
             </Link>
             <Link href="/spotlight" onClick={() => setMobileMenuOpen(false)}>
-              Spotlight
+              ทำเนียบเพื่อน ม.1
             </Link>
             <Link href="/timeline" onClick={() => setMobileMenuOpen(false)}>
-              Timeline
+              ไทม์ไลน์
             </Link>
             <Link href="/events" onClick={() => setMobileMenuOpen(false)}>
-              Events
+              กิจกรรม
             </Link>
           </nav>
         </div>
