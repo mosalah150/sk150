@@ -360,7 +360,7 @@ export default function Home() {
         <div className="absolute inset-0 z-0">
           <Image
             src="/assets/hero_bg.png"
-            alt="Sleek abstract technology background"
+            alt="โรงเรียนสวนกุหลาบวิทยาลัย ตึกยาว"
             fill
             priority
             fetchPriority="high"
@@ -371,76 +371,94 @@ export default function Home() {
           <div className="from-canvas/95 via-canvas/40 absolute inset-0 bg-gradient-to-r to-transparent" />
         </div>
 
-        <Container className="relative z-10 w-full flex justify-center">
-          {/* Centered, narrow Carousel container */}
-          <div className="w-full max-w-2xl">
-            {gallery && gallery.length > 0 ? (
-              <div className="border-border bg-canvas-muted relative aspect-[4/3] w-full overflow-hidden rounded-[32px] border shadow-2xl group">
-                {/* Slides */}
-                {gallery.slice(0, 6).map((img, idx) => (
-                  <div
-                    key={img.id}
-                    className={`absolute inset-0 transition-all duration-700 ease-in-out ${
-                      idx === activeSlide ? "opacity-100 scale-100 z-10" : "opacity-0 scale-95 z-0 pointer-events-none"
-                    }`}
-                  >
-                    <Image
-                      src={img.imageSrc}
-                      alt={img.title}
-                      fill
-                      priority={idx === 0}
-                      className="object-cover"
-                      sizes="(max-width: 768px) 100vw, 45vw"
-                    />
-                    
-                    {/* Image Caption Gradient Overlay */}
-                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent p-6 text-white pt-16 flex flex-col justify-end">
-                      <span className="text-[10px] font-black tracking-widest uppercase text-brand">ความทรงจำประทับใจ</span>
-                      <h4 className="text-base font-bold mt-1 line-clamp-1">{img.title}</h4>
-                      <p className="text-white/70 text-xs mt-1 line-clamp-1">{img.description}</p>
-                    </div>
-                  </div>
-                ))}
+        <Container className="relative z-10 w-full">
+          <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
+            {/* Left Column: Brand Info */}
+            <div className="lg:col-span-7">
+              <div className="border-brand/20 bg-brand/5 text-brand mb-8 inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-semibold tracking-wide uppercase backdrop-blur-sm">
+                <span className="h-1.5 w-1.5 rounded-full bg-brand animate-pulse" />
+                โรงเรียนสวนกุหลาบวิทยาลัย &bull; รุ่น 150
+              </div>
+              <h1 className="text-text text-5xl leading-[1.05] font-black tracking-tighter uppercase sm:text-6xl md:text-7xl lg:text-8xl">
+                สวนกุหลาบฯ รุ่น <span className="bg-gradient-to-r from-brand to-brand-secondary bg-clip-text text-transparent">150</span>.<br />
+                ผู้นำแห่งอนาคต.
+              </h1>
+              <p className="text-text-muted mt-6 max-w-xl text-lg leading-relaxed font-normal sm:text-xl">
+                ทำเนียบรุ่นดิจิทัลสำหรับนักเรียน ม.1 โรงเรียนสวนกุหลาบวิทยาลัย รุ่น 150
+                (ชื่อรุ่น: ผู้นำแห่งอนาคต Future Leaders) เพื่อร่วมบันทึกก้าวแรกและมิตรภาพอันล้ำค่า
+              </p>
+            </div>
 
-                {/* Left/Right manual controls */}
-                <button
-                  onClick={() => setActiveSlide((prev) => (prev - 1 + Math.min(gallery.length, 6)) % Math.min(gallery.length, 6))}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm border border-white/10 hover:bg-black/60 transition-colors opacity-0 group-hover:opacity-100 duration-300"
-                  aria-label="Previous slide"
-                >
-                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                  </svg>
-                </button>
-                <button
-                  onClick={() => setActiveSlide((prev) => (prev + 1) % Math.min(gallery.length, 6))}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm border border-white/10 hover:bg-black/60 transition-colors opacity-0 group-hover:opacity-100 duration-300"
-                  aria-label="Next slide"
-                >
-                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
-
-                {/* Dot Indicators */}
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-2">
-                  {gallery.slice(0, 6).map((_, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setActiveSlide(idx)}
-                      className={`h-1.5 rounded-full transition-all duration-300 ${
-                        idx === activeSlide ? "w-6 bg-brand" : "w-1.5 bg-white/50"
+            {/* Right Column: Class Memories Slider (Carousel) */}
+            <div className="lg:col-span-5 relative w-full">
+              {gallery && gallery.length > 0 ? (
+                <div className="border-border bg-canvas-muted relative aspect-[4/3] w-full overflow-hidden rounded-[32px] border shadow-2xl group">
+                  {/* Slides */}
+                  {gallery.slice(0, 6).map((img, idx) => (
+                    <div
+                      key={img.id}
+                      className={`absolute inset-0 transition-all duration-700 ease-in-out ${
+                        idx === activeSlide ? "opacity-100 scale-100 z-10" : "opacity-0 scale-95 z-0 pointer-events-none"
                       }`}
-                      aria-label={`Go to slide ${idx + 1}`}
-                    />
+                    >
+                      <Image
+                        src={img.imageSrc}
+                        alt={img.title}
+                        fill
+                        priority={idx === 0}
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, 40vw"
+                      />
+                      
+                      {/* Image Caption Gradient Overlay */}
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent p-6 text-white pt-16 flex flex-col justify-end">
+                        <span className="text-[10px] font-black tracking-widest uppercase text-brand">ความทรงจำประทับใจ</span>
+                        <h4 className="text-base font-bold mt-1 line-clamp-1">{img.title}</h4>
+                        <p className="text-white/70 text-xs mt-1 line-clamp-1">{img.description}</p>
+                      </div>
+                    </div>
                   ))}
+
+                  {/* Left/Right manual controls */}
+                  <button
+                    onClick={() => setActiveSlide((prev) => (prev - 1 + Math.min(gallery.length, 6)) % Math.min(gallery.length, 6))}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm border border-white/10 hover:bg-black/60 transition-colors opacity-0 group-hover:opacity-100 duration-300"
+                    aria-label="Previous slide"
+                  >
+                    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => setActiveSlide((prev) => (prev + 1) % Math.min(gallery.length, 6))}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm border border-white/10 hover:bg-black/60 transition-colors opacity-0 group-hover:opacity-100 duration-300"
+                    aria-label="Next slide"
+                  >
+                    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+
+                  {/* Dot Indicators */}
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+                    {gallery.slice(0, 6).map((_, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setActiveSlide(idx)}
+                        className={`h-1.5 rounded-full transition-all duration-300 ${
+                          idx === activeSlide ? "w-6 bg-brand" : "w-1.5 bg-white/50"
+                        }`}
+                        aria-label={`Go to slide ${idx + 1}`}
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <div className="border-border bg-canvas-muted flex aspect-[4/3] w-full items-center justify-center rounded-[32px] border shadow-2xl">
-                <span className="text-text-muted text-sm">ไม่พบรูปภาพความทรงจำ</span>
-              </div>
-            )}
+              ) : (
+                <div className="border-border bg-canvas-muted flex aspect-[4/3] w-full items-center justify-center rounded-[32px] border shadow-2xl">
+                  <span className="text-text-muted text-sm">ไม่พบรูปภาพความทรงจำ</span>
+                </div>
+              )}
+            </div>
           </div>
         </Container>
       </section>
