@@ -165,12 +165,12 @@ export default function Navbar() {
 
       {/* Sticky Header */}
       <header className="border-border bg-canvas/80 sticky top-0 w-full border-b backdrop-blur-md">
-        <Container clean className="flex items-center justify-between py-4">
+        <Container clean className="flex items-center justify-between py-2">
           <div className="flex items-center gap-8">
             <Link href="/" className="flex items-center group">
-              <div className="relative h-16 w-52 transition-transform duration-300 group-hover:scale-105">
+              <div className="relative h-20 w-64 transition-transform duration-300 group-hover:scale-105">
                 <Image
-                  src="/assets/logo.png"
+                  src="/assets/logo.png?v=150"
                   alt="SK150 Logo"
                   fill
                   className="object-contain object-left"
