@@ -86,12 +86,20 @@ export default function MediaCenterPage() {
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                         allowFullScreen
                       />
-                    ) : (
+                    ) : featuredVideo.platform === "tiktok" ? (
                       <iframe
                         className="absolute inset-0 h-full w-full border-0"
                         src={`https://www.tiktok.com/player/v1/${featuredVideo.videoId}`}
                         title={featuredVideo.title}
                         allowFullScreen
+                      />
+                    ) : (
+                      <iframe
+                        className="absolute inset-0 h-full w-full border-0"
+                        src={`https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Fwatch%2F%3Fv%3D${featuredVideo.videoId}&show_text=0&width=560`}
+                        title={featuredVideo.title}
+                        allowFullScreen
+                        allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
                       />
                     )
                   ) : (
@@ -116,7 +124,7 @@ export default function MediaCenterPage() {
                       </button>
                       {/* Platform Label Badge */}
                       <span className="absolute top-6 left-6 z-10 rounded-full border border-white/10 bg-black/60 px-3 py-1 text-xs font-bold tracking-wider text-white uppercase backdrop-blur-sm">
-                        {featuredVideo.platform === "youtube" ? "YouTube" : "TikTok"}
+                        {featuredVideo.platform === "youtube" ? "YouTube" : featuredVideo.platform === "tiktok" ? "TikTok" : "Facebook"}
                       </span>
                       {/* Video Duration Badge */}
                       <span className="absolute right-6 bottom-6 z-10 rounded-full border border-white/10 bg-black/60 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
@@ -195,12 +203,20 @@ export default function MediaCenterPage() {
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                           allowFullScreen
                         />
-                      ) : (
+                      ) : video.platform === "tiktok" ? (
                         <iframe
                           className="absolute inset-0 h-full w-full border-0"
                           src={`https://www.tiktok.com/player/v1/${video.videoId}`}
                           title={video.title}
                           allowFullScreen
+                        />
+                      ) : (
+                        <iframe
+                          className="absolute inset-0 h-full w-full border-0"
+                          src={`https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Fwatch%2F%3Fv%3D${video.videoId}&show_text=0&width=560`}
+                          title={video.title}
+                          allowFullScreen
+                          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
                         />
                       )
                     ) : (
@@ -225,7 +241,7 @@ export default function MediaCenterPage() {
                         </button>
                         {/* Platform Badge overlay */}
                         <span className="absolute top-4 left-4 z-10 rounded-full border border-white/10 bg-black/60 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-white uppercase backdrop-blur-sm">
-                          {video.platform === "youtube" ? "YouTube" : "TikTok"}
+                          {video.platform === "youtube" ? "YouTube" : video.platform === "tiktok" ? "TikTok" : "Facebook"}
                         </span>
                         {/* Duration badge overlay */}
                         <span className="absolute right-4 bottom-4 z-10 rounded-full border border-white/10 bg-black/60 px-2.5 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm">

@@ -2,7 +2,7 @@ export interface Video {
   id: string;
   title: string;
   description: string;
-  platform: "youtube" | "tiktok";
+  platform: "youtube" | "tiktok" | "facebook";
   videoId: string;
   category: string;
   duration: string;

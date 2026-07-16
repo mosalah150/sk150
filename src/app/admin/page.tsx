@@ -24,6 +24,38 @@ const tabLabels: Record<AdminTab, string> = {
   Homepage: "ตั้งค่าหน้าแรก (Homepage)",
 };
 
+const formatThaiDate = (dateStr: string): string => {
+  if (!dateStr) return "";
+  const parts = dateStr.split("-");
+  if (parts.length !== 3) return dateStr;
+  const [year, month, day] = parts;
+  const months = [
+    "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
+    "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"
+  ];
+  const dayNum = parseInt(day, 10);
+  const monthIdx = parseInt(month, 10) - 1;
+  if (monthIdx < 0 || monthIdx > 11) return dateStr;
+  const monthName = months[monthIdx];
+  return `${dayNum} ${monthName} ${year}`;
+};
+
+const parseThaiDateToInputFormat = (thaiDateStr: string): string => {
+  if (!thaiDateStr) return "";
+  const parts = thaiDateStr.split(" ");
+  if (parts.length !== 3) return "";
+  const [day, monthName, year] = parts;
+  const months = [
+    "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
+    "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"
+  ];
+  const monthIdx = months.indexOf(monthName);
+  if (monthIdx === -1) return "";
+  const monthStr = String(monthIdx + 1).padStart(2, "0");
+  const dayStr = String(parseInt(day, 10)).padStart(2, "0");
+  return `${year}-${monthStr}-${dayStr}`;
+};
+
 export default function AdminDashboardPage() {
   const { posts, students, events, media, downloads, gallery, menus, sections, refreshData } = useDynamicData();
 
@@ -96,8 +128,9 @@ export default function AdminDashboardPage() {
     localStorage.removeItem("admin_token");
     setIsLoggedIn(false);
     setActiveTab("Overview");
-    addLog("[AUTH] ผู้ดูแลระบบออกจากระบบ.");
   };
+
+
 
   // Image Upload handler
   const [uploading, setUploading] = useState(false);
@@ -281,6 +314,22 @@ export default function AdminDashboardPage() {
     hidden: 0,
     sortOrder: 1,
   });
+
+  // Auto-fill sequential ID for mediaForm
+  useEffect(() => {
+    if (activeTab === "Media" && !mediaForm.id && media && media.length > 0) {
+      const numericIds = media
+        .map((m) => {
+          const match = m.id.match(/^video-(\d+)$/);
+          return match ? parseInt(match[1], 10) : 0;
+        })
+        .filter((n) => n > 0);
+      const maxId = numericIds.length > 0 ? Math.max(...numericIds) : media.length;
+      setMediaForm((prev) => ({ ...prev, id: `video-${maxId + 1}` }));
+    } else if (activeTab === "Media" && !mediaForm.id) {
+      setMediaForm((prev) => ({ ...prev, id: "video-1" }));
+    }
+  }, [activeTab, media, mediaForm.id]);
 
   return (
     <div className="bg-canvas text-text flex-1 pb-24 transition-colors duration-200 select-none">
@@ -1481,13 +1530,14 @@ export default function AdminDashboardPage() {
                             onChange={(e) =>
                               setMediaForm({
                                 ...mediaForm,
-                                platform: e.target.value as "youtube" | "tiktok",
+                                platform: e.target.value as "youtube" | "tiktok" | "facebook",
                               })
                             }
                             className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
                           >
                             <option value="youtube">YouTube</option>
                             <option value="tiktok">TikTok</option>
+                            <option value="facebook">Facebook</option>
                           </select>
                         </div>
                       </div>
@@ -1505,7 +1555,7 @@ export default function AdminDashboardPage() {
                               let id = val.trim();
                               let platform = mediaForm.platform;
 
-                              // Auto-extract ID from YouTube/TikTok URL
+                              // Auto-extract ID from YouTube/TikTok/Facebook URL
                               if (val.includes("youtube.com") || val.includes("youtu.be")) {
                                 platform = "youtube";
                                 const ytRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
@@ -1517,6 +1567,13 @@ export default function AdminDashboardPage() {
                                 platform = "tiktok";
                                 const ttRegex = /\/video\/(\d+)/;
                                 const match = val.match(ttRegex);
+                                if (match && match[1]) {
+                                  id = match[1];
+                                }
+                              } else if (val.includes("facebook.com") || val.includes("fb.watch") || val.includes("fb.com")) {
+                                platform = "facebook";
+                                const fbRegex = /(?:videos\/|v=|\/watch\/\?v=)(\d+)/;
+                                const match = val.match(fbRegex);
                                 if (match && match[1]) {
                                   id = match[1];
                                 }
@@ -1537,7 +1594,7 @@ export default function AdminDashboardPage() {
                                 coverImage: cover,
                               });
                             }}
-                            placeholder="วางลิงก์ YouTube/TikTok หรือพิมพ์เฉพาะ ID"
+                            placeholder="วางลิงก์ YouTube/TikTok/Facebook หรือพิมพ์เฉพาะ ID"
                             className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none font-mono"
                           />
                         </div>
@@ -1581,10 +1638,12 @@ export default function AdminDashboardPage() {
                             วันที่ลงวิดีโอ
                           </label>
                           <input
-                            type="text"
-                            value={mediaForm.date}
-                            onChange={(e) => setMediaForm({ ...mediaForm, date: e.target.value })}
-                            placeholder="ตัวอย่าง: 13 กรกฎาคม 2026"
+                            type="date"
+                            value={parseThaiDateToInputFormat(mediaForm.date)}
+                            onChange={(e) => {
+                              const thaiDate = formatThaiDate(e.target.value);
+                              setMediaForm({ ...mediaForm, date: thaiDate });
+                            }}
                             className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
                           />
                         </div>
