@@ -180,12 +180,19 @@ export default function AdminDashboardPage() {
         refreshData();
         return true;
       } else {
-        addLog(`[ERROR] บันทึกตาราง ${type} ล้มเหลว (401 Unauthorized?)`);
-        alert("บันทึกไม่สำเร็จ: สิทธิ์เข้าถึงถูกปฏิเสธ");
+        const errorData = await res.json().catch(() => ({}));
+        const errorMessage = errorData.error || `เซิร์ฟเวอร์ตอบสนองด้วยรหัสสถานะ ${res.status}`;
+        addLog(`[ERROR] บันทึกตาราง ${type} ล้มเหลว: ${errorMessage}`);
+        if (res.status === 401) {
+          alert("บันทึกไม่สำเร็จ: สิทธิ์เข้าถึงถูกปฏิเสธ (กรุณาลงชื่อเข้าใช้ระบบแอดมินใหม่)");
+        } else {
+          alert(`บันทึกไม่สำเร็จ: ${errorMessage}`);
+        }
         return false;
       }
     } catch (err: any) {
       addLog(`[ERROR] บันทึกลงฐานข้อมูลผิดพลาด: ${err.message}`);
+      alert(`บันทึกไม่สำเร็จ: ${err.message}`);
       return false;
     }
   };

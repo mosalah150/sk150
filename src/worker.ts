@@ -387,9 +387,9 @@ export default {
               data.date,
               data.readTime,
               data.publishedTime,
-              data.author.name,
-              data.author.avatar,
-              data.author.title,
+              data.authorName || (data.author ? data.author.name : "แอดมินรุ่น"),
+              data.authorAvatar || (data.author ? data.author.avatar : "/assets/spotlight.png"),
+              data.authorTitle || (data.author ? data.author.title : "คณะกรรมการรุ่น 150"),
               JSON.stringify(data.content),
             )
             .run();
