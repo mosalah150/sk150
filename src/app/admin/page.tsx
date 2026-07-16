@@ -1570,9 +1570,9 @@ export default function AdminDashboardPage() {
                                 if (match && match[1]) {
                                   id = match[1];
                                 }
-                              } else if (val.includes("facebook.com") || val.includes("fb.watch") || val.includes("fb.com")) {
+                              } else if (val.includes("facebook.com") || val.includes("fb.watch") || val.includes("fb.com") || val.includes("facebook")) {
                                 platform = "facebook";
-                                const fbRegex = /(?:videos\/|v=|\/watch\/\?v=)(\d+)/;
+                                const fbRegex = /(?:videos\/|reel\/|v=|\/watch\/\?v=|%2Freel%2F|%2Fvideos%2F|%3Fv%3D)(\d{10,18})/i;
                                 const match = val.match(fbRegex);
                                 if (match && match[1]) {
                                   id = match[1];
