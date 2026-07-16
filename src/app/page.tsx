@@ -40,10 +40,19 @@ export default function Home() {
       "ณัฐคอยรวบรวมภาพบันทึกความทรงจำของเพื่อนๆ ตั้งแต่วันรายงานตัว ค่ายละอ่อนสวนกุหลาบวิทยาลัย และการจับมือร้องเพลงโรงเรียนเป็นครั้งแรกในชีวิตนักเรียน ม.1",
   };
 
+  const [playingVideoIds, setPlayingVideoIds] = React.useState<Record<string, boolean>>({});
+
+  const handlePlayClick = (id: string) => {
+    setPlayingVideoIds((prev) => ({
+      ...prev,
+      [id]: true,
+    }));
+  };
+
   const topPosts = posts.slice(0, 3);
   const upcomingEvents = events.filter((e) => e.type === "upcoming").slice(0, 2);
   const topGallery = gallery.slice(0, 3);
-  const topVideos = media.slice(0, 3);
+  const topVideos = media.slice(0, 6);
 
   // Map bento classes
   const getBentoClass = (idx: number) => {
@@ -246,39 +255,104 @@ export default function Home() {
             />
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {topVideos.map((video) => (
-                <Link
+                <div
                   key={video.id}
-                  href={`/media?play=${video.id}`}
-                  className="border-border bg-canvas group hover:border-text-muted flex flex-col overflow-hidden rounded-3xl border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg cursor-pointer"
+                  className="border-border bg-canvas group hover:border-text-muted flex flex-col overflow-hidden rounded-3xl border transition-all duration-300 hover:shadow-lg"
                 >
-                  <div className="relative flex aspect-video items-center justify-center overflow-hidden bg-neutral-900">
-                    <Image
-                      src={video.coverImage}
-                      alt={video.title}
-                      fill
-                      loading="lazy"
-                      className="object-cover opacity-70 transition-transform duration-500 group-hover:scale-105"
-                      sizes="(max-width: 640px) 100vw, 33vw"
-                    />
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                      <div className="bg-canvas/90 border-border text-text flex h-14 w-14 items-center justify-center rounded-full border shadow-md backdrop-blur-sm transition-transform duration-300 group-hover:scale-110">
-                        <svg className="ml-1 h-6 w-6 fill-current" viewBox="0 0 24 24">
-                          <path d="M8 5v14l11-7z" />
-                        </svg>
-                      </div>
+                  {/* Player Frame / Image Cover */}
+                  <div className={`relative flex w-full items-center justify-center overflow-hidden bg-black transition-all duration-300 ${
+                    video.platform === "tiktok" || video.platform === "facebook-reel" ? "aspect-[9/16] max-w-[340px] mx-auto my-4 rounded-2xl" : "aspect-video"
+                  }`}>
+                    {playingVideoIds[video.id] ? (
+                      video.platform === "youtube" ? (
+                        <iframe
+                          className="absolute inset-0 h-full w-full border-0"
+                          src={`https://www.youtube.com/embed/${video.videoId}?autoplay=1`}
+                          title={video.title}
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          allowFullScreen
+                        />
+                      ) : video.platform === "tiktok" ? (
+                        <iframe
+                          className="absolute inset-0 h-full w-full border-0"
+                          src={`https://www.tiktok.com/player/v1/${video.videoId}`}
+                          title={video.title}
+                          allowFullScreen
+                        />
+                      ) : video.platform === "facebook-reel" ? (
+                        <iframe
+                          className="absolute inset-0 h-full w-full border-0"
+                          src={`https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F${video.videoId}%2F&show_text=0&width=340&height=600`}
+                          title={video.title}
+                          allowFullScreen
+                          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                        />
+                      ) : (
+                        <iframe
+                          className="absolute inset-0 h-full w-full border-0"
+                          src={`https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Fwatch%2F%3Fv%3D${video.videoId}&show_text=0&width=560`}
+                          title={video.title}
+                          allowFullScreen
+                          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                        />
+                      )
+                    ) : (
+                      <>
+                        <Image
+                          src={video.coverImage}
+                          alt={video.title}
+                          fill
+                          loading="lazy"
+                          className="object-cover opacity-70 transition-transform duration-500 group-hover:scale-105"
+                          sizes="(max-width: 640px) 100vw, 33vw"
+                        />
+                        <button
+                          onClick={() => handlePlayClick(video.id)}
+                          className="bg-canvas/90 border-border text-text focus-visible:outline-brand absolute z-10 flex h-14 w-14 cursor-pointer items-center justify-center rounded-full border shadow-md backdrop-blur-sm transition-transform duration-300 hover:scale-105 active:scale-95"
+                          aria-label={`Play video: ${video.title}`}
+                        >
+                          <svg className="ml-1 h-6 w-6 fill-current" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                        </button>
+                        {/* Platform Badge overlay */}
+                        <span className="absolute top-4 left-4 z-10 rounded-full border border-white/10 bg-black/60 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-white uppercase backdrop-blur-sm">
+                          {video.platform === "youtube" ? "YouTube" : video.platform === "tiktok" ? "TikTok" : video.platform === "facebook" ? "Facebook" : "FB Reel"}
+                        </span>
+                        <span className="absolute right-4 bottom-4 rounded bg-black/70 px-2 py-1 text-xs font-semibold text-white">
+                          {video.duration}
+                        </span>
+                      </>
+                    )}
+                  </div>
+                  <div className="flex flex-1 flex-col justify-between p-6">
+                    <div>
+                      <span className="text-brand text-xs font-semibold tracking-wider uppercase">
+                        {video.category}
+                      </span>
+                      <h4 className="text-text mt-1 line-clamp-2 text-lg font-bold">{video.title}</h4>
+                      <p className="text-text-muted mt-2 line-clamp-2 text-sm">{video.description}</p>
+                      
+                      {(video.platform === "facebook" || video.platform === "facebook-reel") && (
+                        <div className="mt-3">
+                          <a
+                            href={video.platform === "facebook-reel"
+                              ? `https://www.facebook.com/reel/${video.videoId}`
+                              : `https://www.facebook.com/watch/?v=${video.videoId}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-brand/10 px-3 py-1.5 text-[11px] font-bold text-brand transition-colors hover:bg-brand/20"
+                          >
+                            <svg className="h-3.5 w-3.5 fill-current" viewBox="0 0 24 24">
+                              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                            </svg>
+                            เปิดดูใน Facebook App
+                          </a>
+                        </div>
+                      )}
                     </div>
-                    <span className="absolute right-4 bottom-4 rounded bg-black/70 px-2 py-1 text-xs font-semibold text-white">
-                      {video.duration}
-                    </span>
                   </div>
-                  <div className="p-6">
-                    <span className="text-brand text-xs font-semibold tracking-wider uppercase">
-                      {video.category}
-                    </span>
-                    <h4 className="text-text mt-1 line-clamp-2 text-lg font-bold">{video.title}</h4>
-                    <p className="text-text-muted mt-2 line-clamp-2 text-sm">{video.description}</p>
-                  </div>
-                </Link>
+                </div>
               ))}
             </div>
           </Container>
