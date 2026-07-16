@@ -1755,7 +1755,10 @@ export default function AdminDashboardPage() {
                             </div>
                             <button
                               onClick={() => {
-                                setMediaForm(v);
+                                setMediaForm({
+                                  ...v,
+                                  platform: v.platform as "youtube" | "youtube-shorts" | "tiktok" | "facebook" | "facebook-reel"
+                                });
                                 addLog(`[FORM] ดึงข้อมูลวิดีโอเพื่อแก้ไข: ${v.title}`);
                               }}
                               className="text-brand border-brand/20 rounded-lg border px-3 py-1.5 text-xs font-bold"
