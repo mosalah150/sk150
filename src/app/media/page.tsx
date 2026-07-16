@@ -39,6 +39,33 @@ export default function MediaCenterPage() {
     }));
   };
 
+  // Auto-play video based on query parameter (?play=video-id)
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const playId = params.get("play");
+      if (playId && media && media.length > 0) {
+        // Find if this video exists
+        const videoExists = media.some((v) => v.id === playId);
+        if (videoExists) {
+          // Set to playing state
+          setPlayingVideoIds((prev) => ({
+            ...prev,
+            [playId]: true,
+          }));
+
+          // Scroll to the card
+          setTimeout(() => {
+            const el = document.getElementById(playId);
+            if (el) {
+              el.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+          }, 300);
+        }
+      }
+    }
+  }, [media]);
+
   const filteredVideos = media.filter(
     (video) => activeCategory === "All" || video.category === activeCategory,
   );
@@ -205,7 +232,8 @@ export default function MediaCenterPage() {
               {filteredVideos.map((video) => (
                 <div
                   key={video.id}
-                  className="border-border bg-canvas group hover:border-text-muted flex flex-col overflow-hidden rounded-3xl border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+                  id={video.id}
+                  className="border-border bg-canvas group hover:border-text-muted flex flex-col overflow-hidden rounded-3xl border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg scroll-mt-28"
                 >
                   {/* Player Frame / Image Cover */}
                   <div className={`relative flex w-full items-center justify-center overflow-hidden bg-black transition-all duration-300 ${

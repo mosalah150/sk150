@@ -246,9 +246,10 @@ export default function Home() {
             />
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {topVideos.map((video) => (
-                <div
+                <Link
                   key={video.id}
-                  className="border-border bg-canvas group hover:border-text-muted flex flex-col overflow-hidden rounded-3xl border transition-all duration-300 hover:-translate-y-1"
+                  href={`/media?play=${video.id}`}
+                  className="border-border bg-canvas group hover:border-text-muted flex flex-col overflow-hidden rounded-3xl border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg cursor-pointer"
                 >
                   <div className="relative flex aspect-video items-center justify-center overflow-hidden bg-neutral-900">
                     <Image
@@ -277,7 +278,7 @@ export default function Home() {
                     <h4 className="text-text mt-1 line-clamp-2 text-lg font-bold">{video.title}</h4>
                     <p className="text-text-muted mt-2 line-clamp-2 text-sm">{video.description}</p>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </Container>
