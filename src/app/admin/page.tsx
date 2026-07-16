@@ -1530,12 +1530,13 @@ export default function AdminDashboardPage() {
                             onChange={(e) =>
                               setMediaForm({
                                 ...mediaForm,
-                                platform: e.target.value as "youtube" | "tiktok" | "facebook" | "facebook-reel",
+                                platform: e.target.value as "youtube" | "youtube-shorts" | "tiktok" | "facebook" | "facebook-reel",
                               })
                             }
                             className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
                           >
-                            <option value="youtube">YouTube</option>
+                            <option value="youtube">YouTube (วิดีโอแนวนอน)</option>
+                            <option value="youtube-shorts">YouTube Shorts (วิดีโอแนวตั้ง)</option>
                             <option value="tiktok">TikTok</option>
                             <option value="facebook">Facebook (วิดีโอแนวนอน)</option>
                             <option value="facebook-reel">Facebook Reel (วิดีโอแนวตั้ง)</option>
@@ -1558,8 +1559,12 @@ export default function AdminDashboardPage() {
 
                               // Auto-extract ID from YouTube/TikTok/Facebook URL
                               if (val.includes("youtube.com") || val.includes("youtu.be")) {
-                                platform = "youtube";
-                                const ytRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+                                if (val.includes("/shorts/") || val.includes("shorts")) {
+                                  platform = "youtube-shorts";
+                                } else {
+                                  platform = "youtube";
+                                }
+                                const ytRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=|shorts\/)|youtu\.be\/)([^"&?\/\s]{11})/;
                                 const match = val.match(ytRegex);
                                 if (match && match[1]) {
                                   id = match[1];
@@ -1586,7 +1591,7 @@ export default function AdminDashboardPage() {
 
                               // Auto-generate cover image if YouTube
                               let cover = mediaForm.coverImage;
-                              if (platform === "youtube" && id && !id.startsWith("http")) {
+                              if ((platform === "youtube" || platform === "youtube-shorts") && id && !id.startsWith("http")) {
                                 cover = `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
                               } else if (platform === "tiktok" && id && !id.startsWith("http")) {
                                 cover = ""; // Let the backend Worker fetch it via oEmbed automatically

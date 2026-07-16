@@ -261,10 +261,10 @@ export default function Home() {
                 >
                   {/* Player Frame / Image Cover */}
                   <div className={`relative flex w-full items-center justify-center overflow-hidden bg-black transition-all duration-300 ${
-                    video.platform === "tiktok" || video.platform === "facebook-reel" ? "aspect-[9/16] max-w-[340px] mx-auto my-4 rounded-2xl" : "aspect-video"
+                    video.platform === "tiktok" || video.platform === "facebook-reel" || video.platform === "youtube-shorts" ? "aspect-[9/16] max-w-[340px] mx-auto my-4 rounded-2xl" : "aspect-video"
                   }`}>
                     {playingVideoIds[video.id] ? (
-                      video.platform === "youtube" ? (
+                      video.platform === "youtube" || video.platform === "youtube-shorts" ? (
                         <iframe
                           className="absolute inset-0 h-full w-full border-0"
                           src={`https://www.youtube.com/embed/${video.videoId}?autoplay=1`}
@@ -317,7 +317,15 @@ export default function Home() {
                         </button>
                         {/* Platform Badge overlay */}
                         <span className="absolute top-4 left-4 z-10 rounded-full border border-white/10 bg-black/60 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-white uppercase backdrop-blur-sm">
-                          {video.platform === "youtube" ? "YouTube" : video.platform === "tiktok" ? "TikTok" : video.platform === "facebook" ? "Facebook" : "FB Reel"}
+                          {video.platform === "youtube"
+                            ? "YouTube"
+                            : video.platform === "youtube-shorts"
+                            ? "YouTube Shorts"
+                            : video.platform === "tiktok"
+                            ? "TikTok"
+                            : video.platform === "facebook"
+                            ? "Facebook"
+                            : "FB Reel"}
                         </span>
                         <span className="absolute right-4 bottom-4 rounded bg-black/70 px-2 py-1 text-xs font-semibold text-white">
                           {video.duration}

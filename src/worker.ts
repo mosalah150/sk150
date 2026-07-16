@@ -435,7 +435,7 @@ export default {
           let resolvedCover = data.coverImage || "";
           
           // Auto resolve cover image if empty or generic
-          if (data.platform === "youtube") {
+          if (data.platform === "youtube" || data.platform === "youtube-shorts") {
             resolvedCover = `https://img.youtube.com/vi/${data.videoId}/hqdefault.jpg`;
           } else if (data.platform === "tiktok") {
             if (!resolvedCover || resolvedCover.includes("placeholder") || resolvedCover === "") {

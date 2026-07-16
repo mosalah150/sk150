@@ -102,10 +102,10 @@ export default function MediaCenterPage() {
               <div className="grid lg:grid-cols-12">
                 {/* Image Cover / Interactive Iframe Player */}
                 <div className={`relative flex w-full items-center justify-center overflow-hidden bg-black transition-all duration-300 lg:col-span-8 ${
-                  featuredVideo.platform === "tiktok" ? "aspect-[9/16] max-w-[340px] mx-auto my-6 rounded-3xl" : "aspect-video min-h-[360px]"
+                  (featuredVideo.platform === "tiktok" || featuredVideo.platform === "facebook-reel" || featuredVideo.platform === "youtube-shorts") ? "aspect-[9/16] max-w-[340px] mx-auto my-6 rounded-3xl" : "aspect-video min-h-[360px]"
                 }`}>
                   {playingVideoIds[featuredVideo.id] ? (
-                    featuredVideo.platform === "youtube" ? (
+                    featuredVideo.platform === "youtube" || featuredVideo.platform === "youtube-shorts" ? (
                       <iframe
                         className="absolute inset-0 h-full w-full border-0"
                         src={`https://www.youtube.com/embed/${featuredVideo.videoId}?autoplay=1`}
@@ -119,6 +119,14 @@ export default function MediaCenterPage() {
                         src={`https://www.tiktok.com/player/v1/${featuredVideo.videoId}`}
                         title={featuredVideo.title}
                         allowFullScreen
+                      />
+                    ) : featuredVideo.platform === "facebook-reel" ? (
+                      <iframe
+                        className="absolute inset-0 h-full w-full border-0"
+                        src={`https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F${featuredVideo.videoId}%2F&show_text=0&width=340&height=600`}
+                        title={featuredVideo.title}
+                        allowFullScreen
+                        allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
                       />
                     ) : (
                       <iframe
@@ -151,7 +159,15 @@ export default function MediaCenterPage() {
                       </button>
                       {/* Platform Label Badge */}
                       <span className="absolute top-6 left-6 z-10 rounded-full border border-white/10 bg-black/60 px-3 py-1 text-xs font-bold tracking-wider text-white uppercase backdrop-blur-sm">
-                        {featuredVideo.platform === "youtube" ? "YouTube" : featuredVideo.platform === "tiktok" ? "TikTok" : "Facebook"}
+                        {featuredVideo.platform === "youtube"
+                          ? "YouTube"
+                          : featuredVideo.platform === "youtube-shorts"
+                          ? "YouTube Shorts"
+                          : featuredVideo.platform === "tiktok"
+                          ? "TikTok"
+                          : featuredVideo.platform === "facebook"
+                          ? "Facebook"
+                          : "FB Reel"}
                       </span>
                       {/* Video Duration Badge */}
                       <span className="absolute right-6 bottom-6 z-10 rounded-full border border-white/10 bg-black/60 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
@@ -237,10 +253,10 @@ export default function MediaCenterPage() {
                 >
                   {/* Player Frame / Image Cover */}
                   <div className={`relative flex w-full items-center justify-center overflow-hidden bg-black transition-all duration-300 ${
-                    video.platform === "tiktok" ? "aspect-[9/16] max-w-[340px] mx-auto my-4 rounded-2xl" : "aspect-video"
+                    (video.platform === "tiktok" || video.platform === "facebook-reel" || video.platform === "youtube-shorts") ? "aspect-[9/16] max-w-[340px] mx-auto my-4 rounded-2xl" : "aspect-video"
                   }`}>
                     {playingVideoIds[video.id] ? (
-                      video.platform === "youtube" ? (
+                      video.platform === "youtube" || video.platform === "youtube-shorts" ? (
                         <iframe
                           className="absolute inset-0 h-full w-full border-0"
                           src={`https://www.youtube.com/embed/${video.videoId}?autoplay=1`}
@@ -254,6 +270,14 @@ export default function MediaCenterPage() {
                           src={`https://www.tiktok.com/player/v1/${video.videoId}`}
                           title={video.title}
                           allowFullScreen
+                        />
+                      ) : video.platform === "facebook-reel" ? (
+                        <iframe
+                          className="absolute inset-0 h-full w-full border-0"
+                          src={`https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F${video.videoId}%2F&show_text=0&width=340&height=600`}
+                          title={video.title}
+                          allowFullScreen
+                          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
                         />
                       ) : (
                         <iframe
@@ -286,7 +310,15 @@ export default function MediaCenterPage() {
                         </button>
                         {/* Platform Badge overlay */}
                         <span className="absolute top-4 left-4 z-10 rounded-full border border-white/10 bg-black/60 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-white uppercase backdrop-blur-sm">
-                          {video.platform === "youtube" ? "YouTube" : video.platform === "tiktok" ? "TikTok" : "Facebook"}
+                          {video.platform === "youtube"
+                            ? "YouTube"
+                            : video.platform === "youtube-shorts"
+                            ? "YouTube Shorts"
+                            : video.platform === "tiktok"
+                            ? "TikTok"
+                            : video.platform === "facebook"
+                            ? "Facebook"
+                            : "FB Reel"}
                         </span>
                         {/* Duration badge overlay */}
                         <span className="absolute right-4 bottom-4 z-10 rounded-full border border-white/10 bg-black/60 px-2.5 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm">
