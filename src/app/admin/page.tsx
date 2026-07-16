@@ -1530,14 +1530,15 @@ export default function AdminDashboardPage() {
                             onChange={(e) =>
                               setMediaForm({
                                 ...mediaForm,
-                                platform: e.target.value as "youtube" | "tiktok" | "facebook",
+                                platform: e.target.value as "youtube" | "tiktok" | "facebook" | "facebook-reel",
                               })
                             }
                             className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
                           >
                             <option value="youtube">YouTube</option>
                             <option value="tiktok">TikTok</option>
-                            <option value="facebook">Facebook</option>
+                            <option value="facebook">Facebook (วิดีโอแนวนอน)</option>
+                            <option value="facebook-reel">Facebook Reel (วิดีโอแนวตั้ง)</option>
                           </select>
                         </div>
                       </div>
@@ -1571,7 +1572,11 @@ export default function AdminDashboardPage() {
                                   id = match[1];
                                 }
                               } else if (val.includes("facebook.com") || val.includes("fb.watch") || val.includes("fb.com") || val.includes("facebook")) {
-                                platform = "facebook";
+                                if (val.includes("reel") || val.includes("%2Freel%2F")) {
+                                  platform = "facebook-reel";
+                                } else {
+                                  platform = "facebook";
+                                }
                                 const fbRegex = /(?:videos\/|reel\/|v=|\/watch\/\?v=|%2Freel%2F|%2Fvideos%2F|%3Fv%3D)(\d{10,18})/i;
                                 const match = val.match(fbRegex);
                                 if (match && match[1]) {
