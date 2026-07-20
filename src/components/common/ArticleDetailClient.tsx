@@ -87,12 +87,12 @@ export default function ArticleDetailClient({
               <div>
                 <h3 className="text-text text-sm font-bold">{article.author.name}</h3>
                 <p className="text-text-muted text-xs font-medium">{article.author.title}</p>
+                <div className="text-text-muted flex items-center gap-4 text-xs font-medium mt-1">
+                  <span>{article.date}</span>
+                  <span className="bg-border h-1.5 w-1.5 rounded-full" />
+                  <span>เขียนโดย {article.author.name}</span>
+                </div>
               </div>
-            </div>
-            <div className="text-text-muted flex items-center gap-4 text-xs font-medium">
-              <span>{article.date}</span>
-              <span className="bg-border h-1.5 w-1.5 rounded-full" />
-              <span>{article.readTime}</span>
             </div>
           </div>
         </div>
@@ -114,30 +114,76 @@ export default function ArticleDetailClient({
         <div className="mx-auto mt-16 max-w-[75ch]">
           <div className="text-text space-y-8 font-sans text-base leading-relaxed sm:text-lg">
             {article.content.map((paragraph, index) => {
+              const trimmed = paragraph.trim();
+
+              // 1. Heading 2
+              if (trimmed.startsWith("## ")) {
+                return (
+                  <h2 key={index} className="text-text mt-12 text-2xl font-bold tracking-tight sm:text-3xl">
+                    {trimmed.replace(/^##\s+/, "")}
+                  </h2>
+                );
+              }
+
+              // 2. Heading 3
+              if (trimmed.startsWith("### ")) {
+                return (
+                  <h3 key={index} className="text-text mt-8 text-xl font-bold tracking-tight sm:text-2xl">
+                    {trimmed.replace(/^###\s+/, "")}
+                  </h3>
+                );
+              }
+
+              // 3. Blockquote
+              if (trimmed.startsWith("> ")) {
+                return (
+                  <blockquote key={index} className="border-brand text-text my-8 border-l-4 pl-6 font-serif text-lg leading-relaxed italic sm:text-xl">
+                    {trimmed.replace(/^>\s+/, "")}
+                  </blockquote>
+                );
+              }
+
+              // 4. Image Markdown
+              const imgMatch = trimmed.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
+              if (imgMatch) {
+                return (
+                  <div key={index} className="border-border relative my-10 overflow-hidden rounded-3xl border shadow-md">
+                    <img
+                      src={imgMatch[2]}
+                      alt={imgMatch[1] || "Image"}
+                      className="w-full object-cover max-h-[480px]"
+                    />
+                    {imgMatch[1] && (
+                      <div className="bg-canvas-muted text-text-muted border-t border-border px-6 py-3 text-center text-xs font-medium">
+                        {imgMatch[1]}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+
+              // 5. Default paragraph with inline styling (bold, italic, links)
+              let html = trimmed;
+              html = html.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+              html = html.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+              html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-brand hover:underline font-semibold">$1</a>');
+
               if (index === 0) {
                 return (
                   <p
                     key={index}
                     className="first-letter:text-brand text-lg leading-relaxed first-letter:float-left first-letter:mr-2.5 first-letter:text-5xl first-letter:font-black"
-                  >
-                    {paragraph}
-                  </p>
+                    dangerouslySetInnerHTML={{ __html: html }}
+                  />
                 );
               }
 
-              if (index === 2) {
-                return (
-                  <React.Fragment key={index}>
-                    <blockquote className="border-brand text-text my-10 border-l-4 pl-6 font-serif text-xl leading-relaxed italic sm:text-2xl">
-                      &ldquo;มิตรภาพที่เกิดขึ้นในรั้วโรงเรียนไม่ใช่แค่ช่วงเวลาสั้นๆ
-                      แต่มันคือสายใยความทรงจำที่พวกเราจะช่วยกันดูแลและเก็บรักษาไว้ตลอดไป&rdquo;
-                    </blockquote>
-                    <p>{paragraph}</p>
-                  </React.Fragment>
-                );
-              }
-
-              return <p key={index}>{paragraph}</p>;
+              return (
+                <p
+                  key={index}
+                  dangerouslySetInnerHTML={{ __html: html }}
+                />
+              );
             })}
           </div>
 
@@ -159,8 +205,8 @@ export default function ArticleDetailClient({
       <section className="bg-canvas-muted border-border border-t py-24">
         <Container>
           <SectionHeader
-            title="เรื่องราวอื่นๆ ที่เกี่ยวข้อง"
-            subtitle="บันทึกความทรงจำและกิจกรรมอื่นๆ ที่น่าสนใจเพิ่มเติมในหัวข้อนี้"
+            title="เรื่องราวอื่นๆ ที่น่าสนใจ"
+            subtitle="ย้อนอ่านบันทึกกิจกรรมความทรงจำและมิตรภาพของพวกเราต่อได้ที่นี่"
           />
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {finalRelated.map((related) => (
@@ -172,7 +218,7 @@ export default function ArticleDetailClient({
                 imageAlt={related.title}
                 badge={related.category}
                 date={related.date}
-                readTime={related.readTime}
+                authorName={related.author.name}
                 href={`/stories/${related.slug}`}
                 aspectRatio="video"
               />

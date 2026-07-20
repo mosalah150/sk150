@@ -10,6 +10,7 @@ interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   badge?: string;
   date?: string;
   readTime?: string;
+  authorName?: string;
   href?: string;
   glass?: boolean;
   hoverEffect?: boolean;
@@ -25,6 +26,7 @@ export default function Card({
   badge,
   date,
   readTime,
+  authorName,
   href,
   glass = false,
   hoverEffect = true,
@@ -71,11 +73,12 @@ export default function Card({
       {/* Body Details */}
       <div className="flex flex-1 flex-col p-6 sm:p-8">
         {/* Metadata */}
-        {(date || readTime) && (
+        {(date || readTime || authorName) && (
           <div className="text-text-muted mb-3 flex items-center gap-3 text-xs font-medium tracking-tight">
             {date && <span>{date}</span>}
-            {date && readTime && <span className="bg-border h-1 w-1 rounded-full" />}
-            {readTime && <span>{readTime}</span>}
+            {date && (readTime || authorName) && <span className="bg-border h-1 w-1 rounded-full" />}
+            {authorName && <span>โดย {authorName}</span>}
+            {!authorName && readTime && <span>{readTime}</span>}
           </div>
         )}
 

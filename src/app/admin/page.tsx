@@ -248,6 +248,30 @@ export default function AdminDashboardPage() {
     content: "",
   });
 
+  const applyTextFormatting = (prefix: string, suffix: string = "") => {
+    const textarea = document.getElementById("article-content-textarea") as HTMLTextAreaElement;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = textarea.value.substring(start, end);
+    const replacement = `${prefix}${selectedText || (suffix ? "ข้อความ" : "")}${suffix}`;
+
+    const newContent =
+      textarea.value.substring(0, start) + replacement + textarea.value.substring(end);
+
+    setPostForm({ ...postForm, content: newContent });
+
+    setTimeout(() => {
+      textarea.focus();
+      const offset = selectedText ? selectedText.length : (suffix ? 6 : 0);
+      textarea.setSelectionRange(
+        start + prefix.length,
+        start + prefix.length + offset
+      );
+    }, 50);
+  };
+
   const [studentForm, setStudentForm] = useState({
     id: "",
     name: "",
@@ -678,7 +702,7 @@ export default function AdminDashboardPage() {
                         </div>
                         <div>
                           <label className="text-text-muted text-xs font-bold">
-                            วันที่ลง / ระยะเวลาการอ่าน
+                            วันที่ลง / นามปากกา (คนเขียน)
                           </label>
                           <div className="mt-1.5 grid grid-cols-2 gap-2">
                             <input
@@ -690,11 +714,11 @@ export default function AdminDashboardPage() {
                             />
                             <input
                               type="text"
-                              value={postForm.readTime}
+                              value={postForm.authorName}
                               onChange={(e) =>
-                                setPostForm({ ...postForm, readTime: e.target.value })
+                                setPostForm({ ...postForm, authorName: e.target.value })
                               }
-                              placeholder="ตัวอย่าง: อ่าน 4 นาที"
+                              placeholder="ตัวอย่าง: แอดมินรุ่น, ด.ช.กิตติภูมิ"
                               className="border-border bg-canvas-muted text-text w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
                             />
                           </div>
@@ -705,12 +729,119 @@ export default function AdminDashboardPage() {
                         <label className="text-text-muted text-xs font-bold">
                           เนื้อหาบทความแบบยาว (แยกย่อหน้าใหม่โดยการกดปุ่ม Enter เว้นบรรทัด 2 ครั้ง)
                         </label>
+                        
+                        {/* Editor Toolbar (WordPress-style) */}
+                        <div className="border-border bg-canvas-muted/80 flex flex-wrap items-center gap-1.5 rounded-t-2xl border-t border-x p-2.5 mt-1.5">
+                          <button
+                            type="button"
+                            onClick={() => applyTextFormatting("**", "**")}
+                            className="hover:bg-canvas bg-canvas-muted border-border text-text h-8 w-8 rounded-lg border text-sm font-black transition-all cursor-pointer"
+                            title="ตัวหนา (Bold)"
+                          >
+                            B
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => applyTextFormatting("*", "*")}
+                            className="hover:bg-canvas bg-canvas-muted border-border text-text h-8 w-8 rounded-lg border text-sm font-serif italic transition-all cursor-pointer"
+                            title="ตัวเอียง (Italic)"
+                          >
+                            I
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => applyTextFormatting("<u>", "</u>")}
+                            className="hover:bg-canvas bg-canvas-muted border-border text-text h-8 w-8 rounded-lg border text-sm underline transition-all cursor-pointer"
+                            title="ขีดเส้นใต้ (Underline)"
+                          >
+                            U
+                          </button>
+                          <div className="bg-border h-6 w-[1px] mx-1" />
+                          <button
+                            type="button"
+                            onClick={() => applyTextFormatting("## ")}
+                            className="hover:bg-canvas bg-canvas-muted border-border text-text h-8 px-2.5 rounded-lg border text-xs font-bold transition-all cursor-pointer"
+                            title="หัวข้อหลัก H2"
+                          >
+                            H2
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => applyTextFormatting("### ")}
+                            className="hover:bg-canvas bg-canvas-muted border-border text-text h-8 px-2.5 rounded-lg border text-xs font-bold transition-all cursor-pointer"
+                            title="หัวข้อย่อย H3"
+                          >
+                            H3
+                          </button>
+                          <div className="bg-border h-6 w-[1px] mx-1" />
+                          <button
+                            type="button"
+                            onClick={() => applyTextFormatting("> ")}
+                            className="hover:bg-canvas bg-canvas-muted border-border text-text h-8 px-2.5 rounded-lg border text-xs font-mono transition-all cursor-pointer"
+                            title="คำคม/โควต (Quote)"
+                          >
+                            &ldquo;&rdquo;
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => applyTextFormatting("- ")}
+                            className="hover:bg-canvas bg-canvas-muted border-border text-text h-8 px-2.5 rounded-lg border text-sm transition-all cursor-pointer"
+                            title="รายการแบบจุด (Bullet)"
+                          >
+                            • List
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => applyTextFormatting("1. ")}
+                            className="hover:bg-canvas bg-canvas-muted border-border text-text h-8 px-2.5 rounded-lg border text-sm transition-all cursor-pointer"
+                            title="รายการแบบตัวเลข"
+                          >
+                            1. List
+                          </button>
+                          <div className="bg-border h-6 w-[1px] mx-1" />
+                          <button
+                            type="button"
+                            onClick={() => applyTextFormatting("[ลิงก์](", ")")}
+                            className="hover:bg-canvas bg-canvas-muted border-border text-text h-8 px-2.5 rounded-lg border text-xs font-bold transition-all cursor-pointer"
+                            title="แทรกไฮเปอร์ลิงก์"
+                          >
+                            🔗 ลิงก์
+                          </button>
+                          <div className="relative">
+                            <input
+                              type="file"
+                              accept="image/*"
+                              disabled={uploading}
+                              onChange={(e) =>
+                                handleImageUpload(e, (url) => {
+                                  const textarea = document.getElementById("article-content-textarea") as HTMLTextAreaElement;
+                                  if (!textarea) return;
+                                  const start = textarea.selectionStart;
+                                  const end = textarea.selectionEnd;
+                                  const replacement = `\n\n![ภาพประกอบ](${url})\n\n`;
+                                  const newContent = textarea.value.substring(0, start) + replacement + textarea.value.substring(end);
+                                  setPostForm({ ...postForm, content: newContent });
+                                })
+                              }
+                              className="absolute inset-0 cursor-pointer opacity-0"
+                            />
+                            <button
+                              type="button"
+                              className="hover:bg-canvas bg-canvas-muted border-border text-text flex h-8 items-center gap-1 rounded-lg border px-2.5 text-xs font-bold transition-all cursor-pointer"
+                              title="อัปโหลดและแทรกรูปภาพ"
+                            >
+                              🖼️ อัปโหลดรูปใส่บทความ
+                            </button>
+                          </div>
+                        </div>
+
                         <textarea
-                          rows={6}
+                          id="article-content-textarea"
+                          rows={20}
                           value={postForm.content}
                           onChange={(e) => setPostForm({ ...postForm, content: e.target.value })}
                           placeholder="พิมพ์เล่าเรื่องราวความทรงจำของคุณที่นี่..."
-                          className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                          className="border-border bg-canvas-muted text-text w-full rounded-b-2xl border-x border-b px-3 py-3 text-sm focus:outline-none min-h-[400px] leading-relaxed"
                         />
                       </div>
 

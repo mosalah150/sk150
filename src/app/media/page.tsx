@@ -169,10 +169,6 @@ export default function MediaCenterPage() {
                           ? "Facebook"
                           : "FB Reel"}
                       </span>
-                      {/* Video Duration Badge */}
-                      <span className="absolute right-6 bottom-6 z-10 rounded-full border border-white/10 bg-black/60 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
-                        {featuredVideo.duration}
-                      </span>
                     </>
                   )}
                 </div>
@@ -319,10 +315,6 @@ export default function MediaCenterPage() {
                             : video.platform === "facebook"
                             ? "Facebook"
                             : "FB Reel"}
-                        </span>
-                        {/* Duration badge overlay */}
-                        <span className="absolute right-4 bottom-4 z-10 rounded-full border border-white/10 bg-black/60 px-2.5 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm">
-                          {video.duration}
                         </span>
                       </>
                     )}

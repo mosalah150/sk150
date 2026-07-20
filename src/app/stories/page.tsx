@@ -117,7 +117,7 @@ export default function StoriesPage() {
                       </div>
                     </div>
                     <span className="text-text-muted text-xs font-semibold">
-                      {featuredArticle.readTime}
+                      {featuredArticle.author.title}
                     </span>
                   </div>
                 </div>
@@ -163,7 +163,7 @@ export default function StoriesPage() {
                   imageAlt={article.title}
                   badge={article.category}
                   date={article.date}
-                  readTime={article.readTime}
+                  authorName={article.author.name}
                   href={`/stories/${article.slug}`}
                   aspectRatio="video"
                 >

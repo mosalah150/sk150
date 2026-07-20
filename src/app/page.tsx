@@ -198,7 +198,7 @@ export default function Home() {
                   imageSrc={post.imageSrc}
                   imageAlt={post.title}
                   date={post.date}
-                  readTime={post.readTime}
+                  authorName={post.author.name}
                   badge={post.category}
                   href={`/stories/${post.slug}`}
                   aspectRatio="video"
@@ -326,9 +326,6 @@ export default function Home() {
                             : video.platform === "facebook"
                             ? "Facebook"
                             : "FB Reel"}
-                        </span>
-                        <span className="absolute right-4 bottom-4 rounded bg-black/70 px-2 py-1 text-xs font-semibold text-white">
-                          {video.duration}
                         </span>
                       </>
                     )}
