@@ -62,7 +62,7 @@ export default function TimelinePage() {
             <span className="text-brand text-xs font-bold tracking-widest uppercase">
               ประวัติกิจกรรมรุ่น
             </span>
-            <h1 className="text-text mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl">
+            <h1 className="text-text mt-3 text-4xl font-black tracking-tight sm:text-5xl">
               ไทม์ไลน์บันทึกความทรงจำ
             </h1>
             <p className="text-text-muted mt-4 text-lg leading-relaxed">
@@ -177,10 +177,12 @@ export default function TimelinePage() {
                       <div>
                         {/* Tags list */}
                         <div className="mb-4 flex flex-wrap gap-2">
-                          {event.tags.map((tag) => (
+                          {event.tags.map((tag, tagIdx) => (
                             <span
                               key={tag}
-                              className="bg-brand/5 border-brand/10 text-brand rounded-full border px-2.5 py-0.5 text-[10px] font-bold tracking-wider uppercase"
+                              className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-white uppercase ${
+                                tagIdx % 2 === 0 ? "bg-brand" : "bg-brand-secondary"
+                              }`}
                             >
                               {tag}
                             </span>
@@ -205,7 +207,7 @@ export default function TimelinePage() {
                               key={bIdx}
                               className="text-text-muted flex items-start gap-3 text-xs font-medium sm:text-sm"
                             >
-                              <span className="bg-brand/10 text-brand flex h-5 w-5 shrink-0 items-center justify-center rounded-full">
+                              <span className="bg-brand flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-white">
                                 <svg
                                   className="h-3 w-3"
                                   fill="none"

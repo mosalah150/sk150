@@ -90,7 +90,7 @@ export default function EventsPage() {
             <span className="text-brand text-xs font-bold tracking-widest uppercase">
               กิจกรรมที่กำลังจะเกิดขึ้นเร็วๆ นี้
             </span>
-            <h1 className="text-text mt-3 max-w-2xl text-3xl leading-tight font-extrabold tracking-tight sm:text-4xl md:text-5xl">
+            <h1 className="text-text mt-3 max-w-2xl text-3xl leading-tight font-black tracking-tight sm:text-4xl md:text-5xl">
               {nextEvent.title}
             </h1>
             <p className="text-text-muted mt-4 max-w-md text-sm sm:text-base">
@@ -107,12 +107,14 @@ export default function EventsPage() {
               ].map((item, idx) => (
                 <div
                   key={idx}
-                  className="bg-canvas border-border group relative flex flex-col items-center justify-center rounded-3xl border p-4 shadow-sm sm:p-6"
+                  className={`group relative flex flex-col items-center justify-center rounded-[28px] p-4 shadow-md sm:p-6 ${
+                    idx % 2 === 0 ? "bg-brand shadow-brand/20" : "bg-brand-secondary shadow-brand-secondary/20"
+                  }`}
                 >
-                  <span className="text-text text-3xl font-black tracking-tight sm:text-4xl md:text-5xl">
+                  <span className="text-3xl font-black tracking-tight text-white sm:text-4xl md:text-5xl">
                     {item.val}
                   </span>
-                  <span className="text-text-muted mt-2 text-[10px] font-bold tracking-wider uppercase sm:text-xs">
+                  <span className="mt-2 text-[10px] font-bold tracking-wider text-white/80 uppercase sm:text-xs">
                     {item.label}
                   </span>
                 </div>
@@ -176,8 +178,9 @@ export default function EventsPage() {
               </Button>
             </div>
           </Container>
-          {/* Subtle bg mesh glow */}
-          <div className="bg-brand/10 pointer-events-none absolute -top-32 -left-32 h-64 w-64 rounded-full blur-3xl" />
+          {/* Brand mesh glow */}
+          <div className="bg-brand/25 pointer-events-none absolute -top-32 -left-32 h-64 w-64 rounded-full blur-3xl" />
+          <div className="bg-brand-secondary/25 pointer-events-none absolute -right-24 -bottom-24 h-72 w-72 rounded-full blur-3xl" />
         </section>
       )}
 

@@ -9,14 +9,23 @@ import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import { useDynamicData } from "@/providers/DynamicDataProvider";
 
-type CategoryFilter = "All" | "วันจบการศึกษา" | "งานกีฬาสี" | "ค่ายดนตรี" | "วันแรกในโรงเรียน";
+type CategoryFilter =
+  | "All"
+  | "วันจบการศึกษา"
+  | "งานกีฬาสี"
+  | "ธรรมเนียมโรงเรียน"
+  | "ค่ายดนตรี"
+  | "วันแรกในโรงเรียน"
+  | "เบื้องหลังทีมงาน";
 
 const filterLabels: Record<CategoryFilter, string> = {
   All: "ทั้งหมด",
   วันจบการศึกษา: "วันจบการศึกษา",
   งานกีฬาสี: "งานกีฬาสี",
+  ธรรมเนียมโรงเรียน: "ธรรมเนียมโรงเรียน",
   ค่ายดนตรี: "ค่ายดนตรี",
   วันแรกในโรงเรียน: "วันแรกในโรงเรียน",
+  เบื้องหลังทีมงาน: "เบื้องหลังทีมงาน",
 };
 
 export default function StoriesPage() {
@@ -36,8 +45,10 @@ export default function StoriesPage() {
     "All",
     "วันจบการศึกษา",
     "งานกีฬาสี",
+    "ธรรมเนียมโรงเรียน",
     "ค่ายดนตรี",
     "วันแรกในโรงเรียน",
+    "เบื้องหลังทีมงาน",
   ];
 
   return (
@@ -49,7 +60,7 @@ export default function StoriesPage() {
             <span className="text-brand text-xs font-bold tracking-widest uppercase">
               ทำเนียบความทรงจำ
             </span>
-            <h1 className="text-text mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl">
+            <h1 className="text-text mt-3 text-4xl font-black tracking-tight sm:text-5xl">
               บันทึกความทรงจำรุ่น
             </h1>
             <p className="text-text-muted mt-4 text-lg leading-relaxed">
@@ -136,9 +147,9 @@ export default function StoriesPage() {
               <button
                 key={category}
                 onClick={() => setActiveCategory(category)}
-                className={`focus-visible:outline-brand cursor-pointer rounded-full px-5 py-2 text-sm font-semibold whitespace-nowrap transition-all focus-visible:outline focus-visible:outline-2 ${
+                className={`focus-visible:outline-brand cursor-pointer rounded-full px-5 py-2 text-sm font-bold whitespace-nowrap transition-all focus-visible:outline focus-visible:outline-2 ${
                   activeCategory === category
-                    ? "bg-text text-canvas"
+                    ? "bg-brand text-white shadow-md shadow-brand/30"
                     : "bg-canvas-muted text-text-muted hover:bg-canvas hover:text-text border-border hover:border-text-muted border"
                 }`}
               >

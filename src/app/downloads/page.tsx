@@ -65,7 +65,7 @@ export default function DownloadsPage() {
             <span className="text-brand text-xs font-bold tracking-widest uppercase">
               คลังไฟล์ดาวน์โหลด
             </span>
-            <h1 className="text-text mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl">
+            <h1 className="text-text mt-3 text-4xl font-black tracking-tight sm:text-5xl">
               ดาวน์โหลดเอกสาร & รูปภาพ
             </h1>
             <p className="text-text-muted mt-4 text-lg leading-relaxed">
@@ -79,9 +79,9 @@ export default function DownloadsPage() {
               <button
                 key={category}
                 onClick={() => setActiveCategory(category)}
-                className={`focus-visible:outline-brand cursor-pointer rounded-full px-5 py-2 text-sm font-semibold transition-all focus-visible:outline focus-visible:outline-2 ${
+                className={`focus-visible:outline-brand cursor-pointer rounded-full px-5 py-2 text-sm font-bold transition-all focus-visible:outline focus-visible:outline-2 ${
                   activeCategory === category
-                    ? "bg-text text-canvas"
+                    ? "bg-brand text-white shadow-md shadow-brand/30"
                     : "bg-canvas text-text-muted border-border hover:bg-canvas-muted hover:text-text hover:border-text-muted border"
                 }`}
               >
@@ -147,7 +147,7 @@ export default function DownloadsPage() {
                         className={`focus-visible:outline-brand flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-xs font-bold tracking-wider uppercase transition-all select-none focus-visible:outline focus-visible:outline-2 ${
                           isDownloading
                             ? "bg-canvas-muted text-text-muted border-border cursor-not-allowed"
-                            : "bg-text text-canvas hover:bg-canvas hover:text-text hover:border-text border-transparent"
+                            : "bg-brand text-white hover:brightness-110 border-transparent shadow-md shadow-brand/30"
                         }`}
                       >
                         {isDownloading ? (

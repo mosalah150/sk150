@@ -26,7 +26,10 @@ export default function SectionHeader({
       {...props}
     >
       <div className={`max-w-2xl ${centered ? "mx-auto" : ""}`}>
-        <h2 className="text-text text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl">
+        <span
+          className={`bg-gradient-to-r from-brand to-brand-secondary mb-4 block h-2 w-12 rounded-full ${centered ? "mx-auto" : ""}`}
+        />
+        <h2 className="text-text text-3xl font-black tracking-tight sm:text-4xl md:text-5xl">
           {title}
         </h2>
         {subtitle && (
@@ -38,7 +41,7 @@ export default function SectionHeader({
         <div className="flex-shrink-0">
           <Link
             href={ctaHref}
-            className="text-brand group inline-flex items-center gap-1.5 text-sm font-semibold transition-opacity hover:opacity-80"
+            className="bg-brand group inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-md shadow-brand/20 transition-all hover:brightness-110 active:scale-95"
           >
             {ctaText}
             <svg

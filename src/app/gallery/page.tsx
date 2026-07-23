@@ -151,7 +151,7 @@ export default function GalleryPage() {
             <span className="text-brand text-xs font-bold tracking-widest uppercase">
               คลังภาพประทับใจ
             </span>
-            <h1 className="text-text mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl">
+            <h1 className="text-text mt-3 text-4xl font-black tracking-tight sm:text-5xl">
               แกลเลอรีรูปภาพ
             </h1>
             <p className="text-text-muted mt-4 text-lg leading-relaxed">
@@ -165,9 +165,9 @@ export default function GalleryPage() {
               <button
                 key={album}
                 onClick={() => setActiveAlbum(album)}
-                className={`focus-visible:outline-brand cursor-pointer rounded-full px-5 py-2 text-sm font-semibold transition-all focus-visible:outline focus-visible:outline-2 ${
+                className={`focus-visible:outline-brand cursor-pointer rounded-full px-5 py-2 text-sm font-bold transition-all focus-visible:outline focus-visible:outline-2 ${
                   activeAlbum === album
-                    ? "bg-text text-canvas"
+                    ? "bg-brand text-white shadow-md shadow-brand/30"
                     : "bg-canvas text-text-muted hover:bg-canvas-muted hover:text-text border-border hover:border-text-muted border"
                 }`}
               >

@@ -167,16 +167,19 @@ export default function Navbar() {
       <header className="border-border bg-canvas/80 sticky top-0 w-full border-b backdrop-blur-md">
         <Container clean className="flex items-center justify-between py-2">
           <div className="flex items-center gap-8">
-            <Link href="/" className="flex items-center group">
-              <div className="relative h-20 w-64 transition-transform duration-300 group-hover:scale-105">
+            <Link href="/" className="flex items-center gap-3 group">
+              <div className="relative h-14 w-14 shrink-0 transition-transform duration-300 group-hover:scale-105">
                 <Image
-                  src="/assets/logo.png?v=150"
+                  src="/assets/sk150_logo.png"
                   alt="SK150 Logo"
                   fill
-                  className="object-contain object-left"
+                  className="object-contain"
                   priority
                 />
               </div>
+              <span className="text-text hidden text-lg font-black tracking-tight sm:block">
+                SK150 <span className="text-text-muted font-semibold">Future Leaders</span>
+              </span>
             </Link>
 
             {/* Desktop Navigation */}
@@ -187,7 +190,7 @@ export default function Navbar() {
                 <Link
                   key={item.id}
                   href={item.href}
-                  className="hover:bg-canvas-muted hover:text-text focus-visible:outline-brand rounded-full px-4 py-2 transition-all duration-150 focus-visible:outline focus-visible:outline-2"
+                  className="hover:bg-brand/10 hover:text-brand focus-visible:outline-brand rounded-full px-4 py-2 font-bold transition-all duration-150 focus-visible:outline focus-visible:outline-2"
                 >
                   {item.label}
                 </Link>
@@ -265,23 +268,17 @@ export default function Navbar() {
           </div>
 
           <nav className="text-text flex flex-col space-y-6 p-6 text-lg font-bold">
-            <Link href="/stories" onClick={() => setMobileMenuOpen(false)}>
-              บันทึกความทรงจำ
+            {menus.map((item) => (
+              <Link key={item.id} href={item.href} onClick={() => setMobileMenuOpen(false)}>
+                {item.label}
+              </Link>
+            ))}
+            <hr className="border-border" />
+            <Link href="/about" onClick={() => setMobileMenuOpen(false)}>
+              เกี่ยวกับเรา
             </Link>
-            <Link href="/gallery" onClick={() => setMobileMenuOpen(false)}>
-              แกลเลอรี
-            </Link>
-            <Link href="/media" onClick={() => setMobileMenuOpen(false)}>
-              วิดีโอ
-            </Link>
-            <Link href="/spotlight" onClick={() => setMobileMenuOpen(false)}>
-              ทำเนียบเพื่อน ม.1
-            </Link>
-            <Link href="/timeline" onClick={() => setMobileMenuOpen(false)}>
-              ไทม์ไลน์
-            </Link>
-            <Link href="/events" onClick={() => setMobileMenuOpen(false)}>
-              กิจกรรม
+            <Link href="/downloads" onClick={() => setMobileMenuOpen(false)}>
+              ดาวน์โหลด
             </Link>
           </nav>
         </div>

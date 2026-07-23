@@ -76,7 +76,7 @@ export default function Home() {
         <section key="portal" className="border-border border-t border-b bg-canvas-muted/50 py-16">
           <Container>
             <div className="mb-8 text-center md:text-left">
-              <h2 className="text-2xl font-extrabold tracking-tight">
+              <h2 className="text-2xl font-black tracking-tight">
                 {portalSec?.title || "ค้นหาความทรงจำตามหมวดหมู่"}
               </h2>
               <p className="text-text-muted mt-2 text-sm">
@@ -103,30 +103,37 @@ export default function Home() {
                   link: "/media",
                   actionText: "ชมวิดีโอดีๆ",
                 },
-              ].map((portal, idx) => (
-                <Link
-                  key={idx}
-                  href={portal.link}
-                  className="border-border hover:border-text-muted bg-canvas group flex flex-col justify-between rounded-3xl border p-8 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
-                >
-                  <div>
-                    <h3 className="text-xl font-bold tracking-tight">{portal.title}</h3>
-                    <p className="text-text-muted mt-2 text-sm leading-relaxed">{portal.desc}</p>
-                  </div>
-                  <div className="mt-8 flex items-center gap-2 text-xs font-bold tracking-wide uppercase text-brand group-hover:text-brand-secondary transition-colors">
-                    <span>{portal.actionText}</span>
-                    <svg
-                      className="h-4 w-4 transform transition-transform group-hover:translate-x-1"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                    </svg>
-                  </div>
-                </Link>
-              ))}
+              ].map((portal, idx) => {
+                const fills = [
+                  "brand-mesh bg-brand text-white",
+                  "bg-text text-canvas",
+                  "bg-brand-secondary text-white",
+                ];
+                return (
+                  <Link
+                    key={idx}
+                    href={portal.link}
+                    className={`group relative flex flex-col justify-between overflow-hidden rounded-[32px] p-8 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl ${fills[idx % fills.length]}`}
+                  >
+                    <div className="relative z-10">
+                      <h3 className="text-xl font-black tracking-tight">{portal.title}</h3>
+                      <p className="mt-2 text-sm leading-relaxed opacity-80">{portal.desc}</p>
+                    </div>
+                    <div className="relative z-10 mt-8 flex items-center gap-2 text-xs font-bold tracking-wide uppercase">
+                      <span>{portal.actionText}</span>
+                      <svg
+                        className="h-4 w-4 transform transition-transform group-hover:translate-x-1"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           </Container>
         </section>
@@ -139,13 +146,13 @@ export default function Home() {
       component: (
         <section key="spotlight" className="py-24 sm:py-32">
           <Container>
-            <div className="border-border bg-canvas-muted rounded-[32px] border p-8 sm:p-12 md:p-16">
+            <div className="border-border bg-canvas-muted rounded-[40px] border p-8 sm:p-12 md:p-16">
               <div className="grid gap-8 md:grid-cols-2 md:items-center">
                 <div>
-                  <span className="bg-brand/10 border-brand/20 text-brand rounded-full border px-3.5 py-1 text-xs font-bold tracking-wider uppercase">
+                  <span className="bg-brand rounded-full px-3.5 py-1 text-xs font-bold tracking-wider text-white uppercase">
                     {spotlightSec?.title || "นักเรียนเด่นประจำรุ่น"}
                   </span>
-                  <h2 className="text-text mt-6 text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl">
+                  <h2 className="text-text mt-6 text-3xl font-black tracking-tight sm:text-4xl md:text-5xl">
                     {spotlightStudent.name}
                   </h2>
                   <p className="text-brand text-sm font-semibold mt-2">{spotlightStudent.title}</p>
@@ -160,7 +167,7 @@ export default function Home() {
                     </Link>
                   </div>
                 </div>
-                <div className="relative aspect-square w-full overflow-hidden rounded-3xl border border-border shadow-lg">
+                <div className="relative aspect-square w-full overflow-hidden rounded-[32px] border border-border shadow-lg">
                   <Image
                     src={spotlightStudent.imageSrc}
                     alt={spotlightStudent.name}
@@ -438,6 +445,7 @@ export default function Home() {
       <section className="relative flex min-h-[85vh] items-center justify-center overflow-hidden py-24 sm:py-32">
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
+          <div className="brand-mesh absolute inset-0 opacity-30 dark:opacity-40" />
           <Image
             src="/assets/hero_bg.png"
             alt="โรงเรียนสวนกุหลาบวิทยาลัย ตึกยาว"
@@ -455,8 +463,8 @@ export default function Home() {
           <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
             {/* Left Column: Brand Info */}
             <div className="lg:col-span-7">
-              <div className="border-brand/20 bg-brand/5 text-brand mb-8 inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-semibold tracking-wide uppercase backdrop-blur-sm">
-                <span className="h-1.5 w-1.5 rounded-full bg-brand animate-pulse" />
+              <div className="bg-brand mb-8 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold tracking-wide text-white uppercase shadow-lg shadow-brand/30">
+                <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
                 สวนกุหลาบวิทยาลัย &bull; ม.1 รุ่น 150
               </div>
               <h1 className="text-text text-4xl leading-[1.1] font-black sm:text-5xl md:text-6xl lg:text-7xl">
@@ -548,29 +556,35 @@ export default function Home() {
       {/* Render Dynamic Sorted & Filtered Sections */}
       {visibleSections.map((sec) => sec.component)}
 
-      {/* 8. Apple-Style Footer */}
-      <footer className="bg-canvas text-text border-border border-t py-8">
-        <Container clean>
-          <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
-            <div className="text-text-muted flex flex-col items-center gap-4 text-xs sm:flex-row">
-              <span>&copy; {new Date().getFullYear()} SK150. สงวนลิขสิทธิ์ทั้งหมด.</span>
-              <span className="hidden sm:inline">|</span>
-              <a href="#" className="hover:text-text">
-                ข้อตกลงการใช้งาน
-              </a>
-              <span className="hidden sm:inline">&bull;</span>
-              <a href="#" className="hover:text-text">
-                การตั้งค่าคุกกี้
-              </a>
-            </div>
-            <div className="text-text-muted text-xs flex items-center gap-1.5">
-              <span>Future Leaders</span>
-              <span>&bull;</span>
-              <span>พัฒนาโดยผู้ปกครองโรงเรียนสวนกุหลาบวิทยาลัย รุ่น 150 (MoSalah 👑)</span>
+      {/* Full-bleed CTA band */}
+      <section className="py-12 sm:py-20">
+        <Container>
+          <div className="brand-mesh bg-brand relative overflow-hidden rounded-[40px] px-8 py-16 text-center sm:px-16 sm:py-20">
+            <div className="relative z-10 mx-auto max-w-2xl">
+              <h2 className="text-3xl font-black tracking-tight text-white sm:text-5xl">
+                ร่วมเป็นส่วนหนึ่งของทำเนียบรุ่น 150
+              </h2>
+              <p className="mt-4 text-base leading-relaxed text-white/80 sm:text-lg">
+                ส่งภาพถ่าย เรื่องราว หรือความทรงจำของคุณมาให้ชุมนุมประชาสัมพันธ์ SKPRC รุ่น 150 ช่วยเก็บรวบรวมไว้ในทำเนียบรุ่นดิจิทัลฉบับนี้
+              </p>
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+                <Link
+                  href="/stories"
+                  className="focus-visible:outline-brand inline-flex items-center justify-center rounded-full bg-white px-8 py-4 text-base font-bold text-brand shadow-lg transition-all hover:brightness-95 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                >
+                  อ่านเรื่องราวรุ่น
+                </Link>
+                <Link
+                  href="/about"
+                  className="focus-visible:outline-brand inline-flex items-center justify-center rounded-full border border-white/40 bg-white/10 px-8 py-4 text-base font-bold text-white backdrop-blur-sm transition-all hover:bg-white/20 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                >
+                  เกี่ยวกับเรา
+                </Link>
+              </div>
             </div>
           </div>
         </Container>
-      </footer>
+      </section>
     </main>
   );
 }

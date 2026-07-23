@@ -1,7 +1,7 @@
 import React from "react";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "outline" | "glass";
+  variant?: "primary" | "accent" | "secondary" | "outline" | "glass";
   size?: "sm" | "md" | "lg";
   children: React.ReactNode;
 }
@@ -14,10 +14,11 @@ export default function Button({
   ...props
 }: ButtonProps) {
   const baseStyles =
-    "inline-flex items-center justify-center font-medium rounded-full transition-all duration-200 cursor-pointer select-none active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:opacity-50 disabled:pointer-events-none";
+    "inline-flex items-center justify-center font-bold rounded-full transition-all duration-200 cursor-pointer select-none active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:opacity-50 disabled:pointer-events-none";
 
   const variants = {
-    primary: "bg-brand text-canvas hover:opacity-90",
+    primary: "bg-brand text-white hover:brightness-110",
+    accent: "bg-brand-secondary text-white hover:brightness-110",
     secondary: "bg-text text-canvas hover:opacity-90",
     outline:
       "border border-border bg-transparent text-text hover:bg-canvas-muted hover:border-text-muted",

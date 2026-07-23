@@ -1018,7 +1018,7 @@ export default function AdminDashboardPage() {
                             onChange={(e) =>
                               setStudentForm({ ...studentForm, name: e.target.value })
                             }
-                            placeholder="ตัวอย่าง: เมษา ศิริวัฒนา (เมย์)"
+                            placeholder="ตัวอย่าง: ธีรภัทร์ วัฒนสิน (ปั้น)"
                             className="border-border bg-canvas-muted text-text mt-1.5 w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
                           />
                         </div>

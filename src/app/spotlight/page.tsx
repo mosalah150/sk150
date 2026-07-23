@@ -28,7 +28,7 @@ export default function SpotlightPage() {
             <span className="text-brand text-xs font-bold tracking-widest uppercase">
               ทำเนียบเพื่อน ม.1
             </span>
-            <h1 className="text-text mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl">
+            <h1 className="text-text mt-3 text-4xl font-black tracking-tight sm:text-5xl">
               สุภาพบุรุษเพื่อนร่วมรุ่น ม.1
             </h1>
             <p className="text-text-muted mt-4 text-lg leading-relaxed">
@@ -42,9 +42,9 @@ export default function SpotlightPage() {
               <button
                 key={student.id}
                 onClick={() => setActiveStudentId(student.id)}
-                className={`focus-visible:outline-brand cursor-pointer rounded-full px-5 py-2 text-sm font-semibold transition-all focus-visible:outline focus-visible:outline-2 ${
+                className={`focus-visible:outline-brand cursor-pointer rounded-full px-5 py-2 text-sm font-bold transition-all focus-visible:outline focus-visible:outline-2 ${
                   activeStudentId === student.id
-                    ? "bg-text text-canvas"
+                    ? "bg-brand text-white shadow-md shadow-brand/30"
                     : "bg-canvas text-text-muted border-border hover:bg-canvas-muted hover:text-text hover:border-text-muted border"
                 }`}
               >
@@ -118,11 +118,11 @@ export default function SpotlightPage() {
             {/* Right Column: Title info, key metrics, and Biography prose */}
             <div className="text-left lg:col-span-7">
               <div>
-                <span className="bg-brand/10 border-brand/20 text-brand inline-block rounded-full border px-3.5 py-1 text-xs font-bold tracking-wider uppercase">
+                <span className="bg-brand inline-block rounded-full px-3.5 py-1 text-xs font-bold tracking-wider text-white uppercase">
                   {activeStudent.achievement}
                 </span>
 
-                <h2 className="text-text mt-6 text-4xl leading-none font-extrabold tracking-tight sm:text-5xl">
+                <h2 className="text-text mt-6 text-4xl leading-none font-black tracking-tight sm:text-5xl">
                   {activeStudent.name}
                 </h2>
                 <h4 className="text-text-muted mt-2 text-lg font-bold">{activeStudent.title}</h4>

@@ -36,9 +36,9 @@ export default function Card({
   ...props
 }: CardProps) {
   const containerStyle = `
-    relative flex flex-col overflow-hidden rounded-3xl border border-border transition-all duration-300
+    relative flex flex-col overflow-hidden rounded-[28px] border border-border transition-all duration-300
     ${glass ? "bg-canvas/50 backdrop-blur-md" : "bg-canvas-muted"}
-    ${hoverEffect ? "hover:-translate-y-1 hover:border-text-muted hover:shadow-lg" : ""}
+    ${hoverEffect ? "hover:-translate-y-1.5 hover:border-brand/40 hover:shadow-xl hover:shadow-brand/10" : ""}
     ${className}
   `;
 
@@ -63,7 +63,7 @@ export default function Card({
             loading="lazy"
           />
           {badge && (
-            <div className="bg-canvas/85 text-text border-border absolute top-4 left-4 z-10 rounded-full border px-3.5 py-1 text-xs font-semibold tracking-tight backdrop-blur-sm">
+            <div className="bg-brand absolute top-4 left-4 z-10 rounded-full px-3.5 py-1 text-xs font-bold tracking-tight text-white shadow-md">
               {badge}
             </div>
           )}

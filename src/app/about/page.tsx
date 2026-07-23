@@ -94,7 +94,7 @@ export default function AboutPage() {
             <span className="text-brand text-xs font-bold tracking-widest uppercase">
               คณะผู้จัดทำ
             </span>
-            <h1 className="text-text mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl">
+            <h1 className="text-text mt-3 text-4xl font-black tracking-tight sm:text-5xl">
               เกี่ยวกับ SK150
             </h1>
             <p className="text-text-muted mt-4 text-lg leading-relaxed">
@@ -265,7 +265,7 @@ export default function AboutPage() {
                     aria-expanded={isOpen}
                   >
                     <span className="text-text font-bold text-sm sm:text-base">{faq.question}</span>
-                    <span className="text-brand ml-4 flex h-6 w-6 items-center justify-center rounded-full bg-brand/10 transition-transform duration-200">
+                    <span className="bg-brand ml-4 flex h-6 w-6 items-center justify-center rounded-full text-white transition-transform duration-200">
                       <svg
                         className={`h-4 w-4 transform transition-transform ${
                           isOpen ? "rotate-180" : ""

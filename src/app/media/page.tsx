@@ -88,7 +88,7 @@ export default function MediaCenterPage() {
             <span className="text-brand text-xs font-bold tracking-widest uppercase">
               คลังวิดีโอ
             </span>
-            <h1 className="text-text mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl">
+            <h1 className="text-text mt-3 text-4xl font-black tracking-tight sm:text-5xl">
               ศูนย์รวมวิดีโอรุ่น
             </h1>
             <p className="text-text-muted mt-4 text-lg leading-relaxed">
@@ -193,7 +193,7 @@ export default function MediaCenterPage() {
                             : `https://www.facebook.com/watch/?v=${featuredVideo.videoId}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 rounded-xl bg-brand/10 px-4 py-2 text-xs font-bold text-brand transition-colors hover:bg-brand/20"
+                          className="bg-brand inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold text-white transition-all hover:brightness-110"
                         >
                           <svg className="h-4 w-4 fill-current animate-pulse" viewBox="0 0 24 24">
                             <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
@@ -223,9 +223,9 @@ export default function MediaCenterPage() {
               <button
                 key={category}
                 onClick={() => setActiveCategory(category)}
-                className={`focus-visible:outline-brand cursor-pointer rounded-full px-5 py-2 text-sm font-semibold whitespace-nowrap transition-all focus-visible:outline focus-visible:outline-2 ${
+                className={`focus-visible:outline-brand cursor-pointer rounded-full px-5 py-2 text-sm font-bold whitespace-nowrap transition-all focus-visible:outline focus-visible:outline-2 ${
                   activeCategory === category
-                    ? "bg-text text-canvas"
+                    ? "bg-brand text-white shadow-md shadow-brand/30"
                     : "bg-canvas text-text-muted hover:bg-canvas-muted hover:text-text border-border hover:border-text-muted border"
                 }`}
               >
@@ -340,7 +340,7 @@ export default function MediaCenterPage() {
                               : `https://www.facebook.com/watch/?v=${video.videoId}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-brand/10 px-3 py-1.5 text-[11px] font-bold text-brand transition-colors hover:bg-brand/20"
+                            className="bg-brand inline-flex w-full items-center justify-center gap-1.5 rounded-xl px-3 py-1.5 text-[11px] font-bold text-white transition-all hover:brightness-110"
                           >
                             <svg className="h-3.5 w-3.5 fill-current" viewBox="0 0 24 24">
                               <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />

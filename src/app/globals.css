@@ -130,6 +130,29 @@ html.light {
   --font-mono: var(--font-geist-mono);
 }
 
+/* Discord-inspired brand gradient mesh — animated pink/blue atmosphere for hero & CTA bands */
+@keyframes mesh-drift {
+  0%,
+  100% {
+    background-position:
+      0% 0%,
+      100% 100%;
+  }
+  50% {
+    background-position:
+      100% 50%,
+      0% 50%;
+  }
+}
+
+.brand-mesh {
+  background-image:
+    radial-gradient(circle at 20% 20%, color-mix(in oklch, var(--color-brand) 55%, transparent) 0%, transparent 55%),
+    radial-gradient(circle at 80% 80%, color-mix(in oklch, var(--color-brand-secondary) 55%, transparent) 0%, transparent 55%);
+  background-size: 160% 160%;
+  animation: mesh-drift 16s ease-in-out infinite;
+}
+
 /* Base resets & layouts */
 body {
   background-color: var(--color-canvas);
